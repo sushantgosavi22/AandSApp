@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="issues">
+    <option name="index">
+      <map>
+        <entry key="/Dummy.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/a.dummy">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/fragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/AndroidManifest.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/addasset/domain/worker/WorkerInteractor.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/base/SearchActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/worker/SearchWorkerActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/start/presentation/view/StartActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/taghelp/presentation/view/TagHelpActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/taghelp/presentation/view/TextureVideoView.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/taghelp/presentation/view/adapter/TagHelpViewPagerAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/res/layout/activity_help_active.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/res/layout/activity_manufacturer_selection.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/res/layout/activity_search.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/res/layout/layout_tag_help_viewpager_item.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/res/values/strings.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/res/values/styles.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/test/SearchGeneric/app/src/main/java/com/ict/assetmanagement/addasset/model/repository/worker/WorkerRepository.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/test/SearchGeneric/app/src/main/java/com/ict/assetmanagement/start/presentation/view/StartActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/models/InventoryItem.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/models/Vehical.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_splash.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,13 @@
+<resources>
+  <!--<string name="app_name">Realm Example</string>-->
+  <string name="app_name">A and S Stationary</string>
+  <string name="vehical_list_title">Vehical List</string>
+  <string name="fetching_records_please_wait">Fetching Records, Please Wait</string>
+  <string name="fav">Favorites</string>
+  <string name="sort">Sort By</string>
+  <string name="no_fav">No Favourites Found</string>
+  <string name="calender_title">Calender wise vehicals</string>
+
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

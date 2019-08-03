@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:paddingStart="@dimen/size_16"
+  android:paddingEnd="@dimen/size_16">
+
+  <ImageButton
+    android:id="@+id/navBarBack"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_alignParentLeft="true"
+    android:layout_gravity="center"
+    android:background="@android:color/transparent"
+    android:contentDescription="@null"
+    android:src="@drawable/ic_back_white"/>
+
+  <android.support.v7.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@+id/navBarBack"
+    android:layout_marginLeft="@dimen/size_16"
+    android:layout_centerInParent="true"
+    android:layout_centerVertical="true"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+      android:id="@+id/actionBarTitle"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:textColor="@android:color/white"
+      app:font_name="bold"
+      android:gravity="center"
+      android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    <TextView
+      android:id="@+id/actionBarSubTitle"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:layout_marginTop="@dimen/size_5"
+      android:gravity="center"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:visibility="gone"/>
+
+  </android.support.v7.widget.LinearLayoutCompat>
+
+</RelativeLayout>

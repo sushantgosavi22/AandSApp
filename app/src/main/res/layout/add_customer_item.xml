@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/dialog_title"
+    android:textStyle="normal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:layout_marginBottom="10dp"
+    android:layout_gravity="center"
+    android:padding="5dp"
+    android:background="@drawable/rounded_border_greenback"
+    android:fontFamily="sans-serif-medium"
+    android:gravity="center"
+    android:lineSpacingExtra="8sp"
+    android:text="@string/add_customer_title"
+    android:textColor="@android:color/white"
+    android:textSize="20sp"/>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <android.support.v7.widget.LinearLayoutCompat
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_margin="5dp"
+      android:orientation="vertical">
+
+      <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardUseCompatPadding="true"
+        card_view:cardElevation="5dp"
+        card_view:cardPreventCornerOverlap="false">
+
+        <android.support.v7.widget.LinearLayoutCompat
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_margin="5dp"
+          android:orientation="vertical">
+
+          <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+              android:id="@+id/imgCustomerLogo"
+              android:layout_width="match_parent"
+              android:layout_height="200dp"
+              android:layout_margin="5dp"
+              android:layout_gravity="center"
+              android:padding="@dimen/size_5"
+              android:src="@drawable/splash_screen"
+              app:civ_border_color="@color/cardview_dark_background"
+              app:civ_fill_color="@color/green_light"/>
+
+
+          </android.support.v7.widget.LinearLayoutCompat>
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+              android:id="@+id/edtCustomerName"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dp"
+              android:background="@android:drawable/editbox_background"
+              android:gravity="top"
+              android:hint="@string/customer_name"
+              android:textColorHint="@color/green_light"
+              android:textSize="20sp"/>
+
+            <EditText
+              android:id="@+id/edtCustomerMail"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dp"
+              android:background="@android:drawable/editbox_background"
+              android:gravity="top"
+              android:hint="@string/customer_mail"
+              android:inputType="textEmailAddress"
+              android:textColorHint="@color/green_light"
+              android:textSize="20sp"/>
+
+            <EditText
+              android:id="@+id/edtCustomerNumber"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dp"
+              android:background="@android:drawable/editbox_background"
+              android:gravity="top"
+              android:hint="@string/customer_phone"
+              android:inputType="phone"
+              android:textColorHint="@color/green_light"
+              android:textSize="20sp"/>
+
+            <EditText
+              android:id="@+id/edtCustomerGst"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dp"
+              android:background="@android:drawable/editbox_background"
+              android:gravity="top"
+              android:hint="@string/customer_gst"
+              android:textColorHint="@color/green_light"
+              android:textSize="20sp"/>
+
+
+            <EditText
+              android:id="@+id/edtContactPerson"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dp"
+              android:background="@android:drawable/editbox_background"
+              android:gravity="top"
+              android:hint="@string/customer_contact_person"
+              android:textColorHint="@color/green_light"
+              android:textSize="20sp"/>
+
+            <EditText
+              android:id="@+id/edtContactPersonNumber"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dp"
+              android:background="@android:drawable/editbox_background"
+              android:gravity="top"
+              android:hint="@string/customer_contact_number"
+              android:textColorHint="@color/green_light"
+              android:textSize="20sp"/>
+
+            <EditText
+              android:id="@+id/edtAddress"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dp"
+              android:background="@android:drawable/editbox_background"
+              android:gravity="top"
+              android:hint="@string/address"
+              android:inputType="textCapSentences|textMultiLine"
+              android:maxLines="3"
+              android:textColorHint="@color/green_light"
+              android:textSize="20sp"/>
+
+            <EditText
+              android:id="@+id/edtDescription"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dp"
+              android:background="@android:drawable/editbox_background"
+              android:gravity="top"
+              android:hint="@string/description"
+              android:inputType="textCapSentences|textMultiLine"
+              android:maxLines="3"
+              android:textColorHint="@color/green_light"
+              android:textSize="20sp"/>
+
+          </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
+      </android.support.v7.widget.CardView>
+    </android.support.v7.widget.LinearLayoutCompat>
+
+  </ScrollView>
+</LinearLayout>

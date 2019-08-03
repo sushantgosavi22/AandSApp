@@ -5,12 +5,11 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context="veeresh.a3c.realm.ui.SplashActivity">
-<!--splash_screen ic_account_balance_blue_grey_800_24dp-->
+  tools:context="com.aandssoftware.aandsinventory.ui.SplashActivity">
   <ImageView
-    android:src="@drawable/ic_account_balance_blue_grey_800_24dp"
+    android:src="@drawable/splash_screen"
     android:fitsSystemWindows="true"
     android:scaleType="fitXY"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="match_parent"/>
 </LinearLayout>

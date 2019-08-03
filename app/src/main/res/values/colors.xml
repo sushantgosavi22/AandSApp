@@ -13,4 +13,6 @@
     <color name="sampleLighter">#4CAF50</color>
 
     <color name="dialogAccent">#795548</color>
+  <color name="cararra_color">#F3F2F0</color>
+  <color name="gravel_color">#524F53</color>
 </resources>

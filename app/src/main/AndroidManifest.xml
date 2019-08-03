@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="veeresh.a3c.realm">
+  package="com.aandssoftware.aandsinventory">
 
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -10,16 +10,25 @@
 
   <uses-feature android:name="android.hardware.camera"/>
   <uses-feature android:name="android.hardware.camera.autofocus"/>
-  <uses-permission android:name="android.permission.CALL_PHONE" />
+
+  <uses-permission android:name="android.permission.CALL_PHONE"/>
 
   <application
     android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
+    android:icon="@mipmap/aands_logo"
     android:label="@string/app_name"
     android:name=".application.RealmApplication"
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
-    <activity android:name=".ui.SplashActivity"
+    <activity
+      android:name=".ui.CarouselDashboardActivity">
+    </activity>
+    <activity
+      android:label="@string/title_activity_base"
+      android:name=".ui.BaseActivity">
+    </activity>
+    <activity
+      android:name=".ui.SplashActivity"
       android:theme="@style/AppThemeNoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -27,25 +36,7 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    <activity
-      android:name=".ui.MainActivity"
-      android:theme="@style/AppThemeNoActionBar">
-
-    </activity>
-    <activity
-      android:name=".ui.TaskListActivity"
-      android:theme="@style/AppThemeNoActionBar"
-      android:parentActivityName=".ui.MainActivity"/>
-    <activity
-      android:name=".ui.VehicalDetailsActivity"
-      android:theme="@style/AppThemeNoActionBar"
-      android:parentActivityName=".ui.MainActivity"/>
-
-    <activity
-      android:name=".ui.CalendarActivity"
-      android:parentActivityName=".ui.MainActivity"
-      android:label="@string/calender_title" />
-
+    <activity android:name=".ui.ListingActivity"/>
   </application>
 
 </manifest>

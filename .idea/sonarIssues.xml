@@ -8,6 +8,801 @@
             <set />
           </value>
         </entry>
+        <entry key="/a.dummy">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/a.regexp">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/fragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-23553-Update-Asset-Status-List/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/assettemplate/adapter/SearchAssetTemplateViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-23553-Update-Asset-Status-List/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/label/labelsearch/adapter/SearchLabelViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-23553-Update-Asset-Status-List/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/manufacturer/adapter/SearchManufacturerViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-23553-Update-Asset-Status-List/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/worker/adapter/SearchLocationViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-23553-Update-Asset-Status-List/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/worker/adapter/SearchWorkerViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-23553-Update-Asset-Status-List/app/src/main/java/com/ict/assetmanagement/asset/presentation/view/adapter/SearchAllAssetViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-23553-Update-Asset-Status-List/app/src/main/java/com/ict/assetmanagement/genericsearch/SearchActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-23553-Update-Asset-Status-List/app/src/main/java/com/ict/assetmanagement/genericsearch/SearchContract.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-27542-Search-Wrong-Error-Message/app/src/main/java/com/ict/assetmanagement/addasset/domain/label/GetLabelsInteractor.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-27542-Search-Wrong-Error-Message/app/src/main/java/com/ict/assetmanagement/addasset/model/service/label/LabelApi.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-27542-Search-Wrong-Error-Message/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/label/labelsearch/adapter/SearchLabelViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/label/CustomLabelLayout.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/label/FlexBoxLayoutCustomView.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/label/LabelItemCustomView.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/label/LabelLayoutCustomView.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/label/labelsearch/LabelSearchActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/java/com/ict/assetmanagement/assetdetails/model/AssetDetailsTemplateModel.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/java/com/ict/assetmanagement/assetdetails/presentation/view/adapter/AssetDetailsExpandableListViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/java/com/ict/assetmanagement/assetdetails/presentation/viewmodel/AssetBasicDetailsHeaderItem.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/res/layout/label_list_layout.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/main/res/values/colors.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/app/src/test/java/com/ict/assetmanagement/assetdetails/presentation/viewmodel/AssetBasicDetailsHeaderItemTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/Bug/BUTSAM-29745-BUG-Label-Icon/docs/architecturedocumentation/features/AssetDetails/AssetDetails-Design.rst">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/addasset/di/AddAssetComponent.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/adapters/basesearch/SearchViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/genericsearch/SearchActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/genericsearch/SearchType.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/worker/WorkerSelectionActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/worker/adapter/SearchAssetGroupViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/worker/adapter/SearchLocationViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/assetgroup/di/AssetGroupComponent.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/location/di/LocationComponent.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/location/presentation/view/LocationActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/java/com/ict/assetmanagement/start/presentation/view/StartActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/res/layout/activity_location_selection.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/res/layout/activity_search.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Fetures/story/SearchGenericUpdated/app/src/main/res/values/strings.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/build/generated/source/apt/hiltiDev/debug/com/ict/assetmanagement/addasset/presentation/view/worker/WorkerSelectionActivity_ViewBinding.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/worker/WorkerSelectionActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/addasset/presentation/viewmodel/worker/WorkerViewModel.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/assetdetails/presentation/view/AssetDetailsActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MainMaster/app/src/main/java/com/ict/assetmanagement/assetgroup/presentation/view/AssetGroupActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/Master/app/src/main/java/com/ict/assetmanagement/start/presentation/view/StartActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MasterSprint21SearchLabel/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/adapters/TemplateDetailsViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MasterSprint21SearchLabel/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/adapters/basesearch/SearchViewAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MasterSprint21SearchLabel/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/label/FlexBoxLayoutCustomView.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MasterSprint21SearchLabel/app/src/main/java/com/ict/assetmanagement/addasset/presentation/view/label/labelsearch/LabelSearchActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MasterSprint21SearchLabel/app/src/main/java/com/ict/assetmanagement/asset/presentation/view/ViewAllAssetFragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MasterSprint21SearchLabel/app/src/main/java/com/ict/assetmanagement/base/presentation/viewmodel/TestClass.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../ProjectWorkspace/MasterSprint21SearchLabel/app/src/main/java/com/ict/assetmanagement/genericsearch/SearchActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/build/generated/source/apt/debug/com/aandssoftware/aandsinventory/ui/adapters/InventoryItemAdapter$ViewHolder_ViewBinding.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/a3c/realm/database/RecordsDao.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/a3c/realm/models/InventoryItem.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/a3c/realm/ui/DashboardActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/a3c/realm/ui/VehicalDetailsActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/application/RealmApplication.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/carousel/ListOperation.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/carousel/ListType.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/carousel/ListingOperation.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/carousel/ListingOperations.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/common/Utils.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/database/CarouselDao.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/database/CustomerDao.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/database/InventoryDao.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/database/RealmManager.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/database/RecordsDao.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/events/InventoryActionEvent.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/events/TaskEvents.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/listing/AddInventoryFragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/listing/AddInventoryItemFragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/listing/CustomerFragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/listing/CustomerListAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/listing/InventoryHistoryListAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/listing/InventoryListAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/listing/ListType.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/listing/ListingOperations.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/CallbackRealmObject.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/CarouselMenuModel.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/CarouselMenuType.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/CompanyModel.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/CustomerModel.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/InventoryItem.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/InventoryItemHistory.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/Record.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/Task.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/models/callbackRealmObject.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/networking/APIService.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/networking/RetrofitConnection.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/AddTaskDialogFragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/BaseActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/CarouselDashboardActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/CarouselDashboardActvity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/DashboardActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/HistoryListActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/ListingActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/SplashActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/TaskListActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/VehicalDetailsActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/adapters/BaseRealmAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/adapters/CarouselMenuAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/adapters/HistoryAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/adapters/InventoryItemAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/ui/adapters/TaskAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/utilities/APIOptions.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/utilities/AppConstants.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/utilities/CustomFontTextView.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/utilities/EndlessRecyclerViewScrollListener.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/aandsinventory/utilities/MyCustomTextView.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/realm/database/RecordsDao.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/realm/models/InventoryItem.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/realm/ui/DashboardActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/aandssoftware/realm/ui/VehicalDetailsActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/common/DrawableUtils.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/common/Utils.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/database/RecordsDao.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/models/InventoryItem.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/ui/AddTaskDialogFragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/ui/DashboardActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/ui/MainActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/ui/VehicalDetailsActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/ui/adapters/RecordsAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/ui/adapters/TaskAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/veeresh/a3c/realm/ui/adapters/VehicalAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/drawable/rounded_border_greenback.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_carousel_dashboard_actvity.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_customer_details.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_dashboard.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_history_list.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_listing.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_splash.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_tasklist.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/add_company_item.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/add_customer_item.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/add_inventory_item.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/add_vehical.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/carousel_item.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/custom_action_bar_layout.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/customer_item.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/item_carousel_menu.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/item_history.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/item_records.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/item_task.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/menu/default_menu.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/menu/inventory_menu.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/menu/toolbar_menu.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/values/colors.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/values/dimens.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/values/styles.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/gradle.properties">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/settings.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../Other/MaterialChipsInput-master/sample/src/main/res/layout/activity_contact_list.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
       </map>
     </option>
   </component>

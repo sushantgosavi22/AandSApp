@@ -1,23 +1,24 @@
 package com.aandssoftware.aandsinventory.ui.adapters;
 
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.ButterKnife;
 import com.aandssoftware.aandsinventory.listing.ListingOperations;
+import com.aandssoftware.aandsinventory.ui.adapters.BaseRealmAdapter.BaseViewHolder;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmObject;
-import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
+import java.util.List;
 
-public class BaseRealmAdapter<T extends RealmObject> extends
-    RealmRecyclerViewAdapter<T, BaseRealmAdapter.BaseViewHolder> {
+public class BaseRealmAdapter<T extends RealmObject> extends RecyclerView.Adapter<BaseViewHolder> {
   
   private ListingOperations operation;
-  
+  OrderedRealmCollection<T> orderedRealmCollection;
   public BaseRealmAdapter(OrderedRealmCollection<T> orderedRealmCollection,
       ListingOperations operation) {
-    super(orderedRealmCollection, true);
+    this.orderedRealmCollection = orderedRealmCollection;
     this.operation = operation;
   }
   
@@ -32,6 +33,20 @@ public class BaseRealmAdapter<T extends RealmObject> extends
     operation.onBindSearchViewHolder(holder, position, getData().get(position));
   }
   
+  @Override
+  public int getItemCount() {
+    return orderedRealmCollection.size();
+  }
+  
+  private List<T> getData() {
+    return orderedRealmCollection;
+  }
+  
+  public void updateData(RealmResults<? extends RealmObject> realmResults) {
+    orderedRealmCollection.clear();
+    orderedRealmCollection = (OrderedRealmCollection<T>) realmResults;
+  }
+  
   public static class BaseViewHolder extends RecyclerView.ViewHolder {
     
     public BaseViewHolder(View itemView) {
@@ -39,4 +54,6 @@ public class BaseRealmAdapter<T extends RealmObject> extends
       ButterKnife.bind(this, itemView);
     }
   }
+  
+  
 }

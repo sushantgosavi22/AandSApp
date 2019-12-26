@@ -4,17 +4,11 @@ package com.aandssoftware.aandsinventory.models;
 import com.aandssoftware.aandsinventory.database.RealmManager;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import io.realm.InventoryItemRealmProxy;
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 import java.util.HashMap;
-import org.parceler.Parcel;
 
-@org.parceler.Parcel(implementations = {InventoryItemRealmProxy.class},
-    value = Parcel.Serialization.BEAN,
-    analyze = {InventoryItem.class})
 public class InventoryItem extends RealmObject {
   
   public static final String DEFAULT_QUANTITY_UNIT = "Pec";
@@ -30,6 +24,7 @@ public class InventoryItem extends RealmObject {
   public static final String ITEM_QUANTITY = "Quantity";
   public static final String ITEM_UNIT_QUANTITY = "Quantity Unit";
   public static final String INVENTORY_ITEM_SELLING_PRICE = "Selling Price";
+  public static final String INVENTORY_ITEM_QUNTITY_BY_SELLING_PRICE = "Quantity by Selling Price";
   public static final String INVENTORY_ITEM_DESCRIPTION = "Description";
   public static final String INVENTORY_ITEM_BRAND_NAME = "Brand Name";
   public static final String INVENTORY_ITEM_MODEL_NAME = "Model Name";
@@ -43,6 +38,11 @@ public class InventoryItem extends RealmObject {
   public static final String INVENTORY_ITEM_AVAILABLE = "Available";
   public static final String INVENTORY_ITEM_HISTORY = "History";
   public static final String INVENTORY_TYPE = "InventoryType";
+  public static final String INVENTORY_PARENT_ID = "ParentId";
+  public static final String ITEM_GST_PERCENTAGE = "gstPeercentage";
+  public static final String ITEM_GST_AMOUNT = "gstAmount";
+  public static final String ITEM_MRP_AMOUNT = "mrpAmount";
+  public static final String ITEM_FINAL_BILL_AMOUNT = "Final Bill Amount";
   public static final String TAG = "tag";
   
   
@@ -54,6 +54,10 @@ public class InventoryItem extends RealmObject {
   @Expose
   @PrimaryKey
   private int id;
+  
+  @SerializedName(INVENTORY_PARENT_ID)
+  @Expose
+  private int parentId;
   
   @SerializedName(INVENTORY_ITEM_IMAGE_PATH)
   @Expose
@@ -82,6 +86,11 @@ public class InventoryItem extends RealmObject {
   @SerializedName(INVENTORY_ITEM_SELLING_PRICE)
   @Expose
   private String minimumSellingPrice;
+  
+  
+  @SerializedName(INVENTORY_ITEM_QUNTITY_BY_SELLING_PRICE)
+  @Expose
+  private int quantityBySellingPrice;
   
   @SerializedName(INVENTORY_ITEM_DESCRIPTION)
   @Expose
@@ -134,8 +143,25 @@ public class InventoryItem extends RealmObject {
   
   @SerializedName(INVENTORY_TYPE)
   @Expose
-  @Index
   private int inventoryType;
+  
+  
+  @SerializedName(ITEM_GST_PERCENTAGE)
+  @Expose
+  private int gstPercentage;
+  
+  @SerializedName(ITEM_GST_AMOUNT)
+  @Expose
+  private int gstAmount;
+  
+  @SerializedName(ITEM_MRP_AMOUNT)
+  @Expose
+  private int mrpAmount;
+  
+  
+  @SerializedName(ITEM_FINAL_BILL_AMOUNT)
+  @Expose
+  private int finalBillAmount;
   
   @SerializedName(TAG)
   @Expose
@@ -147,6 +173,7 @@ public class InventoryItem extends RealmObject {
   
   public InventoryItem(InventoryItem item) {
     this.id = item.getId();
+    this.parentId = item.getParentId();
     this.inventoryItemImagePath = item.getInventoryItemImagePath();
     this.inventoryItemName = item.getInventoryItemName();
     this.itemPurchasePrice = item.getItemPurchasePrice();
@@ -165,6 +192,11 @@ public class InventoryItem extends RealmObject {
     this.inventoryItemPurchaseDate = item.getInventoryItemPurchaseDate();
     this.inventoryItemLastUpdatedDate = item.getInventoryItemLastUpdatedDate();
     this.inventoryType = item.getInventoryType();
+    this.gstPercentage = item.getGstPercentage();
+    this.gstAmount = item.getGstAmount();
+    this.mrpAmount = item.getMrpAmount();
+    this.quantityBySellingPrice = item.getQuantityBySellingPrice();
+    this.finalBillAmount = item.getFinalBillAmount();
     this.tag = item.getTag();
     this.isAvailable = item.isAvailable();
   }
@@ -505,5 +537,59 @@ public class InventoryItem extends RealmObject {
   public InventoryItem setTag(String tag) {
     this.tag = tag;
     return this;
+  }
+  
+  public int getGstPercentage() {
+    return gstPercentage;
+  }
+  
+  public InventoryItem setGstPercentage(int gstPercentage) {
+    this.gstPercentage = gstPercentage;
+    return this;
+  }
+  
+  public int getGstAmount() {
+    return gstAmount;
+  }
+  
+  public InventoryItem setGstAmount(int gstAmount) {
+    this.gstAmount = gstAmount;
+    return this;
+  }
+  
+  public int getMrpAmount() {
+    return mrpAmount;
+  }
+  
+  public InventoryItem setMrpAmount(int mrpAmount) {
+    this.mrpAmount = mrpAmount;
+    return this;
+  }
+  
+  public int getQuantityBySellingPrice() {
+    return quantityBySellingPrice;
+  }
+  
+  public InventoryItem setQuantityBySellingPrice(int quantityBySellingPrice) {
+    this.quantityBySellingPrice = quantityBySellingPrice;
+    return this;
+  }
+  
+  public int getFinalBillAmount() {
+    return finalBillAmount;
+  }
+  
+  public InventoryItem setFinalBillAmount(int finalBillAmount) {
+    this.finalBillAmount = finalBillAmount;
+    return this;
+  }
+  
+  public InventoryItem setParentId(int parentId) {
+    this.parentId = parentId;
+    return this;
+  }
+  
+  public int getParentId() {
+    return parentId;
   }
 }

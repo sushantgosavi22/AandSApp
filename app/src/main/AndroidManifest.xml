@@ -20,8 +20,9 @@
     android:name=".application.RealmApplication"
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
-    <activity
-      android:name=".ui.CarouselDashboardActivity">
+    <activity android:name=".ui.OrderDetailsActivity"></activity>
+    <activity android:name=".ui.OrderListActivity"></activity>
+    <activity android:name=".ui.CarouselDashboardActivity">
     </activity>
     <activity
       android:label="@string/title_activity_base"

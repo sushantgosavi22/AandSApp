@@ -1,0 +1,97 @@
+// MOST common dependencies are tracked here for easier maintenance
+ext {
+    HILTI_DESIGN_VERSION = "7.0.1"
+    PERMISSIONS_DISPATCHER_VERSION = "3.1.0"
+    GOOGLE_LOCATIONS_SERVICES_VERSION = "16.0.0"
+    BUTTER_KNIFE_VERSION = "10.2.0"
+    GSON_VERSION = "2.8.5"
+    AUTO_VALUE_VERSION = "1.5.2"
+    AUTO_VALUE_PARCELABLE_EXT_VERSION = "0.2.5"
+    RX_JAVA_VERSION = "2.2.15"
+    RX_ANDROID_VERSION = "2.1.1"
+    RETROFIT_VERSION = "2.4.0"
+    RETROFIT_RX_VERSION = "2.4.0"
+    LOGGING_INTERCEPTOR_VERSION = "3.11.0"
+    DAGGER_2_VERSION = "2.24"
+    TIMBER_VERSION = "4.7.1"
+    HOCKEY_APP_VERSION = "5.1.1"
+    POWERMOCK_VERSION = "1.7.0RC2"
+    POWERMOCK_CLASSLOADER_VERSION = "1.6.5"
+    MOCKITO_VERSION = "2.4.0"
+    ASSERTJ_VERSION = "3.8.0"
+    PICASSO_VERSION = "2.71828"
+    PICASSO_DOWNLOADER_VERSION = "1.1.0"
+    TOUCH_IMAGE_VIEW = "1.4.0"
+    RX_RELAY_VERSION = "2.1.1"
+    KOTLIN_RX_VERSION = "2.3.0"
+    LEAK_CANARY_VERSION = "2.0-beta-3"
+    TEST_RUNNER_VERSION = "1.0.2"
+    TEST_ESPRESSO_CORE_VERSION = "3.0.1"
+    TEST_ESPRESSO_CONTRIB_VERSION = "3.1.0"
+    JUNIT_VERSION = "4.12"
+    FLEXBOX_LAYOUT_LIB_VERSION = "1.0.0"
+    GOOGLE_TAG_MANAGER_VERSION = "17.0.0"
+    FIREBASE_CORE_VERSION = "17.2.0"
+    CONSTRAINT_LAYOUT_VERSION = "1.1.3"
+    MOCK_WEB_SERVER = "4.2.1"
+    PLAY_CORE_VERSION = "1.6.4"
+    RECYCLER_VIEW_BETA_VERSION = "1.1.0"
+    GOOGLE_MAPS_VERSION = "16.0.0"
+    DIDOMI_VERSION = "1.8.7-EMBEDRM"
+    ANDROID_CORE_KTX_VERSION = "1.0.1"
+    ANDROID_MATERIAL_VERSION = "1.0.0"
+    ANDROID_PAGING_VERSION = "2.1.0"
+    ANDROID_APPCOMPAT_VERSION = "1.1.0"
+    APP_CENTER_VERSION = '2.5.1'
+    ANDROID_CORE_KTX_VERSION = "1.1.0"
+    ANDROIDX_TEST_VERSION = "1.1.1"
+    ANDROID_WORK_RUNTIME_VERSION = "2.2.0"
+    MOCKITO_KOTLIN_VERSION = "2.2.0"
+
+    androidLibraryDependencies = [
+            appCompat             : "androidx.appcompat:appcompat:$ANDROID_APPCOMPAT_VERSION",
+            recyclerView          : "androidx.recyclerview:recyclerview:$RECYCLER_VIEW_BETA_VERSION",
+            coreKtx               : "androidx.core:core-ktx:$ANDROID_CORE_KTX_VERSION",
+            constraintLayout      : "androidx.constraintlayout:constraintlayout:$CONSTRAINT_LAYOUT_VERSION",
+            /*googleMaps            : "com.google.android.gms:play-services-maps:$GOOGLE_MAPS_VERSION",
+            googleLocationServices: "com.google.android.gms:play-services-location:$GOOGLE_LOCATIONS_SERVICES_VERSION",*/
+            material              : "com.google.android.material:material:$ANDROID_MATERIAL_VERSION"
+    ]
+
+
+
+  /*  diagnosticsDependencies = [
+            logging         : "com.jakewharton.timber:timber:$TIMBER_VERSION",
+            crashLogging    : "net.hockeyapp.android:HockeySDK:$HOCKEY_APP_VERSION",
+            firebaseCore    : "com.google.firebase:firebase-core:$FIREBASE_CORE_VERSION",
+            googleTagManager: "com.google.android.gms:play-services-tagmanager:$GOOGLE_TAG_MANAGER_VERSION",
+    ]*/
+
+    rxDependencies = [
+            rxJava   : "io.reactivex.rxjava2:rxjava:$RX_JAVA_VERSION",
+            rxAndroid: "io.reactivex.rxjava2:rxandroid:$RX_ANDROID_VERSION",
+            rxRelay  : "com.jakewharton.rxrelay2:rxrelay:$RX_RELAY_VERSION",
+            rxKotlin : "com.github.ReactiveX:RxKotlin:$KOTLIN_RX_VERSION"
+    ]
+
+    networkDependencies = [
+            gsonSerializer        : "com.google.code.gson:gson:$GSON_VERSION",
+            retrofit              : "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION",
+            retrofitGsonConverter : "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION",
+            retrofitRxJavaAdapter : "com.squareup.retrofit2:adapter-rxjava2:$RETROFIT_RX_VERSION",
+            okHttp3Logging        : "com.squareup.okhttp3:logging-interceptor:$LOGGING_INTERCEPTOR_VERSION",
+            picassoImageLoader    : "com.squareup.picasso:picasso:$PICASSO_VERSION",
+            picassoImageDownLoader: "com.jakewharton.picasso:picasso2-okhttp3-downloader:$PICASSO_DOWNLOADER_VERSION"
+    ]
+
+   /* unitTestDependencies = [
+            jUnit                    : "junit:junit:$JUNIT_VERSION",
+            mockito                  : "org.mockito:mockito-core:$MOCKITO_VERSION",
+            powerMockJunitExtension  : "org.powermock:powermock-module-junit4:$POWERMOCK_VERSION",
+            powerMockJunitBootstrap  : "org.powermock:powermock-module-junit4-rule:$POWERMOCK_VERSION",
+            powerMockJunitClassLoader: "org.powermock:powermock-classloading-xstream:$POWERMOCK_CLASSLOADER_VERSION",
+            powerMockMockitoExtension: "org.powermock:powermock-api-mockito2:$POWERMOCK_VERSION",
+            assertJCore              : "org.assertj:assertj-core:$ASSERTJ_VERSION",
+            mockWebServer            : "com.squareup.okhttp3:mockwebserver:$MOCK_WEB_SERVER"
+    ]*/
+}

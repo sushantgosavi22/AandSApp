@@ -3,20 +3,12 @@ package com.aandssoftware.aandsinventory.database;
 import android.support.annotation.NonNull;
 import com.aandssoftware.aandsinventory.models.CallbackRealmObject;
 import com.aandssoftware.aandsinventory.models.CarouselMenuModel;
-import com.aandssoftware.aandsinventory.models.InventoryItem;
-import com.aandssoftware.aandsinventory.models.InventoryItemHistory;
-import io.realm.Case;
 import io.realm.Realm;
 import io.realm.Realm.Transaction;
 import io.realm.Realm.Transaction.OnSuccess;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 public class CarouselDao {
   
@@ -28,7 +20,7 @@ public class CarouselDao {
   
   
   public RealmResults<CarouselMenuModel> getCarouselMenus() {
-    return mRealm.where(CarouselMenuModel.class).findAllSorted("id");
+    return mRealm.where(CarouselMenuModel.class).sort("id", Sort.ASCENDING).findAll();
   }
   
   public void saveCarouselMenuList(List<CarouselMenuModel> carouselMenuModelList,

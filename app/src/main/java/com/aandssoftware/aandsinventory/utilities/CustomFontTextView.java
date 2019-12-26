@@ -2,8 +2,10 @@ package com.aandssoftware.aandsinventory.utilities;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.AppCompatTextView;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
+import androidx.appcompat.widget.AppCompatTextView;
 import com.aandssoftware.aandsinventory.R;
 import com.aandssoftware.aandsinventory.application.RealmApplication;
 
@@ -23,8 +25,10 @@ public class CustomFontTextView extends AppCompatTextView {
     } finally {
       array.recycle();
     }
-    if (!isInEditMode()) {
-      setTypeface(RealmApplication.getInstance().getTypeFace(typefaceType));
+    if (VERSION.SDK_INT >= VERSION_CODES.CUPCAKE) {
+      if (!isInEditMode()) {
+        //setTypeface(RealmApplication.getInstance().getTypeFace(typefaceType));
+      }
     }
   }
 }

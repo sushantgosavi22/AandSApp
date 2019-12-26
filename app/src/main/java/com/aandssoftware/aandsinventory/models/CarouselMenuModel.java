@@ -5,12 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import org.parceler.Parcel;
 
-/*
-@Parcel(implementations = {CarouselMenuModelRealmProxy.class},
-    value = Parcel.Serialization.BEAN,
-    analyze = {CarouselMenuModel.class})*/
 public class CarouselMenuModel extends RealmObject {
   
   

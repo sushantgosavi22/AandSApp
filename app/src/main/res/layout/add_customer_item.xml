@@ -28,13 +28,13 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.LinearLayoutCompat
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_margin="5dp"
       android:orientation="vertical">
 
-      <android.support.v7.widget.CardView
+      <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -43,13 +43,13 @@
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="false">
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_margin="5dp"
           android:orientation="vertical">
 
-          <android.support.v7.widget.LinearLayoutCompat
+          <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -66,8 +66,8 @@
               app:civ_fill_color="@color/green_light"/>
 
 
-          </android.support.v7.widget.LinearLayoutCompat>
-          <LinearLayout
+          </androidx.appcompat.widget.LinearLayoutCompat>
+          <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -167,10 +167,10 @@
               android:textColorHint="@color/green_light"
               android:textSize="20sp"/>
 
-          </LinearLayout>
-        </android.support.v7.widget.LinearLayoutCompat>
-      </android.support.v7.widget.CardView>
-    </android.support.v7.widget.LinearLayoutCompat>
+          </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+      </androidx.cardview.widget.CardView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
   </ScrollView>
 </LinearLayout>

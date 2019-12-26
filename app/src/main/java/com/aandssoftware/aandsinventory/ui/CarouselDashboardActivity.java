@@ -1,8 +1,11 @@
 package com.aandssoftware.aandsinventory.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.aandssoftware.aandsinventory.R;
 import com.aandssoftware.aandsinventory.database.RealmManager;
 import com.aandssoftware.aandsinventory.models.CallbackRealmObject;
@@ -79,6 +82,7 @@ public class CarouselDashboardActivity extends BaseActivity {
     orders.setDateCreated(System.currentTimeMillis());
     orders.setDescription("Orders Description");
     orders.setExpression("");
+    orders.setImageId(String.valueOf(R.drawable.ic_call));
     orders.setTag("3");
     list.add(orders);
     
@@ -88,6 +92,7 @@ public class CarouselDashboardActivity extends BaseActivity {
     materials.setAliceName("Materials");
     materials.setDateCreated(System.currentTimeMillis());
     materials.setDescription("Materials Description");
+    materials.setImageId(String.valueOf(R.drawable.ic_archive));
     materials.setExpression("");
     materials.setTag("4");
     list.add(materials);
@@ -98,6 +103,7 @@ public class CarouselDashboardActivity extends BaseActivity {
     customers.setAliceName("Customers");
     customers.setDateCreated(System.currentTimeMillis());
     customers.setDescription("Customers Description");
+    customers.setImageId(String.valueOf(R.drawable.ic_customer));
     customers.setExpression("");
     customers.setTag("1");
     list.add(customers);
@@ -108,6 +114,7 @@ public class CarouselDashboardActivity extends BaseActivity {
     inventoryHistory.setAliceName("Inventory History");
     inventoryHistory.setDateCreated(System.currentTimeMillis());
     inventoryHistory.setDescription("Inventory History Description");
+    inventoryHistory.setImageId(String.valueOf(R.drawable.ic_inventory_history));
     inventoryHistory.setExpression("");
     inventoryHistory.setTag("2");
     list.add(inventoryHistory);
@@ -118,6 +125,7 @@ public class CarouselDashboardActivity extends BaseActivity {
     inventoryList.setAliceName("Inventory");
     inventoryList.setDateCreated(System.currentTimeMillis());
     inventoryList.setDescription("Description");
+    inventoryList.setImageId(String.valueOf(R.drawable.ic_inventory_carosal));
     inventoryList.setExpression("");
     inventoryList.setTag("0");
     list.add(inventoryList);
@@ -130,4 +138,42 @@ public class CarouselDashboardActivity extends BaseActivity {
     RealmManager.close();
     super.onDestroy();
   }
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        onBackPress();
+        return false;
+      default:
+    }
+    return true;
+  }
+  
+  public void onBackPress() {
+    AlertDialog.Builder alertDialogBuilderUserInput =
+        new AlertDialog.Builder(this);
+    alertDialogBuilderUserInput
+        .setTitle(getString(R.string.exit_app_title))
+        .setMessage(getString(R.string.exit_app_message))
+        .setCancelable(false)
+        .setPositiveButton(getString(R.string.exit),
+            new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialogBox, int id) {
+                dialogBox.cancel();
+                CarouselDashboardActivity.super.onBackPressed();
+                finish();
+              }
+            })
+        .setNegativeButton(getString(R.string.no),
+            new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialogBox, int id) {
+                dialogBox.cancel();
+              }
+            });
+    
+    final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+    alertDialog.show();
+  }
+  
 }

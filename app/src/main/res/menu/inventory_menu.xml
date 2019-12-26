@@ -4,9 +4,16 @@
   tools:context="com.example.toolbar.MainActivity">
 
   <item
+    android:id="@+id/search"
+    android:icon="@android:drawable/ic_menu_search"
+    android:title="@string/search"
+    android:visible="false"
+    app:showAsAction="ifRoom"
+    app:actionViewClass="android.widget.SearchView" />
+
+  <item
     android:id="@+id/actionAdd"
     android:icon="@drawable/add_icon_white"
     android:title="@string/abc_search_hint"
     app:showAsAction="always"/>
-
 </menu>

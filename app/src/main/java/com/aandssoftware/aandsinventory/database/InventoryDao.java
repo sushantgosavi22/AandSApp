@@ -1,18 +1,24 @@
 package com.aandssoftware.aandsinventory.database;
 
 import android.support.annotation.NonNull;
+
 import com.aandssoftware.aandsinventory.listing.ListType;
 import com.aandssoftware.aandsinventory.models.CallbackRealmObject;
 import com.aandssoftware.aandsinventory.models.InventoryItem;
 import com.aandssoftware.aandsinventory.models.InventoryItemHistory;
+
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.Realm.Transaction;
 import io.realm.Realm.Transaction.OnSuccess;
 import io.realm.RealmList;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
+
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map.Entry;
 
 public class InventoryDao {
@@ -27,32 +33,63 @@ public class InventoryDao {
   public RealmResults<InventoryItem> getInventoryItemRecords() {
     return mRealm.where(InventoryItem.class)
         .equalTo("inventoryType", ListType.LIST_TYPE_INVENTORY.ordinal())
+        .lessThanOrEqualTo("parentId", 0)
         .findAll();
   }
   
   public RealmResults<InventoryItem> getMaterialRecords() {
-    return mRealm.where(InventoryItem.class).findAllSorted("inventoryItemName");
-  }
-  
-  
-  public RealmResults<InventoryItem> loadSearchListInventoryItem(String query) {
     return mRealm.where(InventoryItem.class)
-        .contains("inventntoryItemName", query, Case.INSENSITIVE).or()
-        .contains("description", query, Case.INSENSITIVE).or()
-        .contains("inventoryItemBrandName", query, Case.INSENSITIVE).or()
-        .contains("inventoryItemModelName", query, Case.INSENSITIVE).findAll();
+        .equalTo("inventoryType", ListType.LIST_TYPE_MATERIAL.ordinal())
+        .lessThanOrEqualTo("parentId", 0)
+        .sort("inventoryItemName", Sort.ASCENDING).findAll();
   }
   
+  
+  public RealmResults<InventoryItem> getInventoryItemRecords(String query) {
+    RealmQuery<InventoryItem> realmQuery = mRealm.where(InventoryItem.class).beginGroup()
+        .equalTo("inventoryType", ListType.LIST_TYPE_INVENTORY.ordinal())
+        .lessThanOrEqualTo("parentId", 0).endGroup();
+    return realmQuery.findAll();
+  }
+  
+  public RealmResults<InventoryItem> getInventoryItemRecords(int inventoryType, String query) {
+    if (inventoryType == ListType.LIST_TYPE_INVENTORY.ordinal()) {
+      if (query != null && !query.isEmpty()) {
+        return mRealm.where(InventoryItem.class)
+            .equalTo("inventoryType", ListType.LIST_TYPE_INVENTORY.ordinal())
+            .lessThanOrEqualTo("parentId", 0).beginGroup()
+            .contains("inventoryItemName", query, Case.INSENSITIVE).or()
+            .contains("inventoryItemModelName", query, Case.INSENSITIVE).or()
+            .contains("inventoryItemBrandName", query, Case.INSENSITIVE).endGroup()
+            .sort("inventoryItemName", Sort.ASCENDING).findAll();
+      } else {
+        return getInventoryItemRecords();
+      }
+      
+    } else {
+      if (query != null && !query.isEmpty()) {
+        return mRealm.where(InventoryItem.class)
+            .equalTo("inventoryType", ListType.LIST_TYPE_MATERIAL.ordinal())
+            .lessThanOrEqualTo("parentId", 0).beginGroup()
+            .contains("inventoryItemName", query, Case.INSENSITIVE).or()
+            .contains("inventoryItemModelName", query, Case.INSENSITIVE).or()
+            .contains("inventoryItemBrandName", query, Case.INSENSITIVE).endGroup()
+            .sort("inventoryItemName", Sort.ASCENDING).findAll();
+      } else {
+        return getMaterialRecords();
+      }
+    }
+  }
   
   public RealmResults<InventoryItemHistory> getAllInventoryItemHistory() {
     RealmResults<InventoryItemHistory> realmResultList = mRealm.where(InventoryItemHistory.class)
-        .findAllSorted("id", Sort.DESCENDING);
+        .sort("inventoryItemName", Sort.DESCENDING).findAll();
     return realmResultList;
   }
   
   public RealmResults<InventoryItemHistory> getAllInventoryItemHistory(int inventoryId) {
     return mRealm.where(InventoryItemHistory.class).equalTo("id", inventoryId)
-        .findAllSorted("modifiedDate");
+        .sort("modifiedDate", Sort.ASCENDING).findAll();
   }
   
   public void saveInventoryItem(InventoryItem mInventoryItem, CallbackRealmObject object) {

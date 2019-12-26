@@ -1,11 +1,16 @@
 package com.aandssoftware.aandsinventory.listing;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +26,7 @@ import com.aandssoftware.aandsinventory.database.RealmManager;
 import com.aandssoftware.aandsinventory.models.CallbackRealmObject;
 import com.aandssoftware.aandsinventory.models.CustomerModel;
 import com.aandssoftware.aandsinventory.ui.ListingActivity;
+import com.aandssoftware.aandsinventory.ui.OrderListActivity;
 import com.aandssoftware.aandsinventory.ui.adapters.BaseRealmAdapter.BaseViewHolder;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
@@ -28,6 +34,7 @@ import io.realm.RealmResults;
 public class CustomerListAdapter implements ListingOperations {
   
   private ListingActivity activity;
+  public static final String CUSTOMER_ID = "customer_id";
   
   public class CustomerViewHolder extends BaseViewHolder {
     
@@ -43,6 +50,8 @@ public class CustomerListAdapter implements ListingOperations {
     TextView tvContactNameAndNumber;
     @BindView(R.id.tvCustomerGstNumber)
     TextView tvCustomerGstNumber;
+    @BindView(R.id.card_view)
+    CardView cardView;
     
     @OnClick(R.id.imgCustomerItemDelete)
     public void onDeleteClick() {
@@ -91,27 +100,56 @@ public class CustomerListAdapter implements ListingOperations {
         holder.imgCustomerItemLogo.setImageBitmap(bitmap);
       }
     }
+    holder.cardView.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (isOrderSelectionCall()) {
+          setResult(mItem);
+        } else {
+          showAddCustomerFragment((CustomerModel) holder.itemView.getTag(), false);
+        }
+      }
+    });
     holder.itemView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        showAddCustomerFragment(mItem, false);
+        if (isOrderSelectionCall()) {
+          setResult(mItem);
+        } else {
+          showAddCustomerFragment(mItem, false);
+        }
       }
     });
   }
   
+  public void setResult(CustomerModel mItem) {
+    Intent intent = new Intent();
+    intent.putExtra(CustomerListAdapter.CUSTOMER_ID,
+        (mItem.getCustomerID() == 0) ? mItem.getId() : mItem.getCustomerID());
+    activity.setResult(ListingActivity.SELECTED, intent);
+    activity.finish();
+  }
+  
+  private boolean isOrderSelectionCall() {
+    ComponentName callingActivity = activity.getCallingActivity();
+    return (callingActivity != null && callingActivity.getClassName()
+        .equalsIgnoreCase(OrderListActivity.class.getName()));
+  }
+  
   @Override
   public String getTitle() {
-    return activity.getString(R.string.Customer_item);
+    return activity.getString(R.string.customer_item);
   }
   
   @Override
   public RealmResults<? extends RealmObject> getResult() {
-    return RealmManager.getCustomerDao().loadCompanyRecords();
+    return RealmManager.getCustomerDao().getAllCustomers();
   }
   
   @Override
-  public int getMenuLayoutId() {
-    return R.menu.inventory_menu;
+  public boolean onCreateOptionsMenu(Menu menu) {
+    activity.getMenuInflater().inflate(R.menu.inventory_menu, menu);
+    return true;
   }
   
   @Override
@@ -130,7 +168,7 @@ public class CustomerListAdapter implements ListingOperations {
   
   @Override
   public void onBackPressed() {
-    activity.onBackPressed();
+    activity.finish();
   }
   
   public void showAddCustomerFragment(CustomerModel mItem, boolean update) {

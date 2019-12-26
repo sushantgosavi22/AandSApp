@@ -1,6 +1,7 @@
 package com.aandssoftware.aandsinventory.listing;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,8 +92,9 @@ public class InventoryHistoryListAdapter implements ListingOperations {
   }
   
   @Override
-  public int getMenuLayoutId() {
-    return -1;
+  public boolean onCreateOptionsMenu(Menu menu) {
+    //activity.getMenuInflater().inflate(R.menu.inventory_menu, menu);
+    return true;
   }
   
   @Override
@@ -108,7 +110,7 @@ public class InventoryHistoryListAdapter implements ListingOperations {
   
   @Override
   public void onBackPressed() {
-    activity.onBackPressed();
+    activity.finish();
   }
   
 }

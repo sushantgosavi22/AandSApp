@@ -1,18 +1,27 @@
 package com.aandssoftware.aandsinventory.listing;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AlertDialog;
+import android.os.Build;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.cardview.widget.CardView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -22,6 +31,8 @@ import com.aandssoftware.aandsinventory.database.RealmManager;
 import com.aandssoftware.aandsinventory.models.CallbackRealmObject;
 import com.aandssoftware.aandsinventory.models.InventoryItem;
 import com.aandssoftware.aandsinventory.ui.ListingActivity;
+import com.aandssoftware.aandsinventory.ui.OrderDetailsActivity;
+import com.aandssoftware.aandsinventory.ui.OrderListActivity;
 import com.aandssoftware.aandsinventory.ui.adapters.BaseRealmAdapter.BaseViewHolder;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
@@ -42,11 +53,13 @@ public class InventoryListAdapter implements ListingOperations {
     @BindView(R.id.imgInventoryItemLogo)
     ImageView imgInventoryItemLogo;
     @BindView(R.id.inventoryItemName)
-    TextView inventoryItemName;
+    AppCompatTextView inventoryItemName;
     @BindView(R.id.inventoryItemQuantity)
-    TextView inventoryItemQuantity;
+    AppCompatTextView inventoryItemQuantity;
     @BindView(R.id.inventoryItemDetails)
-    TextView inventoryItemDetails;
+    AppCompatTextView inventoryItemDetails;
+    @BindView(R.id.card_view)
+    CardView cardView;
     
     @OnClick(R.id.imgInventoryItemHistory)
     public void OnInventoryItemHistory() {
@@ -60,7 +73,7 @@ public class InventoryListAdapter implements ListingOperations {
     
     @OnClick(R.id.imgInventoryItemEdit)
     public void onEditClick() {
-      showAddInventoryItemFragment((InventoryItem) itemView.getTag(), true);
+      performClick((InventoryItem) itemView.getTag(), itemView, true);
     }
     
     public InventoryViewHolder(View itemView) {
@@ -103,12 +116,20 @@ public class InventoryListAdapter implements ListingOperations {
         holder.imgInventoryItemLogo.setImageBitmap(bitmap);
       }
     }
-    holder.itemView.setOnClickListener(new OnClickListener() {
+    holder.cardView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        showAddInventoryItemFragment(mItem, false);
+        performClick(mItem, holder.itemView, false);
       }
     });
+  }
+  
+  private void performClick(InventoryItem mItem, View itemView, boolean shouldUpdate) {
+    if (isOrderSelectionCall()) {
+      ShowAddOrderQuantity(mItem, itemView.getContext());
+    } else {
+      showAddInventoryItemFragment(mItem, shouldUpdate);
+    }
   }
   
   private void showInventoryHistory(int id) {
@@ -128,6 +149,13 @@ public class InventoryListAdapter implements ListingOperations {
     }
   }
   
+  private boolean isOrderSelectionCall() {
+    ComponentName callingActivity = activity.getCallingActivity();
+    return (callingActivity != null && callingActivity.getClassName()
+        .equalsIgnoreCase(OrderListActivity.class.getName()) || callingActivity.getClassName()
+        .equalsIgnoreCase(OrderDetailsActivity.class.getName()));
+  }
+  
   @Override
   public RealmResults<? extends RealmObject> getResult() {
     int inventoryType = getInventoryType();
@@ -138,9 +166,34 @@ public class InventoryListAdapter implements ListingOperations {
     }
   }
   
+  public void reloadAdapter(String query) {
+    activity.reloadAdapter(
+        RealmManager.getInventoryDao().getInventoryItemRecords(getInventoryType(), query));
+  }
+  
   @Override
-  public int getMenuLayoutId() {
-    return R.menu.inventory_menu;
+  public boolean onCreateOptionsMenu(Menu menu) {
+    activity.getMenuInflater().inflate(R.menu.inventory_menu, menu);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+      SearchManager manager = (SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
+      menu.findItem(R.id.search).setVisible(true);
+      SearchView search = (SearchView) menu.findItem(R.id.search).getActionView();
+      search.setVisibility(View.VISIBLE);
+      search.setSearchableInfo(manager.getSearchableInfo(activity.getComponentName()));
+      search.setOnQueryTextListener(new OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String s) {
+          return true;
+        }
+        
+        @Override
+        public boolean onQueryTextChange(String query) {
+          reloadAdapter(query);
+          return true;
+        }
+      });
+    }
+    return true;
   }
   
   @Override
@@ -159,23 +212,121 @@ public class InventoryListAdapter implements ListingOperations {
   
   @Override
   public void onBackPressed() {
-    activity.onBackPressed();
+    activity.finish();
   }
-  
+
   public void showAddInventoryItemFragment(InventoryItem mItem, boolean update) {
     AddInventoryFragment fragment = new AddInventoryFragment();
-    fragment.setCallbackRealmObject(new CallbackRealmObject() {
-      @Override
-      public void getCallBack(boolean result) {
-        if (result) {
-          Utils.showToast(activity.getString(R.string.inventory_save_message), activity);
-          activity.reloadAdapter(getResult());
-        }
+    fragment.setCallbackRealmObject(result -> {
+      if (result) {
+        Utils.showToast(activity.getString(R.string.inventory_save_message), activity);
+        activity.reloadAdapter(getResult());
       }
     });
     fragment.setInventoryItem(mItem);
     fragment.setShouldUpdate(update);
     fragment.show(activity.getFragmentManager(), getTitle());
+  }
+  
+  public void ShowAddOrderQuantity(InventoryItem inventoryItem, Context context) {
+    AlertDialog.Builder alertDialogBuilderUserInput =
+        new AlertDialog.Builder(context);
+    View view = LayoutInflater.from(context).inflate(R.layout.add_order_inventory_item, null);
+    alertDialogBuilderUserInput.setView(view);
+    setData(view, inventoryItem);
+    alertDialogBuilderUserInput
+        .setTitle(context.getString(R.string.add_order_inventory_title))
+        .setCancelable(false)
+        .setPositiveButton(context.getString(R.string.add),
+            new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialogBox, int id) {
+                EditText edtOrderQuantity = ((EditText) view.findViewById(R.id.edtOrderQuantity));
+                String newQuantity = edtOrderQuantity.getText().toString();
+                int intUpdatedQuantity = Integer.parseInt(inventoryItem.getItemQuantity()) - Integer
+                    .parseInt(newQuantity);
+                
+                InventoryItem mainInventoryCopy = new InventoryItem(inventoryItem);
+                mainInventoryCopy.setItemQuantity(String.valueOf(intUpdatedQuantity));
+                RealmManager.getInventoryDao().saveInventoryItem(mainInventoryCopy,
+                    new CallbackRealmObject() {
+                      @Override
+                      public void getCallBack(boolean result) {
+                      
+                      }
+                    });
+                RealmManager.getCustomerDao()
+                    .addInventoryToOrder(mainInventoryCopy, getOrderId(), mainInventoryCopy.getId(),
+                        newQuantity,
+                        new CallbackRealmObject() {
+                          @Override
+                          public void getCallBack(boolean result) {
+                            Utils.showToast(activity.getString(R.string.inventory_add_order),
+                                activity);
+                          }
+                        });
+                dialogBox.cancel();
+              }
+            })
+        .setNegativeButton(
+            context.getString(R.string.cancel),
+            new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialogBox, int id) {
+                dialogBox.cancel();
+              }
+            });
+    
+    final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+    alertDialog.show();
+  }
+  
+  
+  private void setData(View view, InventoryItem inventoryItem) {
+    ((EditText) view.findViewById(R.id.edtItemName)).setText(inventoryItem.getInventoryItemName());
+    ((EditText) view.findViewById(R.id.edtItemQuantity)).setText(inventoryItem.getItemQuantity());
+    ((EditText) view.findViewById(R.id.edtItemUnit)).setText(inventoryItem.getItemQuantityUnit());
+    ((EditText) view.findViewById(R.id.edtItemPurchasePrice))
+        .setText(inventoryItem.getItemPurchasePrice());
+    ((EditText) view.findViewById(R.id.edtItemUnitPrice)).setText(inventoryItem.getItemUnitPrice());
+    ((EditText) view.findViewById(R.id.edtSupposedSellingPrice))
+        .setText(inventoryItem.getMinimumSellingPrice());
+    ((EditText) view.findViewById(R.id.edtItemBrandName))
+        .setText(inventoryItem.getInventoryItemBrandName());
+    ((EditText) view.findViewById(R.id.edtItemModelName))
+        .setText(inventoryItem.getInventoryItemModelName());
+    ((EditText) view.findViewById(R.id.edtItemColor))
+        .setText(inventoryItem.getInventoryItemColor());
+    ((EditText) view.findViewById(R.id.edtItemSize)).setText(inventoryItem.getInventoryItemSize());
+    EditText edtOrderQuantity = ((EditText) view.findViewById(R.id.edtOrderQuantity));
+    edtOrderQuantity.setText(inventoryItem.getItemQuantity());
+    ((AppCompatImageButton) view.findViewById(R.id.addItem)).setOnClickListener(
+        new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            String val = edtOrderQuantity.getText().toString();
+            if (!val.isEmpty()) {
+              int orderQuantity = Integer.parseInt(val);
+              if (orderQuantity > 0) {
+                orderQuantity = orderQuantity + 1;
+                edtOrderQuantity.setText(String.valueOf(orderQuantity));
+              }
+            }
+          }
+        });
+    
+    ((AppCompatImageButton) view.findViewById(R.id.removeItem)).setOnClickListener(
+        new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            String val = edtOrderQuantity.getText().toString();
+            if (!val.isEmpty()) {
+              int orderQuantity = Integer.parseInt(val);
+              if (orderQuantity > 0) {
+                orderQuantity = orderQuantity - 1;
+                edtOrderQuantity.setText(String.valueOf(orderQuantity));
+              }
+            }
+          }
+        });
   }
   
   public void deleteInventory(InventoryItem inventoryItem, Context context) {
@@ -208,4 +359,10 @@ public class InventoryListAdapter implements ListingOperations {
     return activity.getIntent()
         .getIntExtra(ListingActivity.LISTING_TYPE, ListType.LIST_TYPE_MATERIAL.ordinal());
   }
+  
+  private int getOrderId() {
+    return activity.getIntent()
+        .getIntExtra(OrderListActivity.ORDER_ID, -1);
+  }
+
 }

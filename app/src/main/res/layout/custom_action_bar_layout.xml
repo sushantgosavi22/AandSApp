@@ -16,7 +16,7 @@
     android:contentDescription="@null"
     android:src="@drawable/ic_back_white"/>
 
-  <android.support.v7.widget.LinearLayoutCompat
+  <androidx.appcompat.widget.LinearLayoutCompat
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_toRightOf="@+id/navBarBack"
@@ -44,6 +44,6 @@
       android:textAppearance="?android:attr/textAppearanceMedium"
       android:visibility="gone"/>
 
-  </android.support.v7.widget.LinearLayoutCompat>
+  </androidx.appcompat.widget.LinearLayoutCompat>
 
 </RelativeLayout>

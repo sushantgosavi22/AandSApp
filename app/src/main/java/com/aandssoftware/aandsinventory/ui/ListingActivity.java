@@ -1,12 +1,12 @@
 package com.aandssoftware.aandsinventory.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.aandssoftware.aandsinventory.R;
@@ -23,14 +23,14 @@ public class ListingActivity extends BaseActivity {
   public static final String LISTING_TYPE = "listingType";
   private BaseRealmAdapter baseRealmAdapter;
   private RealmResults<? extends RealmObject> realmResults;
-  
+  public static final int SELECTED = 104;
   @BindView(R.id.recyclerView)
   RecyclerView recyclerView;
   
   @BindView(R.id.noResultFoundLayout)
   AppCompatTextView noResultFoundLayout;
   
-  private ListingOperations operations;
+  protected ListingOperations operations;
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +67,7 @@ public class ListingActivity extends BaseActivity {
   
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    if (operations.getMenuLayoutId() != -1) {
-      getMenuInflater().inflate(operations.getMenuLayoutId(), menu);
-    }
-    return true;
+    return operations.onCreateOptionsMenu(menu);
   }
   
   @Override
@@ -103,7 +100,7 @@ public class ListingActivity extends BaseActivity {
   
   public void reloadAdapter(RealmResults<? extends RealmObject> mList) {
     setRealmResults(mList);
-    getBaseRealmAdapter().updateData(getRealmResults());
+    setUpList();
     getBaseRealmAdapter().notifyDataSetChanged();
     validateRecyclerView();
   }

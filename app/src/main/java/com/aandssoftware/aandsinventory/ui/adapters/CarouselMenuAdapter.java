@@ -2,12 +2,15 @@ package com.aandssoftware.aandsinventory.ui.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.aandssoftware.aandsinventory.R;
@@ -15,15 +18,18 @@ import com.aandssoftware.aandsinventory.listing.ListType;
 import com.aandssoftware.aandsinventory.models.CarouselMenuModel;
 import com.aandssoftware.aandsinventory.models.CarouselMenuType;
 import com.aandssoftware.aandsinventory.ui.ListingActivity;
+import com.aandssoftware.aandsinventory.ui.OrderListActivity;
+import com.aandssoftware.aandsinventory.ui.adapters.CarouselMenuAdapter.ViewHolder;
 import io.realm.OrderedRealmCollection;
-import io.realm.RealmRecyclerViewAdapter;
+import java.util.List;
 
 
-public class CarouselMenuAdapter extends
-    RealmRecyclerViewAdapter<CarouselMenuModel, CarouselMenuAdapter.ViewHolder> {
+public class CarouselMenuAdapter extends RecyclerView.Adapter<ViewHolder> {
   
+  private static String HTTP = "http";
+  OrderedRealmCollection<CarouselMenuModel> orderedRealmCollection;
   public CarouselMenuAdapter(OrderedRealmCollection<CarouselMenuModel> orderedRealmCollection) {
-    super(orderedRealmCollection, true);
+    this.orderedRealmCollection = orderedRealmCollection;
   }
   
   @Override
@@ -34,16 +40,35 @@ public class CarouselMenuAdapter extends
   }
   
   @Override
+  public int getItemCount() {
+    return orderedRealmCollection.size();
+  }
+  
+  private List<CarouselMenuModel> getData() {
+    return orderedRealmCollection;
+  }
+  
+  @Override
   public void onBindViewHolder(ViewHolder holder, int position) {
+    CarouselMenuModel mCarouselMenuModel = getData().get(position);
     holder.carouselItemName.setText(getData().get(position).getAliceName());
-    holder.itemView.setTag(getData().get(position));
+    holder.itemView.setTag(mCarouselMenuModel);
+  
+    if (null != mCarouselMenuModel.getImageId()) {
+      if (!mCarouselMenuModel.getImageId().contains(HTTP)) {
+        int val = Integer.parseInt(mCarouselMenuModel.getImageId());
+        holder.carouselItemImage
+            .setBackgroundDrawable(ContextCompat.getDrawable(holder.itemView.getContext(), val));
+      }
+    }
+    
     holder.itemView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         String carouselId = getData().get(position).getCarouselId();
         switch (CarouselMenuType.valueOf(carouselId)) {
           case ORDERS:
-            showListing((Activity) holder.itemView.getContext(), ListType.LIST_TYPE_ORDER);
+            showOrderActivity((Activity) holder.itemView.getContext(), ListType.LIST_TYPE_ORDER);
             break;
           case CUSTOMERS:
             showListing((Activity) holder.itemView.getContext(), ListType.LIST_TYPE_CUSTOMERS);
@@ -72,6 +97,9 @@ public class CarouselMenuAdapter extends
     
     @BindView(R.id.carouselItemName)
     AppCompatTextView carouselItemName;
+  
+    @BindView(R.id.carouselItemImage)
+    AppCompatImageView carouselItemImage;
     
     public ViewHolder(View itemView) {
       super(itemView);
@@ -81,6 +109,12 @@ public class CarouselMenuAdapter extends
   
   private void showListing(Activity activity, ListType type) {
     Intent intent = new Intent(activity, ListingActivity.class);
+    intent.putExtra(ListingActivity.LISTING_TYPE, type.ordinal());
+    activity.startActivityForResult(intent, ListingActivity.LISTING_CODE);
+  }
+  
+  private void showOrderActivity(Activity activity, ListType type) {
+    Intent intent = new Intent(activity, OrderListActivity.class);
     intent.putExtra(ListingActivity.LISTING_TYPE, type.ordinal());
     activity.startActivityForResult(intent, ListingActivity.LISTING_CODE);
   }

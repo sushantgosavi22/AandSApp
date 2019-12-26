@@ -1,15 +1,10 @@
 package com.aandssoftware.aandsinventory.ui;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.os.Handler;
+import androidx.appcompat.app.AppCompatActivity;
 import com.aandssoftware.aandsinventory.R;
-import com.aandssoftware.aandsinventory.listing.ListType;
 
 public class SplashActivity extends AppCompatActivity {
   

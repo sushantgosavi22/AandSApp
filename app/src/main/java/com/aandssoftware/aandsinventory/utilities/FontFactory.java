@@ -5,11 +5,11 @@ import android.graphics.Typeface;
 
 
 public class FontFactory {
-
-    final String LATO_REGULAR = "fonts/Lato-Regular.ttf";
-    final String LATO_SEMIBOLD = "fonts/Lato-Semibold.ttf";
-    final String LATO_BOLD = "fonts/Lato-Bold.ttf";
-    final String LATO_HEAVY = "fonts/Lato-Heavy.ttf";
+  
+  final String LATO_REGULAR = "font/Lato-Regular.ttf";
+  final String LATO_SEMIBOLD = "font/Lato-Semibold.ttf";
+  final String LATO_BOLD = "font/Lato-Bold.ttf";
+  final String LATO_HEAVY = "font/Lato-Heavy.ttf";
 
     Typeface regular;
     Typeface bold;

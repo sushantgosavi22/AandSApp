@@ -3,14 +3,9 @@ package com.aandssoftware.aandsinventory.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import io.realm.InventoryItemHistoryRealmProxy;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import org.parceler.Parcel;
 
-@Parcel(implementations = {InventoryItemHistoryRealmProxy.class},
-    value = Parcel.Serialization.BEAN,
-    analyze = {InventoryItemHistory.class})
 public class InventoryItemHistory extends RealmObject {
   
   @SerializedName("id")

@@ -3,8 +3,21 @@
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
   <dimen name="size_0">0dp</dimen>
+  <dimen name="size_1">1dp</dimen>
+  <dimen name="size_2">2dp</dimen>
+  <dimen name="size_20">20dp</dimen>
+  <dimen name="size_3">3dp</dimen>
   <dimen name="size_5">5dp</dimen>
+  <dimen name="size_10">10dp</dimen>
+  <dimen name="size_12">12dp</dimen>
   <dimen name="size_16">16dp</dimen>
+  <dimen name="size_32">32dp</dimen>
+  <dimen name="size_50">50dp</dimen>
   <dimen name="size_14_sp">14sp</dimen>
+  <dimen name="size_12_sp">12sp</dimen>
+  <dimen name="size_8_sp">8sp</dimen>
+  <dimen name="size_10_sp">10sp</dimen>
   <dimen name="fab_margin">16dp</dimen>
+  <dimen name="list_item_spacing">16dp</dimen>
+  <dimen name="list_item_spacing_half">8dp</dimen>
 </resources>

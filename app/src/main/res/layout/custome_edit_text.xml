@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+  <androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/tvName"
+      style="@style/add_asset_label"
+      android:layout_marginTop="@dimen/size_20"
+      android:text="wewe" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/tvMandatory"
+      style="@style/add_asset_label"
+      android:layout_marginTop="@dimen/size_20"
+      android:text="Test" />
+
+  </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -3,21 +3,18 @@ package com.aandssoftware.aandsinventory.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import io.realm.InventoryItemRealmProxy;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import org.parceler.Parcel;
 
-@Parcel(implementations = {InventoryItemRealmProxy.class},
-    value = Parcel.Serialization.BEAN,
-    analyze = {CustomerModel.class})
 public class CustomerModel extends RealmObject {
-  
-  
   @SerializedName("id")
   @Expose
   @PrimaryKey
   private int id;
+  
+  @SerializedName("customerID")
+  @Expose
+  private int customerID;
   
   @SerializedName("customerName")
   @Expose
@@ -69,6 +66,7 @@ public class CustomerModel extends RealmObject {
   
   public CustomerModel(CustomerModel item) {
     this.id = item.getId();
+    this.customerID = item.getCustomerID();
     this.customerName = item.getCustomerName();
     this.companyMail = item.getCompanyMail();
     this.customerGstNumber = item.getCustomerGstNumber();
@@ -187,6 +185,15 @@ public class CustomerModel extends RealmObject {
   
   public CustomerModel setImagePath(String imagePath) {
     this.imagePath = imagePath;
+    return this;
+  }
+  
+  public int getCustomerID() {
+    return customerID;
+  }
+  
+  public CustomerModel setCustomerID(int customerID) {
+    this.customerID = customerID;
     return this;
   }
 }

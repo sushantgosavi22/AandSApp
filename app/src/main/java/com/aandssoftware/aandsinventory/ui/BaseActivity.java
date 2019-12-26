@@ -2,19 +2,18 @@ package com.aandssoftware.aandsinventory.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import com.aandssoftware.aandsinventory.R;
+import com.google.android.material.snackbar.Snackbar;
 
 public class BaseActivity extends AppCompatActivity {
   
@@ -33,7 +32,7 @@ public class BaseActivity extends AppCompatActivity {
   
   public void setupActionBar(
       String title, boolean backButtonVisibility) {
-    getSupportActionBar().setDisplayOptions(android.app.ActionBar.DISPLAY_SHOW_CUSTOM);
+    getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
     getSupportActionBar().setDisplayShowCustomEnabled(true);
     LayoutInflater inflater = LayoutInflater.from(this);
     View customView = inflater.inflate(R.layout.custom_action_bar_layout, null);
@@ -71,7 +70,8 @@ public class BaseActivity extends AppCompatActivity {
   
   public Snackbar showSnackBarMessage(ViewGroup parentLayout, String message, int duration) {
     Snackbar snackbar = Snackbar.make(parentLayout, message, duration);
-    View sbView = snackbar.getView();
+    snackbar.show();
+    /*View sbView = snackbar.getView();
     sbView.setBackgroundColor(getResources().getColor(R.color.gravel_color));
     TextView sbTextView = sbView.findViewById(android.support.design.R.id.snackbar_text);
     sbTextView.setTextAppearance(this, R.style.bold_white_text_style_size_14);
@@ -79,7 +79,7 @@ public class BaseActivity extends AppCompatActivity {
         snackbar.getView().findViewById(android.support.design.R.id.snackbar_action);
     if (snackbarActionTextView != null) {
       snackbar.show();
-    }
+    }*/
     return snackbar;
   }
   

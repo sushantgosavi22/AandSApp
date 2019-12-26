@@ -6,14 +6,11 @@ import android.graphics.Typeface;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import com.aandssoftware.aandsinventory.utilities.FontFactory;
-
-/**
- * Created by Veeresh on 3/11/17.
- */
 public class RealmApplication extends Application {
   private static RealmApplication instance;
   private FontFactory mFontFactory;
   private static String REALM_DB_NAME = "aandsinfotech_aandsenterprise.db";
+  private static int REALM_DB_SCHEMA_VERSION = 1;
   
   public static RealmApplication getInstance() {
     if (instance == null) {
@@ -34,7 +31,7 @@ public class RealmApplication extends Application {
     Realm.init(this);
     RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
         .name(REALM_DB_NAME)
-        .schemaVersion(1)
+        .schemaVersion(REALM_DB_SCHEMA_VERSION)
         .deleteRealmIfMigrationNeeded()
         .build();
     

@@ -13,8 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -22,6 +20,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import com.aandssoftware.aandsinventory.R;
 import com.aandssoftware.aandsinventory.common.Utils;
 import com.aandssoftware.aandsinventory.database.RealmManager;
@@ -132,9 +132,25 @@ public class AddInventoryFragment extends DialogFragment {
       public void afterTextChanged(Editable s) {
       }
     });
-    
+  
+    if (!shouldUpdate && inventoryItem != null) {
+      edtItemName.setEnabled(false);
+      edtItemPurchasePrice.setEnabled(false);
+      edtItemUnitPrice.setEnabled(false);
+      edtItemQuantity.setEnabled(false);
+      edtItemUnit.setEnabled(false);
+      edtDescription.setEnabled(false);
+      edtItemBrandName.setEnabled(false);
+      edtItemModelName.setEnabled(false);
+      edtSupposedSellingPrice.setEnabled(false);
+      edtItemColor.setEnabled(false);
+      edtItemSize.setEnabled(false);
+      edtShopName.setEnabled(false);
+      edtShopMobileContact.setEnabled(false);
+      edtShopAddress.setEnabled(false);
+    }
     //dialog_title.setText("");
-    if (shouldUpdate && inventoryItem != null) {
+    if (inventoryItem != null) {
       edtItemName.setText("" + Utils.isEmpty(inventoryItem.getInventoryItemName()));
       edtItemPurchasePrice.setText("" + Utils.isEmpty(inventoryItem.getItemPurchasePrice()));
       edtItemUnitPrice.setText("" + Utils.isEmpty(inventoryItem.getItemUnitPrice()));
@@ -201,7 +217,7 @@ public class AddInventoryFragment extends DialogFragment {
                 if (edtItemName.getText().toString().length() > 0) {
                   if (edtItemPurchasePrice.getText().toString().length() > 0) {
                     InventoryItem item = new InventoryItem();
-                    int id = (shouldUpdate) ? inventoryItem.getId()
+                    int id = (shouldUpdate && null != inventoryItem) ? inventoryItem.getId()
                         : RealmManager.getInventoryDao().getNextInventoryItemId();
                     item.setId(id);
                     if (!shouldUpdate) {
@@ -232,7 +248,7 @@ public class AddInventoryFragment extends DialogFragment {
                     item.setInventoryItemLastUpdatedDate(System.currentTimeMillis());
                     RealmManager.getInventoryDao()
                         .saveInventoryItem(item, getCallbackRealmObject());
-                    if (shouldUpdate) {
+                    if (shouldUpdate && null != inventoryItem) {
                       HashMap<Integer, InventoryItemHistory> map = inventoryItem
                           .getChangedParamList(item);
                       RealmManager.getInventoryDao().saveInventoryItemHistory(item, map);

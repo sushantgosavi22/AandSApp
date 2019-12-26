@@ -1,5 +1,6 @@
 package com.aandssoftware.aandsinventory.listing;
 
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import com.aandssoftware.aandsinventory.ui.adapters.BaseRealmAdapter.BaseViewHolder;
@@ -12,7 +13,7 @@ public interface ListingOperations {
   
   RealmResults<? extends RealmObject> getResult();
   
-  int getMenuLayoutId();
+  boolean onCreateOptionsMenu(Menu menu);
   
   boolean onOptionsItemSelected(MenuItem menuItem);
   

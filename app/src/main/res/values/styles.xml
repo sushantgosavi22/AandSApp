@@ -43,5 +43,26 @@
     <item name="android:textSize">@dimen/size_14_sp</item>
   </style>
 
+  <!-- custom  start -->
+
+  <style name="wrap_content_height_width">
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">wrap_content</item>
+  </style>
+
+  <style name="roman_font.wrap_content" parent="wrap_content_height_width">
+    <item name="android:fontFamily">@font/fontfamily</item>
+  </style>
+
+  <style name="roman_bold_font.wrap_content" parent="wrap_content_height_width">
+    <item name="android:fontFamily">@font/fontfamilybold</item>
+  </style>
+
+  <style name="add_asset_label" parent="roman_font.wrap_content">
+    <item name="android:textSize">@dimen/size_16</item>
+    <item name="android:textColor">@color/color_524F53</item>
+  </style>
+  <!-- custom end-->
+
 
 </resources>

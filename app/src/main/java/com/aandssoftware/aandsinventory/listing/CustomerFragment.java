@@ -13,8 +13,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,8 +76,18 @@ public class CustomerFragment extends DialogFragment {
         .findViewById(R.id.edtContactPersonNumber);
     final EditText edtAddress = (EditText) view.findViewById(R.id.edtAddress);
     final EditText edtDescription = (EditText) view.findViewById(R.id.edtDescription);
-    
-    if (shouldUpdate && customerModel != null) {
+  
+    if (!shouldUpdate && customerModel != null) {
+      edtCustomerName.setEnabled(false);
+      edtCustomerMail.setEnabled(false);
+      edtCustomerNumber.setEnabled(false);
+      edtCustomerGst.setEnabled(false);
+      edtContactPerson.setEnabled(false);
+      edtContactPersonNumber.setEnabled(false);
+      edtAddress.setEnabled(false);
+      edtDescription.setEnabled(false);
+    }
+    if (customerModel != null) {
       edtCustomerName.setText("" + Utils.isEmpty(customerModel.getCustomerName()));
       edtCustomerMail.setText("" + Utils.isEmpty(customerModel.getCompanyMail()));
       edtCustomerNumber.setText("" + Utils.isEmpty(customerModel.getCustomerNumber()));
@@ -140,6 +150,7 @@ public class CustomerFragment extends DialogFragment {
                       int id = (shouldUpdate) ? customerModel.getId()
                           : RealmManager.getCustomerDao().getNextCustomerItemId();
                       item.setId(id);
+                      item.setCustomerID(id);
                       item.setCustomerName(edtCustomerName.getText().toString());
                       item.setCustomerNumber(edtCustomerNumber.getText().toString());
                       item.setCompanyMail(edtCustomerMail.getText().toString());

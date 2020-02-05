@@ -7,7 +7,7 @@
   android:layout_margin="4dp">
 
   <androidx.cardview.widget.CardView
-    android:id="@+id/card_view"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
@@ -77,7 +77,7 @@
           android:layout_height="wrap_content"
           android:orientation="vertical">
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvCustomerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -85,14 +85,14 @@
             android:textColor="@android:color/black"
             app:font_name="bold"/>
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvContactNameAndNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
             app:font_name="bold"/>
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvCustomerGstNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

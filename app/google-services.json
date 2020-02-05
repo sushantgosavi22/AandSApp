@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "588662854299",
+    "firebase_url": "https://aandsstationary.firebaseio.com",
+    "project_id": "aandsstationary",
+    "storage_bucket": "aandsstationary.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:588662854299:android:61b48409902baaf1512c3e",
+        "android_client_info": {
+          "package_name": "com.aandssoftware.aandsinventory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "588662854299-k2d06hhfta4ltc651r28hqdkab2itofv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDR04gQ3ZnM_zZ4vxYmyW1TxKhhAG1p3Nk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "588662854299-k2d06hhfta4ltc651r28hqdkab2itofv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

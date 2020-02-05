@@ -7,7 +7,7 @@
   android:layout_margin="4dp">
 
   <androidx.cardview.widget.CardView
-    android:id="@+id/card_view"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
@@ -33,7 +33,7 @@
           android:layout_height="wrap_content"
           android:layout_alignParentLeft="true"
           android:orientation="vertical">
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvModifiedParameterName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             app:font_name="bold"
             tools:text="Sushant Gosavi"/>
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvActinonMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             app:font_name="bold"
             tools:text="9503166862"/>
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvWorkPlace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
               android:layout_toLeftOf="@+id/llButtons"
               android:gravity="right"
               android:orientation="horizontal">
-              <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+              <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                 android:id="@+id/fromDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                 app:font_name="bold"
                 tools:text="12/08/2019"/>
 
-              <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+              <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                 android:id="@+id/toDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -139,14 +139,14 @@
               android:layout_width="match_parent"
               android:gravity="right"
               android:layout_height="wrap_content">
-              <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+              <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                 android:id="@+id/tvHours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 app:font_name="bold"
                 tools:text="22 Hours"/>
-              <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+              <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                 android:id="@+id/tvDiseal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
                 tools:text="10 Liters"/>
             </LinearLayout>
 
-            <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
               android:id="@+id/tvDescription"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:orientation="vertical">
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/DesidedAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
             app:font_name="bold"
             tools:text="Desided Amount"/>
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/DesidedAmountValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:orientation="vertical">
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/PayedAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -220,7 +220,7 @@
             app:font_name="bold"
             tools:text="Payed Amount"/>
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/PayedAmountValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -236,7 +236,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:orientation="vertical">
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/RemainingAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -248,7 +248,7 @@
             app:font_name="bold"
             tools:text="Remaining Amount"/>
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/RemainingAmountValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

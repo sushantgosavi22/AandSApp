@@ -7,7 +7,7 @@
   android:layout_margin="4dp">
 
   <androidx.cardview.widget.CardView
-    android:id="@+id/card_view"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
@@ -88,7 +88,7 @@
           android:layout_height="wrap_content"
           android:orientation="vertical">
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/inventoryItemName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
             app:font_name="bold"
             tools:text="Pen"/>
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/inventoryItemQuantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
             app:font_name="bold"
             tools:text="30 unit"/>
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/inventoryItemDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

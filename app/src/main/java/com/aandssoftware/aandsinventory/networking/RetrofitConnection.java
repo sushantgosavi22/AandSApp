@@ -1,13 +1,13 @@
 package com.aandssoftware.aandsinventory.networking;
 
 
-import android.util.Log;
+import static com.aandssoftware.aandsinventory.utilities.AppConstants.BASE_URL;
 
+import android.util.Log;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import com.aandssoftware.aandsinventory.utilities.AppConstants;
 
 
 public class RetrofitConnection {
@@ -16,7 +16,7 @@ public class RetrofitConnection {
 
     public static Retrofit provideRetrofit() {
         return new Retrofit.Builder()
-                .baseUrl(AppConstants.BASE_URL)
+            .baseUrl(BASE_URL)
                 .client(provideOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

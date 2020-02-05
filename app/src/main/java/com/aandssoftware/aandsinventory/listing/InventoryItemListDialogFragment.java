@@ -16,9 +16,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 /**
  * <p>A fragment that shows a list of items as a modal bottom sheet.</p>
- * <p>You can show this modal bottom sheet from your activity like this:</p>
+ * <p>You can createAdditionalRows this modal bottom sheet from your activity like this:</p>
  * <pre>
- *     InventoryItemListDialogFragment.newInstance(30).show(getSupportFragmentManager(), "dialog");
+ *     InventoryItemListDialogFragment.newInstance(30).createAdditionalRows(getSupportFragmentManager(), "dialog");
  * </pre>
  * <p>You activity (or fragment) needs to implement {@link InventoryItemListDialogFragment.Listener}.</p>
  */
@@ -72,7 +72,7 @@ public class InventoryItemListDialogFragment extends BottomSheetDialogFragment {
     final TextView text;
     
     ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-      // TODO: Customize the item layout
+      // TODO: Customize the inventory layout
       super(inflater.inflate(R.layout.fragment_inventoryitem_list_dialog_item, parent, false));
       text = (TextView) itemView.findViewById(R.id.text);
       text.setOnClickListener(new View.OnClickListener() {

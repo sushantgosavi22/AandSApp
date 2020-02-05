@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/container"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/colorPrimaryDark"
+  android:paddingLeft="@dimen/activity_horizontal_margin"
+  android:paddingTop="@dimen/activity_vertical_margin"
+  android:paddingRight="@dimen/activity_horizontal_margin"
+  android:paddingBottom="@dimen/activity_vertical_margin"
+  tools:context=".ui.activity.ui.login.LoginActivity">
+
+
+  <androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:elevation="@dimen/size_5"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+      android:layout_width="match_parent"
+      android:src="@drawable/aands_logo"
+      android:scaleType="centerCrop"
+      android:layout_height="@dimen/size_200" />
+
+    <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+      style="@style/custome_section_style"
+      android:elevation="@dimen/size_5"
+      android:orientation="vertical"
+      app:sectionHeader="">
+
+      <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+        android:id="@+id/tvUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_username"
+        android:inputType="textPersonName|textEmailAddress"
+        android:selectAllOnFocus="true"
+        app:mandatory="true"
+        app:maxLength="@integer/int_256"
+        app:maxLengthErrorMsg="@string/error_name_length"
+        app:title="@string/username" />
+
+      <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+        android:id="@+id/tvPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        android:imeActionLabel="@string/action_sign_in_short"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        app:mandatory="true"
+        app:maxLength="@integer/int_256"
+        app:maxLengthErrorMsg="@string/error_quantity_length"
+        app:title="@string/password" />
+
+    </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+    <com.ict.assetmanagement.uidesign.button.CustomButton
+      android:id="@+id/btnLogin"
+      style="@style/custome_button_style"
+      android:text="@string/title_activity_login"
+      app:uiButtonType="PRIMARY" />
+
+    <com.ict.assetmanagement.uidesign.button.CustomButton
+      android:id="@+id/btnRegister"
+      android:layout_marginBottom="@dimen/size_0"
+      android:layout_marginTop="@dimen/size_0"
+      android:layout_marginLeft="@dimen/size_15"
+      android:layout_marginRight="@dimen/size_15"
+      style="@style/custome_button_style"
+      android:text="@string/register"
+      app:uiButtonType="PRIMARY" />
+
+
+    <AutoCompleteTextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:textColor="@color/westar_color"
+      android:text="@string/app_version" />
+  </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+  <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
+    android:id="@+id/progress_bar"
+    style="@style/progress_bar_style"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:visibility="gone" />
+
+</android.support.constraint.ConstraintLayout>

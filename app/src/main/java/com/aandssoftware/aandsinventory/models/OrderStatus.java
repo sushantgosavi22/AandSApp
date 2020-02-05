@@ -2,7 +2,7 @@ package com.aandssoftware.aandsinventory.models;
 
 public enum OrderStatus {
   CREATED("Created"),
-  SUBMITTED("Submitted"),
+  CONFIRM("Confirm"),
   PENDING("Pending"),
   DELIVERED("Delivered"),
   PAYMENT("Payment"),

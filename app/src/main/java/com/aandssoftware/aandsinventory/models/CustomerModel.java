@@ -3,18 +3,29 @@ package com.aandssoftware.aandsinventory.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import java.io.Serializable;
+import java.util.HashMap;
 
-public class CustomerModel extends RealmObject {
+public class CustomerModel implements Serializable {
+  
+  public static final String TABLE_CUSTOMER = "customer";
+  public static final String CUSTOMER_COUNTER = "customerCounter";
+  public static final String ORDER_BY_VALUE = "customerID";
+  public static final String LOGIN_ORDER_BY_VALUE = "username";
+  public static final String PASSWORD = "password";
+  public static final String PERMISSION = "permission";
+  
   @SerializedName("id")
   @Expose
-  @PrimaryKey
-  private int id;
+  private String id;
   
   @SerializedName("customerID")
   @Expose
-  private int customerID;
+  private String customerID;
+  
+  @SerializedName("invoiceNumber")
+  @Expose
+  private String invoiceNumber;
   
   @SerializedName("customerName")
   @Expose
@@ -56,35 +67,47 @@ public class CustomerModel extends RealmObject {
   @Expose
   private long dateCreated;
   
+  @SerializedName("invoiceCreatedDate")
+  @Expose
+  private long invoiceCreatedDate;
+  
+  @SerializedName("dueDate")
+  @Expose
+  private long dueDate;
+  
   @SerializedName("imagePath")
   @Expose
   private String imagePath;
+  
+  @SerializedName("requirement")
+  @Expose
+  private String requirement;
+  
+  @SerializedName("tag")
+  @Expose
+  private String tag;
+  
+  @SerializedName("username")
+  @Expose
+  private String username;
+  
+  @SerializedName("password")
+  @Expose
+  private String password;
+  
+  @SerializedName("permission")
+  @Expose
+  private HashMap<String, String> permission;
   
   public CustomerModel() {
   
   }
   
-  public CustomerModel(CustomerModel item) {
-    this.id = item.getId();
-    this.customerID = item.getCustomerID();
-    this.customerName = item.getCustomerName();
-    this.companyMail = item.getCompanyMail();
-    this.customerGstNumber = item.getCustomerGstNumber();
-    this.address = item.getAddress();
-    this.customerNumber = item.getCustomerNumber();
-    this.contactPerson = item.getContactPerson();
-    this.contactPersonNumber = item.getContactPersonNumber();
-    this.alternateNumber = item.getAlternateNumber();
-    this.description = item.getDescription();
-    this.dateCreated = item.getDateCreated();
-    this.imagePath = item.getImagePath();
-  }
-  
-  public int getId() {
+  public String getId() {
     return id;
   }
   
-  public CustomerModel setId(int id) {
+  public CustomerModel setId(String id) {
     this.id = id;
     return this;
   }
@@ -188,12 +211,76 @@ public class CustomerModel extends RealmObject {
     return this;
   }
   
-  public int getCustomerID() {
+  public String getCustomerID() {
     return customerID;
   }
   
-  public CustomerModel setCustomerID(int customerID) {
+  public CustomerModel setCustomerID(String customerID) {
     this.customerID = customerID;
     return this;
+  }
+  
+  public String getRequirement() {
+    return requirement;
+  }
+  
+  public void setRequirement(String requirement) {
+    this.requirement = requirement;
+  }
+  
+  public String getTag() {
+    return tag;
+  }
+  
+  public void setTag(String tag) {
+    this.tag = tag;
+  }
+  
+  public String getInvoiceNumber() {
+    return invoiceNumber;
+  }
+  
+  public void setInvoiceNumber(String invoiceNumber) {
+    this.invoiceNumber = invoiceNumber;
+  }
+  
+  public long getInvoiceCreatedDate() {
+    return invoiceCreatedDate;
+  }
+  
+  public void setInvoiceCreatedDate(long invoiceCreatedDate) {
+    this.invoiceCreatedDate = invoiceCreatedDate;
+  }
+  
+  public long getDueDate() {
+    return dueDate;
+  }
+  
+  public void setDueDate(long dueDate) {
+    this.dueDate = dueDate;
+  }
+  
+  public String getUsername() {
+    return username;
+  }
+  
+  public void setUsername(String username) {
+    this.username = username;
+  }
+  
+  public String getPassword() {
+    return password;
+  }
+  
+  public void setPassword(String password) {
+    this.password = password;
+  }
+  
+  public HashMap<String, String> getPermission() {
+    return permission;
+  }
+  
+  public void setPermission(HashMap<String, String> permission) {
+    this.permission = permission;
   }
 }

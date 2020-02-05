@@ -1,147 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
-  tools:context=".ui.OrderDetailsActivity">
+  tools:context=".ui.activity.OrderDetailsActivity">
 
-  <androidx.cardview.widget.CardView
-    android:id="@+id/cardView"
+  <androidx.appcompat.widget.LinearLayoutCompat
+    android:id="@+id/llListData"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:clickable="true"
-    android:elevation="10dp"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:padding="@dimen/size_10">
+    android:layout_above="@+id/btnConfirm"
+    android:layout_alignParentTop="true"
+    android:orientation="vertical">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.cardview.widget.CardView
+      android:id="@+id/cardView"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:layout_margin="5dp"
+      android:clickable="true"
+      android:background="@color/honey_dew_color"
+      android:elevation="10dp"
+      android:foreground="?android:attr/selectableItemBackground"
+      android:padding="@dimen/size_10">
 
-      <LinearLayout
+      <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-
-        <de.hdodenhof.circleimageview.CircleImageView
-          android:id="@+id/imgCustomerItemLogo"
-          android:layout_width="50dp"
-          android:layout_height="50dp"
-          android:layout_gravity="center_vertical"
-          android:layout_margin="10dp"
-          android:src="@android:drawable/ic_menu_gallery"
-          android:transitionName="source" />
-
+        android:layout_height="wrap_content">
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:orientation="vertical">
+          android:layout_alignParentLeft="true"
+          android:background="@color/honey_dew_color"
+          android:orientation="horizontal">
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
-            android:id="@+id/tvCustomerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:textColor="@android:color/black"
-            app:font_name="bold" />
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
-            android:id="@+id/tvContactNameAndNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            app:font_name="bold" />
+          <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgCustomerItemLogo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:transitionName="source" />
 
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
-            android:id="@+id/tvCustomerGstNumber"
+
+          <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:padding="5dp"
-            android:singleLine="true"
-            app:font_name="bold" />
+            android:orientation="vertical">
 
-        </LinearLayout>
-      </LinearLayout>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-  </androidx.cardview.widget.CardView>
-
-  <androidx.cardview.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="5dp"
-    android:clickable="true"
-    android:elevation="10dp"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:padding="@dimen/size_10">
-
-    <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/cararra_color">
-
-      <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/searchTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="@color/cararra_color"
-        android:textColor="@color/gravel_color"
-        android:visibility="gone" />
-
-      <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/searchTitle"
-        android:fillViewport="true">
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical">
-
-          <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-              android:id="@+id/recyclerView"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@android:color/white"
-              android:nestedScrollingEnabled="false" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-              android:id="@+id/noResultFoundLayout"
+            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+              android:id="@+id/tvCustomerName"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_centerInParent="true"
-              android:layout_margin="@dimen/size_5"
-              android:drawablePadding="@dimen/size_5"
-              android:visibility="gone" />
+              android:padding="5dp"
+              android:textColor="@android:color/black"
+              app:font_name="bold" />
 
-          </RelativeLayout>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-      </androidx.core.widget.NestedScrollView>
+            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+              android:id="@+id/tvContactNameAndNumber"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:padding="5dp"
+              app:font_name="bold" />
 
-      <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+              android:id="@+id/tvCustomerGstNumber"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:maxLines="1"
+              android:padding="5dp"
+              android:singleLine="true"
+              app:font_name="bold" />
 
-    </RelativeLayout>
+          </LinearLayout>
+        </LinearLayout>
+      </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
 
-  </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_margin="5dp"
+      android:clickable="true"
+      android:elevation="10dp"
+      android:foreground="?android:attr/selectableItemBackground"
+      android:padding="@dimen/size_10">
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cararra_color">
+
+        <androidx.appcompat.widget.AppCompatTextView
+          android:id="@+id/searchTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentTop="true"
+          android:background="@color/cararra_color"
+          android:textColor="@color/gravel_color"
+          android:visibility="gone" />
+
+        <androidx.core.widget.NestedScrollView
+          android:id="@+id/nestedScrollView"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_below="@+id/searchTitle"
+          android:fillViewport="true">
+
+          <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+              <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:nestedScrollingEnabled="false" />
+
+              <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/noResultFoundLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/size_5"
+                android:drawablePadding="@dimen/size_5"
+                android:visibility="gone" />
+
+            </RelativeLayout>
+          </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+
+      </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+  </androidx.appcompat.widget.LinearLayoutCompat>
+
+  <com.ict.assetmanagement.uidesign.button.CustomButton
+    android:id="@+id/btnConfirm"
+    style="@style/custome_button_style"
+    android:layout_alignParentBottom="true"
+    android:text="@string/confirm"
+    app:uiButtonType="PRIMARY" />
+
+  <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
+    android:id="@+id/progress_bar"
+    style="@style/progress_bar_style"
+    android:visibility="gone" />
+
+</RelativeLayout>

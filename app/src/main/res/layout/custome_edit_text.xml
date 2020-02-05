@@ -1,28 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
+  android:layout_height="wrap_content"
   android:orientation="vertical">
 
-  <androidx.appcompat.widget.LinearLayoutCompat
+  <LinearLayout
     android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/size_10"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/size_3"
+      android:layout_marginBottom="@dimen/size_3"
+      android:orientation="horizontal">
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        style="@style/custome_label_regular" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvMandatory"
+        android:layout_width="wrap_content"
+        style="@style/custome_label_regular"
+        android:text=" *"
+        android:textColor="@color/red_alret"
+        android:visibility="gone" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatEditText
+      android:id="@+id/edtValue"
+      style="@style/custom_edittext_style"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
     <androidx.appcompat.widget.AppCompatTextView
-      android:id="@+id/tvName"
-      style="@style/add_asset_label"
-      android:layout_marginTop="@dimen/size_20"
-      android:text="wewe" />
+      android:id="@+id/tvError"
+      style="@style/custome_label_regular"
+      android:layout_marginTop="@dimen/size_3"
+      android:layout_marginBottom="@dimen/size_3"
+      android:textColor="@color/red_alret"
+      android:visibility="gone" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-      android:id="@+id/tvMandatory"
-      style="@style/add_asset_label"
-      android:layout_marginTop="@dimen/size_20"
-      android:text="Test" />
-
-  </androidx.appcompat.widget.LinearLayoutCompat>
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+  </LinearLayout>
+</RelativeLayout>

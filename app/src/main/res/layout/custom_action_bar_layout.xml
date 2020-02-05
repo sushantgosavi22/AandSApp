@@ -23,14 +23,16 @@
     android:layout_marginLeft="@dimen/size_16"
     android:layout_centerInParent="true"
     android:layout_centerVertical="true"
-    android:gravity="center"
+    android:gravity="left"
     android:orientation="vertical">
 
-    <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+    <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
       android:id="@+id/actionBarTitle"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:textColor="@android:color/white"
+      android:textSize="@dimen/size_25_sp"
+      android:textStyle="bold"
       app:font_name="bold"
       android:gravity="center"
       android:textAppearance="?android:attr/textAppearanceMedium"/>

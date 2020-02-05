@@ -45,23 +45,102 @@
 
   <!-- custom  start -->
 
-  <style name="wrap_content_height_width">
+  <!--<style name="roman_font_normal" >
+    <inventory name="android:fontFamily">@font/fontfamily</inventory>
+  </style>
+
+  <style name="roman_font_bold" >
+    <inventory name="android:fontFamily">@font/fontfamilybold</inventory>
+  </style>-->
+
+  <style name="roman_font" parent="roman_font.wrap_content" />
+
+  <style name="wrap_content">
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_width">wrap_content</item>
   </style>
 
-  <style name="roman_font.wrap_content" parent="wrap_content_height_width">
+  <style name="match_wrap_content">
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_width">wrap_content</item>
+  </style>
+
+  <style name="wrap_match_content">
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">match_parent</item>
+  </style>
+
+  <style name="match_content">
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_width">match_parent</item>
+  </style>
+
+
+  <style name="roman_font.wrap_content" parent="wrap_content">
     <item name="android:fontFamily">@font/fontfamily</item>
   </style>
 
-  <style name="roman_bold_font.wrap_content" parent="wrap_content_height_width">
+  <style name="roman_font.wrap_match_content" parent="wrap_match_content">
+    <item name="android:fontFamily">@font/fontfamily</item>
+  </style>
+
+  <style name="roman_bold_font.wrap_content" parent="wrap_content">
     <item name="android:fontFamily">@font/fontfamilybold</item>
   </style>
 
-  <style name="add_asset_label" parent="roman_font.wrap_content">
+  <style name="roman_bold_font.wrap_match_content" parent="wrap_match_content">
+    <item name="android:fontFamily">@font/fontfamilybold</item>
+  </style>
+
+  <style name="custome_label_regular" parent="roman_font.wrap_match_content">
     <item name="android:textSize">@dimen/size_16</item>
     <item name="android:textColor">@color/color_524F53</item>
   </style>
+
+  <style name="custome_label_bold" parent="roman_bold_font.wrap_match_content">
+    <item name="android:textSize">@dimen/size_22</item>
+    <item name="android:textColor">@color/color_524F53</item>
+  </style>
+
+  <style name="custom_edittext_style" parent="roman_font.wrap_match_content">
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textSize">@dimen/size_15_sp</item>
+    <item name="android:textColorHint">@color/hint_color</item>
+    <item name="android:textColor">@color/color_524F53</item>
+    <item name="android:padding">@dimen/size_10</item>
+    <item name="android:background">@drawable/custome_editbox_selector</item>
+    <item name="android:imeOptions">actionNext</item>
+  </style>
+
+  <style name="custome_section_style" parent="wrap_match_content">
+    <item name="android:layout_marginLeft">@dimen/size_15</item>
+    <item name="android:layout_marginRight">@dimen/size_15</item>
+    <item name="android:layout_marginTop">@dimen/size_5</item>
+    <item name="android:layout_marginBottom">@dimen/size_10</item>
+    <item name="android:background">@android:color/white</item>
+    <item name="android:elevation">@dimen/size_3</item>
+    <item name="android:orientation">vertical</item>
+    <item name="android:foreground">?android:attr/selectableItemBackground</item>
+
+  </style>
+
+  <style name="custome_button_style" parent="wrap_match_content">
+    <item name="android:layout_margin">@dimen/size_15</item>
+    <item name="android:layout_height">@dimen/size_60</item>
+    <item name="android:padding">@dimen/size_10</item>
+    <item name="android:elevation">@dimen/size_3</item>
+    <item name="android:gravity">center</item>
+  </style>
+
+  <style name="progress_bar_style">
+    <item name="android:indeterminate">false</item>
+    <item name="android:layout_centerInParent">true</item>
+    <item name="android:indeterminateDrawable">@drawable/progress_indeterminate_drawable</item>
+    <item name="android:layout_height">@dimen/size_80</item>
+    <item name="android:layout_width">@dimen/size_80</item>
+  </style>
+
+
   <!-- custom end-->
 
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:orientation="vertical"
+  android:layout_height="wrap_content">
+
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/tvName"
+    style="@style/custome_label_bold"
+    android:elevation="@dimen/size_5"
+    android:text="@string/customer_name"
+    android:padding="@dimen/size_10" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

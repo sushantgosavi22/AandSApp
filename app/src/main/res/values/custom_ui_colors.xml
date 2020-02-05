@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!--Primary button-->
+  <color name="color_button_primary_normal">#524F53</color>
+  <color name="color_button_normal_pressed">@android:color/black</color>
+  <color name="color_button_primary_text">#FFFFFF</color>
+  <color name="color_button_disabled">#DDDCDD</color>
+
+</resources>

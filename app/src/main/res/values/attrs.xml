@@ -1,11 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+  <!-- Custom Edit text attributes-->
+  <attr name="fieldContentDescription" format="string" />
+  <attr name="errorContentDescription" format="string" />
+  <attr name="decimalPlaces" format="integer" />
+  <attr name="maxLength" format="integer" />
+  <attr name="minLength" format="integer" />
+  <attr name="maxLengthErrorMsg" format="string" />
+
   <declare-styleable name="CustomFontTextView">
-        <attr name="font_name">
-            <enum value="1" name="regular"/>
-            <enum value="2" name="bold"/>
-            <enum value="3" name="semibold"/>
-            <enum value="4" name="heavy"/>
-        </attr>
-    </declare-styleable>
+    <attr name="font_name">
+      <enum name="regular" value="1" />
+      <enum name="bold" value="2" />
+      <enum name="semibold" value="3" />
+      <enum name="heavy" value="4" />
+    </attr>
+  </declare-styleable>
+
+  <declare-styleable name="CustomEditTextViewStyle">
+    <attr name="android:hint" format="string" />
+    <attr name="android:ellipsize" format="integer" />
+    <attr name="android:enabled" format="boolean" />
+    <attr name="android:inputType" format="integer" />
+    <attr name="android:maxLines" format="integer" />
+    <attr name="android:lines" format="integer" />
+    <attr name="android:gravity" format="integer" />
+    <attr name="android:digits" format="string" />
+    <attr name="editTextHeight" format="dimension" />
+    <attr name="enableCancelOption" format="boolean" />
+    <attr name="clearErrorOnTextChanged" format="boolean" />
+    <attr name="cancelButtonContentDesc" format="string" />
+    <attr name="title" format="string" />
+    <attr name="mandatory" format="boolean" />
+    <attr name="decimalPlaces" />
+    <attr name="maxLength" />
+    <attr name="minLength" />
+    <attr name="maxLengthErrorMsg" />
+    <attr name="fieldContentDescription" />
+    <attr name="errorContentDescription" />
+  </declare-styleable>
+
+  <attr name="ellipsize">
+    <enum name="none" value="0" />
+    <enum name="start" value="1" />
+    <enum name="middle" value="2" />
+    <enum name="end" value="3" />
+    <enum name="marquee" value="4" />
+  </attr>
+
+  <!-- Custom Edit text attributes-->
+
+  <declare-styleable name="SectionLayoutStyle">
+    <attr name="sectionHeader" format="string" />
+  </declare-styleable>
+
+  <!-- Custom button attributes-->
+  <declare-styleable name="CustomButton">
+    <attr name="android:text" />
+    <attr name="uiButtonType" />
+    <attr name="buttonState" />
+  </declare-styleable>
+  <attr name="buttonState" format="enum">
+    <enum name="NORMAL" value="0" />
+    <enum name="PRESSED" value="1" />
+    <enum name="DISABLED" value="2" />
+  </attr>
+  <attr name="uiButtonType" format="enum">
+    <enum name="CTA" value="0" />
+    <enum name="PRIMARY" value="1" />
+    <enum name="SECONDARY" value="2" />
+  </attr>
+  <!-- Custom button attributes-->
+
 </resources>

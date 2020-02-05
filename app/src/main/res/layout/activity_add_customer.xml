@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".ui.activity.AddInventoryActivity">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ScrollView
+      android:id="@+id/scrollViewCustomer"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatImageView
+          android:id="@+id/imgCustomerImg"
+          android:layout_width="match_parent"
+          android:layout_height="150dp"
+          android:padding="@dimen/size_20"
+          android:src="@drawable/ic_image_add" />
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          style="@style/custome_section_style"
+          app:sectionHeader="@string/section_title_customer_details">
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtCustomerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/customer_name_hint"
+            android:inputType="textPersonName|textCapSentences"
+            app:mandatory="true"
+            app:maxLength="@integer/int_256"
+            app:maxLengthErrorMsg="@string/error_name_length"
+            app:title="@string/customer_name" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtCustomerEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/customer_mail_hint"
+            android:inputType="textEmailAddress"
+            app:mandatory="true"
+            app:maxLength="@integer/int_150"
+            app:maxLengthErrorMsg="@string/customer_mail_invalid_format_msg"
+            app:title="@string/customer_mail" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtCustomerContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/customer_phone_hint"
+            android:inputType="numberDecimal"
+            app:mandatory="true"
+            app:maxLength="@integer/int_15"
+            app:title="@string/customer_phone" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtCustomerGst"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/customer_gst_hint"
+            android:inputType="numberDecimal"
+            app:mandatory="true"
+            app:maxLength="@integer/int_15"
+            app:maxLengthErrorMsg="@string/customer_gst_length_msg"
+            app:title="@string/customer_gst" />
+
+
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          style="@style/custome_section_style"
+          app:sectionHeader="@string/section_title_contact_details">
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtCustomerContactPerson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/customer_contact_person_hint"
+            android:inputType="textPersonName|textCapSentences"
+            app:mandatory="true"
+            app:maxLength="@integer/int_256"
+            app:title="@string/customer_contact_person" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtCustomerContactPersonNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/customer_contact_number_hint"
+            android:inputType="numberDecimal"
+            app:mandatory="true"
+            app:maxLength="@integer/int_10"
+            app:title="@string/customer_contact_number" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtCustomerAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|top"
+            android:hint="@string/customer_address_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:lines="@integer/int_3"
+            android:maxLines="@integer/int_3"
+            app:mandatory="true"
+            app:maxLength="@integer/int_500"
+            app:title="@string/customer_address" />
+
+
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          style="@style/custome_section_style"
+          app:sectionHeader="@string/section_title_description">
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtCustomerDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|top"
+            android:hint="@string/customer_description_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:lines="@integer/int_3"
+            android:maxLines="@integer/int_3"
+            app:mandatory="false"
+            app:maxLength="@integer/int_500"
+            app:title="@string/description" />
+
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          style="@style/custome_section_style"
+          app:sectionHeader="@string/section_title_customer_requirement">
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtCustomerRequirement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|top"
+            android:hint="@string/customer_requirement_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:lines="@integer/int_5"
+            android:maxLines="@integer/int_5"
+            app:mandatory="false"
+            app:maxLength="@integer/int_500"
+            app:title="@string/customer_requirement" />
+
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          android:id="@+id/loginDetailsSection"
+          style="@style/custome_section_style"
+          android:visibility="gone"
+          app:sectionHeader="@string/section_title_login_details">
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username"
+            android:inputType="textPersonName|textCapSentences"
+            app:mandatory="true"
+            app:maxLength="@integer/int_256"
+            app:title="@string/username" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            app:mandatory="true"
+            app:maxLength="@integer/int_256"
+            app:title="@string/password" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/confirm_password"
+            android:inputType="textPassword"
+            app:mandatory="true"
+            app:maxLength="@integer/int_256"
+            app:title="@string/confirm_password" />
+
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+        <com.ict.assetmanagement.uidesign.button.CustomButton
+          android:id="@+id/btnSave"
+          style="@style/custome_button_style"
+          android:text="@string/save"
+          app:uiButtonType="PRIMARY" />
+
+      </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
+    <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
+      android:id="@+id/progress_bar"
+      style="@style/progress_bar_style"
+      android:visibility="gone" />
+  </RelativeLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

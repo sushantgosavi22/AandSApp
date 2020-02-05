@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".ui.activity.AddInventoryActivity">
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ScrollView
+      android:id="@+id/scrollView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatImageView
+          android:id="@+id/imgInventoryImg"
+          android:layout_width="match_parent"
+          android:layout_height="150dp"
+          android:padding="@dimen/size_20"
+          android:src="@drawable/ic_image_add" />
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          style="@style/custome_section_style"
+          app:sectionHeader="@string/section_title_inventory_details">
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_name"
+            android:inputType="textPersonName|textCapSentences"
+            app:mandatory="true"
+            app:maxLength="@integer/int_256"
+            app:maxLengthErrorMsg="@string/error_name_length"
+            app:title="@string/name" />
+
+          <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtQuantity"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:hint="@string/quantity_hint"
+              android:inputType="numberDecimal"
+              app:mandatory="true"
+              app:maxLength="@integer/int_15"
+              app:maxLengthErrorMsg="@string/error_quantity_length"
+              app:title="@string/quantity" />
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtUnit"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:hint="@string/unit_hint"
+              android:inputType="text|textCapSentences"
+              app:mandatory="true"
+              app:maxLength="@integer/int_256"
+              app:title="@string/unit" />
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          android:id="@+id/sectionRequiredQuantity"
+          style="@style/custome_section_style"
+          android:visibility="gone"
+          app:sectionHeader="@string/section_title_required_quantity">
+          <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_5"
+            android:orientation="horizontal"
+            android:padding="@dimen/size_5">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+              android:id="@+id/addItem"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:layout_alignParentLeft="true"
+              android:layout_centerVertical="true"
+              android:background="@android:color/transparent"
+              android:src="@drawable/ic_add_circle_thin" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+              android:id="@+id/edtOrderQuantity"
+              style="@style/custom_edittext_style"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="@dimen/size_10"
+              android:layout_toLeftOf="@+id/removeItem"
+              android:layout_toRightOf="@+id/addItem"
+              android:gravity="center"
+              android:hint="@string/order_quantity"
+              android:inputType="numberDecimal"
+              android:maxLines="@integer/int_1"
+              android:textSize="@dimen/size_15_sp"
+              app:mandatory="true"
+              app:maxLength="@integer/int_15" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+              android:id="@+id/removeItem"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:layout_alignParentRight="true"
+              android:layout_centerVertical="true"
+              android:background="@android:color/transparent"
+              android:src="@drawable/ic_minus_circle_thin" />
+          </RelativeLayout>
+
+
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          style="@style/custome_section_style"
+          app:sectionHeader="@string/section_title_price">
+
+          <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtPurchasePrice"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:hint="@string/purchase_price_hint"
+              android:inputType="numberDecimal"
+              app:mandatory="true"
+              app:maxLength="@integer/int_15"
+              app:title="@string/purchase_price" />
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtUnitPrice"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:enabled="false"
+              android:hint="@string/unit_price_hint"
+              android:inputType="numberDecimal"
+              app:mandatory="false"
+              app:maxLength="@integer/int_15"
+              app:title="@string/unit_price" />
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtSellingPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/selling_price_hint"
+            android:inputType="numberDecimal"
+            app:mandatory="false"
+            app:maxLength="@integer/int_10"
+            app:title="@string/selling_price" />
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          style="@style/custome_section_style"
+          android:orientation="vertical"
+          app:sectionHeader="@string/section_title_gst">
+
+          <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtCgstPercent"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:hint="@string/cgst_percent_hint"
+              android:inputType="numberDecimal"
+              app:mandatory="false"
+              app:maxLength="@integer/int_15"
+              app:title="@string/cgst_percent" />
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtCgstAmount"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:hint="@string/cgst_Amount_hint"
+              android:inputType="numberDecimal"
+              app:mandatory="false"
+              app:maxLength="@integer/int_15"
+              app:title="@string/cgst_Amount" />
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
+
+          <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtSgstPercent"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:hint="@string/sgst_percent_hint"
+              android:inputType="numberDecimal"
+              app:mandatory="false"
+              app:maxLength="@integer/int_15"
+              app:title="@string/sgst_percent" />
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtSgstAmount"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:hint="@string/sgst_Amount_hint"
+              android:inputType="numberDecimal"
+              app:mandatory="false"
+              app:maxLength="@integer/int_15"
+              app:title="@string/sgst_Amount" />
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          style="@style/custome_section_style"
+          app:sectionHeader="@string/section_title_description">
+
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtBrandName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/brand_name_hint"
+            android:inputType="textPersonName|textCapSentences"
+            app:mandatory="false"
+            app:maxLength="@integer/int_256"
+            app:title="@string/brand_name" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtModelName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/model_name_hint"
+            android:inputType="textPersonName|textCapSentences"
+            app:mandatory="false"
+            app:maxLength="@integer/int_256"
+            app:title="@string/model_name" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtHsnCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hsn_code_hint"
+            android:inputType="numberDecimal"
+            app:mandatory="false"
+            app:maxLength="@integer/int_256"
+            app:title="@string/hsn_code" />
+
+          <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtColor"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:hint="@string/item_color_hint"
+              android:inputType="text|textCapSentences"
+              app:mandatory="false"
+              app:maxLength="@integer/int_256"
+              app:title="@string/item_color" />
+
+            <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/edtSize"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:hint="@string/item_size_hint"
+              android:inputType="text|textCapSentences"
+              app:mandatory="false"
+              app:maxLength="@integer/int_256"
+              app:title="@string/item_size" />
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left|top"
+            android:hint="@string/description_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:lines="@integer/int_3"
+            android:maxLines="@integer/int_3"
+            app:mandatory="false"
+            app:maxLength="@integer/int_500"
+            app:title="@string/description" />
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          style="@style/custome_section_style"
+          app:sectionHeader="@string/section_title_shop_details">
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtShopName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/purchase_shop_name_hint"
+            android:inputType="textPersonName|textCapSentences"
+            app:mandatory="false"
+            app:maxLength="@integer/int_256"
+            app:title="@string/purchase_shop_name" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtShopContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/purchase_shop_contact"
+            android:inputType="numberDecimal"
+            app:mandatory="false"
+            app:maxLength="@integer/int_10"
+            app:maxLengthErrorMsg="@string/purchase_shop_contact_length_msg"
+            app:title="@string/purchase_shop_contact" />
+
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtShopAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left|top"
+            android:hint="@string/purchase_shop_address_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:lines="@integer/int_3"
+            android:maxLines="@integer/int_3"
+            app:mandatory="false"
+            app:maxLength="@integer/int_500"
+            app:title="@string/purchase_shop_address" />
+
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+
+        <com.ict.assetmanagement.uidesign.button.CustomButton
+          android:id="@+id/btnSave"
+          style="@style/custome_button_style"
+          android:text="@string/save"
+          app:uiButtonType="PRIMARY" />
+
+      </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
+    <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
+      android:id="@+id/progress_bar"
+      style="@style/progress_bar_style"
+      android:visibility="gone" />
+  </RelativeLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

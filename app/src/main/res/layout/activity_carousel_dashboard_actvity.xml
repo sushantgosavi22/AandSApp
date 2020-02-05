@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
-  tools:context=".ui.CarouselDashboardActivity">
+  tools:context=".ui.activity.CarouselDashboardActivity">
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/recyclerView"
     android:layout_width="match_parent"
-    android:padding="@dimen/size_5"
+    android:layout_height="match_parent"
     android:layout_margin="@dimen/size_5"
-    android:layout_height="match_parent"/>
+    android:padding="@dimen/size_5" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+  <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
+    android:id="@+id/progress_bar"
+    style="@style/progress_bar_style"
+    android:visibility="gone" />
+
+</RelativeLayout>

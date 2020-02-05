@@ -47,6 +47,9 @@ ext {
     ANDROIDX_TEST_VERSION = "1.1.1"
     ANDROID_WORK_RUNTIME_VERSION = "2.2.0"
     MOCKITO_KOTLIN_VERSION = "2.2.0"
+    FIREBASE_ANALITICS_VERSION = "17.2.0"
+    FIREBASE_DATABASE_VERSION = "19.2.0"
+    FIREBASE_DATABASE_STORAGE_VERSION = "19.1.0"
 
     androidLibraryDependencies = [
             appCompat             : "androidx.appcompat:appcompat:$ANDROID_APPCOMPAT_VERSION",

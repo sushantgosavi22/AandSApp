@@ -4,7 +4,7 @@
   <color name="colorPrimaryDark">#303F9F</color>
   <color name="colorAccent">#FF4081</color>
   <color name="msg_no_notes">#999</color>
-  <color name="hint_color">#89c3c3c3</color>
+  <color name="hint_color">#BAB9BA</color>
   <color name="green_light">#FF7C9847</color>
   <color name="timestamp">#858585</color>
   <color name="note_list_text">#232323</color>
@@ -15,7 +15,6 @@
   <color name="dialogAccent">#795548</color>
   <color name="cararra_color">#F3F2F0</color>
   <color name="gravel_color">#524F53</color>
-
   <color name="monza_color">#D2051E</color>
   <color name="color_DDDCDD">#DDDCDD</color>
   <color name="venus_color">#989598</color>
@@ -32,6 +31,8 @@
   <color name="silver_color">#C2C2C2</color>
   <color name="color_d8d8d8">#D8D8D8</color>
   <color name="color_orange">#FFF3D6</color>
+  <color name="color_tide">#B7B3AA</color>
+  <color name="color_focused_view">@color/color_asset_detail_tag_inactive_text</color>
   <color name="color_asset_details_tag_active">#906300</color>
   <color name="color_asset_detail_tag_inactive_background">#E5E5E5</color>
   <color name="color_asset_detail_tag_inactive_text">#524F53</color>
@@ -41,6 +42,7 @@
   <color name="color_524F53">#524F53</color>
   <color name="black">#FF000000</color>
   <color name="notification_badge_red">#FF0000</color>
+  <color name="red_alret">@color/notification_badge_red</color>
   <color name="list_item_count">#A4A08C</color>
   <color name="orange_color">#D0260F</color>
   <color name="muzli_color">#5D595D</color>
@@ -48,4 +50,5 @@
   <color name="smoke_light_color">#979598</color>
   <color name="honey_dew_color">#FEFFFE</color>
   <color name="map_marker_circle">#4385F4</color>
+  <color name="light_blue">#FF4A5BB9</color>
 </resources>

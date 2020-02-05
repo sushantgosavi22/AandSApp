@@ -36,12 +36,12 @@
           android:layout_width="150dp"
           android:layout_height="200dp"
           android:layout_margin="15dp"
-          android:layout_alignBottom="@+id/card_view"
+          android:layout_alignBottom="@+id/cardView"
           android:src="@android:drawable/ic_menu_gallery"
           android:transitionName="source"/>
 
         <androidx.cardview.widget.CardView
-          android:id="@+id/card_view"
+          android:id="@+id/cardView"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_margin="10dp"
@@ -58,7 +58,7 @@
             android:orientation="vertical">
 
 
-            <!-- <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+            <!-- <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                android:id="@+id/name"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                app:font_name="bold"
                tools:text="Veeresh Charantimath"/>
 
-             <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+             <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                android:id="@+id/itemPurchasePrice"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                tools:text="India"/>
 
 
-             <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+             <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                android:id="@+id/minimumSellingPrice"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                tools:text="Runs"/>
 
 
-             <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+             <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                android:id="@+id/inventoryItemModelName"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
                tools:text="Matches"/>
 
 
-             <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+             <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                android:id="@+id/fav_player"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
               android:id="@+id/desc"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"

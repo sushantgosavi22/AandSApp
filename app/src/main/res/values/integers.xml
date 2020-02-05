@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <integer name="int_1">1</integer>
+  <integer name="int_3">3</integer>
+  <integer name="int_4">4</integer>
+  <integer name="int_5">5</integer>
+  <integer name="int_10">10</integer>
+  <integer name="int_20">20</integer>
+  <integer name="int_15">15</integer>
+  <integer name="int_256">256</integer>
+  <integer name="int_150">150</integer>
+  <integer name="int_500">500</integer>
+</resources>

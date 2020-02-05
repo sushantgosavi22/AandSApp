@@ -7,7 +7,7 @@
   android:layout_margin="4dp">
 
   <androidx.cardview.widget.CardView
-    android:id="@+id/card_view"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
@@ -22,15 +22,10 @@
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
-      <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
         <LinearLayout
           android:id="@+id/llData"
           android:layout_toLeftOf="@+id/llDate"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_alignParentLeft="true"
           android:orientation="horizontal">
@@ -42,22 +37,22 @@
             android:padding="2dp"
             android:src="@android:drawable/ic_menu_recent_history"/>
           <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
               android:id="@+id/tvModifiedParameterName"
-              android:layout_width="wrap_content"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:padding="5dp"
               android:textColor="@android:color/black"
               app:font_name="bold"
               tools:text=""/>
 
-            <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
               android:id="@+id/tvActinonMessage"
-              android:layout_width="wrap_content"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:padding="5dp"
               android:autoLink="phone"
@@ -71,24 +66,22 @@
 
         <LinearLayout
           android:id="@+id/llDate"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:gravity="right"
           android:layout_alignParentRight="true"
           android:orientation="horizontal">
-          <com.aandssoftware.aandsinventory.utilities.CustomFontTextView
+          <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:padding="5dp"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="@color/list_item_count"
             app:font_name="bold"
-            tools:text="12/08/2019"/>
+            tools:text="" />
 
         </LinearLayout>
-      </RelativeLayout>
-
     </LinearLayout>
 
 

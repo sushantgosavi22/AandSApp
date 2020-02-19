@@ -10,16 +10,14 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.ScrollView
 import androidx.core.app.ActivityCompat
-import androidx.core.view.isNotEmpty
 import com.aandssoftware.aandsinventory.R
+import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
-import com.aandssoftware.aandsinventory.models.callBackListener
-import com.aandssoftware.aandsinventory.models.CustomerModel
-import com.aandssoftware.aandsinventory.models.Permissions
-import com.aandssoftware.aandsinventory.models.ViewMode
+import com.aandssoftware.aandsinventory.models.*
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DOUBLE_DEFAULT_ZERO_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.FIRE_BASE_CUSTOMER_ID
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.NUMERIC_CUSTOMER_ID
@@ -27,6 +25,7 @@ import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.PICK_IM
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_LIST_RESULT_CODE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.TITLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.VIEW_MODE
+import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -35,12 +34,9 @@ import kotlinx.android.synthetic.main.activity_add_customer.*
 import kotlinx.android.synthetic.main.activity_add_inventory.btnSave
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
 import java.util.UUID.randomUUID
-import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_add_customer.progress_bar
-import kotlinx.android.synthetic.main.activity_login.*
 
 
-class AddCustomerActivity : BaseActivity() {
+class AddCustomerActivity : ListingActivity() {
     lateinit var item: CustomerModel
     private var imagePath: String? = null
     lateinit var title: String
@@ -50,7 +46,7 @@ class AddCustomerActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_customer)
+        //setContentView(R.layout.activity_add_customer)
         getAndAssignIntentData()
         setUpUI()
     }
@@ -58,13 +54,12 @@ class AddCustomerActivity : BaseActivity() {
 
     private fun setUpUI() {
         setupActionBar(title)
-        progressBar = progress_bar
+        setViewByMode()
         imgCustomerImg.setOnClickListener {
             if (askingForRequest().not()) {
                 openGallery()
             }
         }
-        setViewByMode()
         btnSave.setOnClickListener {
             onButtonClick()
         }
@@ -76,11 +71,31 @@ class AddCustomerActivity : BaseActivity() {
     private fun setViewByMode() {
         if (viewMode == ViewMode.VIEW_ONLY.ordinal) {
             enabledView(false)
-            imgCustomerImg.setOnClickListener(null)
+            imgCustomerImg.setOnClickListener({})
             btnSave.visibility = View.GONE
+        } else {
+            edtCustomerDescription.setLines(3)
+            edtCustomerDescription.setMaxLines(3)
+            edtCustomerRequirement.setLines(3)
+            edtCustomerRequirement.setMaxLines(3)
         }
+
         if (viewMode == ViewMode.ADD.ordinal) {
             loginDetailsSection.visibility = View.VISIBLE
+        }
+
+        if (Utils.isAdminUser(this)) {
+            searchTitle.text = getString(R.string.discounted_items)
+            searchTitle.setOnClickListener {
+                Navigator.showMaterialInventoryFor(AddCustomerActivity@ this)
+            }
+            cardViewList.visibility = View.VISIBLE
+            if (viewMode != ViewMode.VIEW_ONLY.ordinal) {
+                edtDiscountPercent.visibility = View.VISIBLE
+            }
+        } else {
+            cardViewList.visibility = View.GONE
+            edtDiscountPercent.visibility = View.GONE
         }
     }
 
@@ -94,6 +109,7 @@ class AddCustomerActivity : BaseActivity() {
         edtCustomerAddress.setEditableMode(enable)
         edtCustomerDescription.setEditableMode(enable)
         edtCustomerRequirement.setEditableMode(enable)
+        edtDiscountPercent.setEditableMode(enable)
     }
 
     private fun clearText() {
@@ -108,6 +124,7 @@ class AddCustomerActivity : BaseActivity() {
         edtCustomerRequirement.setText(EMPTY_STRING)
         edtUsername.setText(EMPTY_STRING)
         edtPassword.setText(EMPTY_STRING)
+        edtDiscountPercent.setText(DOUBLE_DEFAULT_ZERO_STRING)
         edtConfirmPassword.setText(EMPTY_STRING)
         edtCustomerName.requestFocus()
         imgCustomerImg.setImageResource(R.drawable.ic_image_add)
@@ -128,6 +145,10 @@ class AddCustomerActivity : BaseActivity() {
             edtCustomerAddress.setText(Utils.isEmpty(item.address))
             edtCustomerDescription.setText(Utils.isEmpty(item.description))
             edtCustomerRequirement.setText(Utils.isEmpty(item.requirement))
+            edtDiscountPercent.setText(item.discountPercent.toString())
+            edtUsername.setText(item.username)
+            edtPassword.setText(item.password)
+            edtConfirmPassword.setText(item.password)
             imagePath = item.imagePath
             if (item.imagePath != null) {
                 var uri: Uri = Uri.parse(imagePath)
@@ -146,51 +167,31 @@ class AddCustomerActivity : BaseActivity() {
     }
 
     private fun onButtonClick() {
-        if (edtCustomerName.getText().isNotEmpty()) {
-            if (edtCustomerContact.getText().isNotEmpty()) {
-                if (edtCustomerGst.getText().isNotEmpty()) {
-                    if (viewMode == ViewMode.ADD.ordinal) {
-                        if (edtUsername.getText().isNotEmpty()) {
-                            if (edtPassword.getText().isNotEmpty() && edtConfirmPassword.getText().isNotEmpty()) {
-                                if (!edtPassword.getText().equals(edtConfirmPassword.getText())) {
-                                    showSnackBarMessage(getString(R.string.password_not_match))
-                                    return
-                                }
-                            } else {
-                                showSnackBarMessage(getString(R.string.enter_password))
-                                return
-                            }
-                        } else {
-                            showSnackBarMessage(getString(R.string.enter_username))
-                            return
-                        }
-                    }
-
-                    FirebaseUtil.getInstance().isConnected(callBackListener {
-                        if (it) {
-                            if (viewMode == ViewMode.UPDATE.ordinal && fireBaseCustomerId.isNotEmpty()) {
-                                onSubmit(fireBaseCustomerId, numericCustomerId.toLong())
-                            } else {
-                                showProgressBar()
-                                FirebaseUtil.getInstance().getCustomerDao().getNextCustomerItemId(object : GetAlphaNumericAndNumericIdListener {
-                                    override fun afterGettingIds(alphaNumericId: String, numericId: String) {
-                                        dismissProgressBar()
-                                        onSubmit(alphaNumericId, numericId.toLong())
-                                    }
-                                })
-                            }
-                        } else {
-                            showSnackBarMessage(getString(R.string.no_internet_connection))
-                        }
-                    })
-                } else {
-                    showSnackBarMessage(getString(R.string.enter_customer_gst))
+        if (llContaint.validate()) {
+            if (viewMode == ViewMode.ADD.ordinal) {
+                if (!edtPassword.getText().equals(edtConfirmPassword.getText())) {
+                    showSnackBarMessage(getString(R.string.password_not_match))
+                    return
                 }
-            } else {
-                showSnackBarMessage(getString(R.string.enter_customer_number))
             }
-        } else {
-            showSnackBarMessage(getString(R.string.enter_customer_name))
+
+            FirebaseUtil.getInstance().isConnected(callBackListener {
+                if (it) {
+                    if (viewMode == ViewMode.UPDATE.ordinal && fireBaseCustomerId.isNotEmpty()) {
+                        onSubmit(fireBaseCustomerId, numericCustomerId.toLong())
+                    } else {
+                        showProgressBar()
+                        FirebaseUtil.getInstance().getCustomerDao().getNextCustomerItemId(object : GetAlphaNumericAndNumericIdListener {
+                            override fun afterGettingIds(alphaNumericId: String, numericId: String) {
+                                dismissProgressBar()
+                                onSubmit(alphaNumericId, numericId.toLong())
+                            }
+                        })
+                    }
+                } else {
+                    showSnackBarMessage(getString(R.string.no_internet_connection))
+                }
+            })
         }
     }
 
@@ -207,8 +208,9 @@ class AddCustomerActivity : BaseActivity() {
         model.address = edtCustomerAddress.getText()
         model.description = edtCustomerDescription.getText()
         model.requirement = edtCustomerRequirement.getText()
+        model.discountPercent = Utils.isEmpty(edtDiscountPercent.getText(), 0.0)
         model.dateCreated = System.currentTimeMillis()
-        model.imagePath = imagePath;
+        model.imagePath = imagePath
         if (viewMode == ViewMode.ADD.ordinal) {
             model.username = edtUsername.getText()
             model.password = edtPassword.getText()
@@ -280,10 +282,31 @@ class AddCustomerActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == PICK_IMAGE) {
-            val selectedImage = data?.data
-            selectedImage?.let {
-                uploadCompanyLogo(selectedImage)
+        when (requestCode) {
+            PICK_IMAGE -> {
+                val selectedImage = data?.data
+                selectedImage?.let {
+                    uploadCompanyLogo(selectedImage)
+                }
+            }
+            AppConstants.GET_CUSTOMER_DISCOUNT_REQUEST_CODE -> {
+                when (resultCode) {
+                    AppConstants.CUSTOMER_DISCOUNT_RESULT_CODE -> {
+                        var inventotory = data?.getSerializableExtra(AppConstants.INVENTORY_INSTANCE)
+                        if (inventotory is InventoryItem) {
+                            inventotory.id?.let {
+                                var discountedAmount = inventotory.discountRateForCompany.toString()
+                                FirebaseUtil.getInstance().getCustomerDao().addDiscountedItemToCustomer(item, it, discountedAmount, callBackListener { sucess ->
+                                    if (sucess) {
+                                        addElement(inventotory, 0)
+                                    } else {
+                                        showSnackBarMessage(getString(R.string.failed_to_add_discount))
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

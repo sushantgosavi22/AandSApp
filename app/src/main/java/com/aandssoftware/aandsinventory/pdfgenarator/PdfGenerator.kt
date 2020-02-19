@@ -50,6 +50,10 @@ Content-Type: application/json
     ]
 }
  */
+
+fun List<InventoryItem>.swipe(test: Int?) {
+
+}
 class PdfGenerator(private val context: Context) {
 
 
@@ -81,6 +85,7 @@ class PdfGenerator(private val context: Context) {
             val formulaEvaluator = workbook.creationHelper.createFormulaEvaluator()
             var orderNo: Int = 0
             var list: List<InventoryItem> = ArrayList<InventoryItem>(model.orderItems.values)
+            list.swipe(1)
             for (r in 0 until rowsCount) {
                 val row = sheet.getRow(r)
                 val cellsCount = row.physicalNumberOfCells
@@ -111,6 +116,7 @@ class PdfGenerator(private val context: Context) {
 
         return outFile.absolutePath
     }
+
 
     private fun setRowData(row: XSSFRow, item: InventoryItem?, formulaEvaluator: XSSFFormulaEvaluator, sr: Int) {
         val cellsCount = row.physicalNumberOfCells

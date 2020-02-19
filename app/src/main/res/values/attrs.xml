@@ -8,6 +8,8 @@
   <attr name="maxLength" format="integer" />
   <attr name="minLength" format="integer" />
   <attr name="maxLengthErrorMsg" format="string" />
+  <attr name="mandatoryErrorMsg" format="string" />
+  <attr name="validationErrorMsg" format="string" />
 
   <declare-styleable name="CustomFontTextView">
     <attr name="font_name">
@@ -29,6 +31,8 @@
     <attr name="android:digits" format="string" />
     <attr name="editTextHeight" format="dimension" />
     <attr name="enableCancelOption" format="boolean" />
+    <attr name="mobileValidation" format="boolean" />
+    <attr name="emailValidation" format="boolean" />
     <attr name="clearErrorOnTextChanged" format="boolean" />
     <attr name="cancelButtonContentDesc" format="string" />
     <attr name="title" format="string" />
@@ -37,6 +41,8 @@
     <attr name="maxLength" />
     <attr name="minLength" />
     <attr name="maxLengthErrorMsg" />
+    <attr name="mandatoryErrorMsg" />
+    <attr name="validationErrorMsg" />
     <attr name="fieldContentDescription" />
     <attr name="errorContentDescription" />
   </declare-styleable>

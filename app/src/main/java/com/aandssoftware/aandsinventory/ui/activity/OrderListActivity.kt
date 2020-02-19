@@ -36,8 +36,6 @@ class OrderListActivity : ListingActivity() {
             customerId?.let {
                 showInventoryListingActivity(customerId, EMPTY_STRING)
             }
-        } else {
-            operations.getResult()
         }
     }
 
@@ -70,16 +68,20 @@ class OrderListActivity : ListingActivity() {
 
     fun saveOrder(alphaNumericOrderId: String, numericOrderId: String, customerModel: CustomerModel) {
         showProgressBar()
+        var orderModel = getOrderModelNewlyCreated(alphaNumericOrderId, numericOrderId, customerModel)
         FirebaseUtil.getInstance().getCustomerDao().saveOrder(
                 alphaNumericOrderId,
-                getOrderModelNewlyCreated(alphaNumericOrderId, numericOrderId, customerModel),
+                orderModel,
                 callBackListener { result ->
                     dismissProgressBar()
                     if (result) {
+                        var positionInList = 0
+                        addElement(orderModel, positionInList)
                         val intent = Intent(this@OrderListActivity, ListingActivity::class.java)
-                        intent.putExtra(AppConstants.LISTING_TYPE, ListType.LIST_TYPE_INVENTORY.ordinal)
+                        intent.putExtra(AppConstants.LISTING_TYPE, ListType.LIST_TYPE_MATERIAL.ordinal)
                         intent.putExtra(CustomerListAdapter.CUSTOMER_ID, customerModel.id)
                         intent.putExtra(AppConstants.ORDER_ID, alphaNumericOrderId)
+                        intent.putExtra(AppConstants.POSITION_IN_LIST, positionInList)
                         startActivityForResult(intent, AppConstants.LISTING_REQUEST_CODE)
                     }
                 })

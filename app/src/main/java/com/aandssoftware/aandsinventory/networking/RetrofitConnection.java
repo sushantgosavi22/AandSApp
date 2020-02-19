@@ -11,8 +11,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class RetrofitConnection {
-
-    private static final String TAG = RetrofitConnection.class.getSimpleName();
+  
+  
+  private static final String TAG = RetrofitConnection.class.getSimpleName();
 
     public static Retrofit provideRetrofit() {
         return new Retrofit.Builder()

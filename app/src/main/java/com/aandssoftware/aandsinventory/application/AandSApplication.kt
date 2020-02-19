@@ -1,7 +1,15 @@
 package com.aandssoftware.aandsinventory.application
 
 import android.app.Application
-import com.google.firebase.database.FirebaseDatabase
+import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
+import com.aandssoftware.aandsinventory.models.AppVersion
+import com.google.firebase.database.*
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.ContextCompat.getSystemService
+import org.apache.poi.ss.formula.functions.T
+
+
 
 class AandSApplication : Application() {
 
@@ -41,4 +49,6 @@ class AandSApplication : Application() {
         super.onCreate()
         instanceApp = this
     }
+
+
 }

@@ -16,7 +16,8 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-      <androidx.appcompat.widget.LinearLayoutCompat
+      <com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout
+        android:id="@+id/llContaint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -24,8 +25,8 @@
         <androidx.appcompat.widget.AppCompatImageView
           android:id="@+id/imgCustomerImg"
           android:layout_width="match_parent"
-          android:layout_height="150dp"
-          android:padding="@dimen/size_20"
+          android:layout_height="@dimen/size_150"
+          android:padding="@dimen/size_5"
           android:src="@drawable/ic_image_add" />
 
         <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
@@ -39,6 +40,7 @@
             android:hint="@string/customer_name_hint"
             android:inputType="textPersonName|textCapSentences"
             app:mandatory="true"
+            app:mandatoryErrorMsg="@string/enter_customer_name"
             app:maxLength="@integer/int_256"
             app:maxLengthErrorMsg="@string/error_name_length"
             app:title="@string/customer_name" />
@@ -49,10 +51,12 @@
             android:layout_height="wrap_content"
             android:hint="@string/customer_mail_hint"
             android:inputType="textEmailAddress"
+            app:emailValidation="true"
             app:mandatory="true"
             app:maxLength="@integer/int_150"
             app:maxLengthErrorMsg="@string/customer_mail_invalid_format_msg"
-            app:title="@string/customer_mail" />
+            app:title="@string/customer_mail"
+            app:validationErrorMsg="@string/customer_mail_invalid_format_msg" />
 
           <com.aandssoftware.aandsinventory.ui.component.CustomEditText
             android:id="@+id/edtCustomerContact"
@@ -61,6 +65,7 @@
             android:hint="@string/customer_phone_hint"
             android:inputType="numberDecimal"
             app:mandatory="true"
+            app:mandatoryErrorMsg="@string/enter_customer_number"
             app:maxLength="@integer/int_15"
             app:title="@string/customer_phone" />
 
@@ -69,11 +74,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/customer_gst_hint"
-            android:inputType="numberDecimal"
+            android:inputType="text"
             app:mandatory="true"
+            app:mandatoryErrorMsg="@string/enter_customer_gst"
             app:maxLength="@integer/int_15"
             app:maxLengthErrorMsg="@string/customer_gst_length_msg"
-            app:title="@string/customer_gst" />
+            app:mobileValidation="true"
+            app:title="@string/customer_gst"
+            app:validationErrorMsg="@string/customer_gst_length_msg" />
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+            android:id="@+id/edtDiscountPercent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/customer_discount_percent_hint"
+            android:inputType="numberDecimal"
+            android:visibility="gone"
+            app:maxLength="@integer/int_15"
+            app:title="@string/customer_discount_percent" />
 
 
         </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
@@ -89,6 +107,7 @@
             android:hint="@string/customer_contact_person_hint"
             android:inputType="textPersonName|textCapSentences"
             app:mandatory="true"
+            app:mandatoryErrorMsg="@string/enter_customer_contact_person_name"
             app:maxLength="@integer/int_256"
             app:title="@string/customer_contact_person" />
 
@@ -100,7 +119,9 @@
             android:inputType="numberDecimal"
             app:mandatory="true"
             app:maxLength="@integer/int_10"
-            app:title="@string/customer_contact_number" />
+            app:mobileValidation="true"
+            app:title="@string/customer_contact_number"
+            app:validationErrorMsg="@string/purchase_shop_contact_length_msg" />
 
           <com.aandssoftware.aandsinventory.ui.component.CustomEditText
             android:id="@+id/edtCustomerAddress"
@@ -130,8 +151,6 @@
             android:gravity="left|top"
             android:hint="@string/customer_description_hint"
             android:inputType="textMultiLine|textCapSentences"
-            android:lines="@integer/int_3"
-            android:maxLines="@integer/int_3"
             app:mandatory="false"
             app:maxLength="@integer/int_500"
             app:title="@string/description" />
@@ -149,8 +168,6 @@
             android:gravity="left|top"
             android:hint="@string/customer_requirement_hint"
             android:inputType="textMultiLine|textCapSentences"
-            android:lines="@integer/int_5"
-            android:maxLines="@integer/int_5"
             app:mandatory="false"
             app:maxLength="@integer/int_500"
             app:title="@string/customer_requirement" />
@@ -172,6 +189,7 @@
             android:inputType="textPersonName|textCapSentences"
             app:mandatory="true"
             app:maxLength="@integer/int_256"
+            app:minLength="@integer/int_4"
             app:title="@string/username" />
 
           <com.aandssoftware.aandsinventory.ui.component.CustomEditText
@@ -182,6 +200,7 @@
             android:inputType="textPassword"
             app:mandatory="true"
             app:maxLength="@integer/int_256"
+            app:minLength="@integer/int_4"
             app:title="@string/password" />
 
           <com.aandssoftware.aandsinventory.ui.component.CustomEditText
@@ -192,9 +211,75 @@
             android:inputType="textPassword"
             app:mandatory="true"
             app:maxLength="@integer/int_256"
+            app:minLength="@integer/int_4"
             app:title="@string/confirm_password" />
 
         </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+        <androidx.cardview.widget.CardView
+          android:id="@+id/cardViewList"
+          android:layout_margin="@dimen/size_20"
+          android:elevation="@dimen/size_5"
+          android:layout_width="match_parent"
+          android:visibility="visible"
+          android:layout_height="match_parent">
+
+          <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/cararra_color">
+
+            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+              android:id="@+id/searchTitle"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="@dimen/size_10"
+              android:layout_alignParentTop="true"
+              android:background="@color/cararra_color"
+              android:textSize="@dimen/size_16_sp"
+              android:drawablePadding="@dimen/size_32"
+              android:drawableEnd="@drawable/add_icon_white"
+              android:textColor="@color/gravel_color"
+              android:visibility="visible" />
+
+            <androidx.core.widget.NestedScrollView
+              android:id="@+id/nestedScrollView"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_below="@+id/searchTitle"
+              android:fillViewport="true">
+
+              <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+
+                  <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:nestedScrollingEnabled="false" />
+
+                  <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/noResultFoundLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="@dimen/size_5"
+                    android:drawablePadding="@dimen/size_5"
+                    android:visibility="gone" />
+
+                </RelativeLayout>
+              </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+          </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
 
         <com.ict.assetmanagement.uidesign.button.CustomButton
           android:id="@+id/btnSave"
@@ -202,7 +287,7 @@
           android:text="@string/save"
           app:uiButtonType="PRIMARY" />
 
-      </androidx.appcompat.widget.LinearLayoutCompat>
+      </com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout>
     </ScrollView>
     <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
       android:id="@+id/progress_bar"

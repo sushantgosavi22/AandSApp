@@ -21,7 +21,9 @@
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
 
-    <activity android:name=".ui.activity.AddInventoryActivity" />
+    <activity
+      android:name=".ui.activity.AddInventoryActivity"
+      android:configChanges="orientation|keyboardHidden" />
     <activity android:name=".ui.activity.AddCustomerActivity" />
     <activity android:name=".ui.activity.OrderDetailsActivity" />
     <activity android:name=".ui.activity.OrderListActivity" />
@@ -35,7 +37,6 @@
       android:theme="@style/AppThemeNoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
-
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
@@ -43,8 +44,8 @@
     <activity
       android:name=".ui.activity.ui.login.LoginActivity"
       android:label="@string/title_activity_login"
-      android:theme="@style/AppThemeNoActionBar"
-      android:parentActivityName=".ui.activity.BaseActivity">
+      android:parentActivityName=".ui.activity.BaseActivity"
+      android:theme="@style/AppThemeNoActionBar">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
         android:value="com.aandssoftware.aandsinventory.ui.activity.BaseActivity" />

@@ -135,7 +135,7 @@ class InventoryDao {
 
 
     fun getAllInventoryItemHistory(inventoryId: String, valueEventListener: ValueEventListener) {
-        getInventoryItemHistoryTableReference(inventoryId).orderByChild(InventoryItemHistory.ORDER_BY_VALUE).addValueEventListener(valueEventListener)
+        getInventoryItemHistoryTableReference(inventoryId).orderByChild(InventoryItemHistory.ORDER_BY_VALUE).addListenerForSingleValueEvent(valueEventListener)
     }
 
     fun saveInventoryItem(mInventoryItem: InventoryItem, inventoryType: Int, dataListener: callBackListener) {

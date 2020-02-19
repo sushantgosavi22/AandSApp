@@ -14,6 +14,7 @@ import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.InventoryItemHistory
 import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
+import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -45,12 +46,14 @@ class InventoryHistoryListAdapter(private val activity: ListingActivity) : Listi
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             val historyList = ArrayList<InventoryItemHistory>()
             for (childSnapshot in dataSnapshot.children) {
+                var inventoryItem = childSnapshot.getValue(InventoryItem::class.java)
                 val history = object : GenericTypeIndicator<HashMap<String, InventoryItemHistory>>() {}
                 val map = childSnapshot.child(InventoryItem.INVENTORY_ITEM_HISTORY).getValue(history)
                 if (map?.values != null) {
                     val itemList = ArrayList(map.values)
-                    if (itemList.isNotEmpty()) {
-                        historyList.addAll(itemList)
+                    itemList.forEach {
+                        it.inventoryItemName = inventoryItem?.inventoryItemName ?: EMPTY_STRING
+                        historyList.add(it)
                     }
                 }
             }
@@ -85,11 +88,16 @@ class InventoryHistoryListAdapter(private val activity: ListingActivity) : Listi
     override fun onBindSearchViewHolder(baseHolder: BaseViewHolder, position: Int, item: Serializable) {
         val holder = baseHolder as InventoryHistoryViewHolder
         val mItem = item as InventoryItemHistory
-        holder.tvModifiedParameterName.text = EMPTY_STRING.plus(mItem.modifiedParameter).plus(" is ").plus(mItem.action)
-        holder.tvActionMessage.text = EMPTY_STRING.plus(mItem.modifiedParameter).plus(" is ").plus(mItem.action).plus(" From ").plus(mItem
-                .modifiedTo).plus(" To ").plus(mItem.modifiedFrom)
+        if (mItem.inventoryItemName != null && mItem.inventoryItemName.orEmpty().isNotEmpty()) {
+            holder.tvModifiedParameterName.text = mItem.inventoryItemName
+            holder.tvActionMessage.text = EMPTY_STRING.plus(mItem.modifiedParameter).plus(" is ").plus(mItem.action).plus(" From ").plus(mItem
+                    .modifiedTo).plus(" To ").plus(mItem.modifiedFrom)
+        } else {
+            holder.tvModifiedParameterName.text = EMPTY_STRING.plus(mItem.modifiedParameter).plus(" is ").plus(mItem.action)
+            holder.tvActionMessage.text = EMPTY_STRING.plus(mItem.modifiedParameter).plus(" is ").plus(mItem.action).plus(" From ").plus(mItem
+                    .modifiedTo).plus(" To ").plus(mItem.modifiedFrom)
+        }
         holder.tvDate.text = DateUtils.getDateFormatted(mItem.modifiedDate)
-
     }
 
     override fun getTitle(): String = activity.getString(R.string.inventory_item_history)
@@ -98,7 +106,7 @@ class InventoryHistoryListAdapter(private val activity: ListingActivity) : Listi
     override fun getResult() {
         activity.showProgressBar()
         if (null != activity.intent) {
-            val id = activity.intent.getStringExtra(InventoryListAdapter.INVENTORY_ID)
+            val id = activity.intent.getStringExtra(AppConstants.INVENTORY_ID)
             if (id != null) {
                 FirebaseUtil.getInstance().getInventoryDao()
                         .getAllInventoryItemHistory(id, valueEventListener)

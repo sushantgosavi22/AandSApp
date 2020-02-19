@@ -10,13 +10,13 @@ import com.google.android.material.snackbar.Snackbar
 
 class AppConstants {
 
-    val BASE_URL = ""
-
     companion object {
         const val BASE_URL = ""
         const val EMPTY_STRING: String = ""
         const val ZERO_STRING: String = "0"
+        const val DOUBLE_DEFAULT_ZERO_STRING: String = 0.0.toString()
         const val SNACK_BAR_MAX_LINES = 3
+        const val ANDROID_APP_UPDATE = 4
         const val PICK_IMAGE = 100
         const val INVALID_ID = -1
         const val COUNT_ONE = 1
@@ -33,21 +33,25 @@ class AppConstants {
         const val INVENTORY_INSTANCE: String = "inventoryInstance"
         const val UPDATED: String = "updated"
         const val ORDER_ID: String = "orderId"
+        const val ORDER_INSTANCE: String = "orderInstance"
         const val FIRE_BASE_CUSTOMER_ID: String = "fireBaseCustomerId"
         const val NUMERIC_CUSTOMER_ID: String = "NumericCustomerId"
         const val VIEW_MODE: String = "viewMode"
         const val CUSTOMER_IMAGES_STORAGE_PATH: String = "customerImages"
         const val INVENTORY_IMAGES_STORAGE_PATH: String = "inventoryImages"
+        const val DISCOUNTED_AMOUNT: String = "discountedAmount"
         /*Intent Data Passing */
 
         /*Start Activity For Result ID */
         const val LISTING_REQUEST_CODE = 106
         const val GET_INVENTORY_UPDATE_REQUEST_CODE = 101
         const val GET_CUSTOMER_UPDATE_REQUEST_CODE = 103
+        const val GET_CUSTOMER_DISCOUNT_REQUEST_CODE = 107
 
         const val RELOAD_LIST_RESULT_CODE: Int = 102
         const val ORDER_RELOAD_LIST_RESULT_CODE: Int = 104
         const val ORDER_DETAIL_RELOAD_LIST_RESULT_CODE: Int = 105
+        const val CUSTOMER_DISCOUNT_RESULT_CODE: Int = 108
         /*Start Activity For Result ID */
 
     }

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="colorPrimary">#3F51B5</color>
-  <color name="colorPrimaryDark">#303F9F</color>
+  <color name="colorPrimary">@color/brand_color_primary</color>
+  <color name="colorPrimaryDark">@color/brand_color_primary</color>
+
+  <!--blue colors-->
+  <!--<color name="colorPrimary">#3F51B5</color>
+  <color name="colorPrimaryDark">#303F9F</color>-->
+  <!--blue colors-->
+
   <color name="colorAccent">#FF4081</color>
   <color name="msg_no_notes">#999</color>
   <color name="hint_color">#BAB9BA</color>
@@ -51,4 +57,9 @@
   <color name="honey_dew_color">#FEFFFE</color>
   <color name="map_marker_circle">#4385F4</color>
   <color name="light_blue">#FF4A5BB9</color>
+
+  <!--Brand Color-->
+  <color name="brand_color_primary">#F68B1F</color>
+  <color name="brand_color_primaryDark">#F7810F</color><!--FFFF7E00-->
+  <color name="brand_color_black">#040707</color>
 </resources>

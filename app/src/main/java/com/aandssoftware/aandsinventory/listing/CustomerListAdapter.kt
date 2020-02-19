@@ -19,6 +19,7 @@ import com.aandssoftware.aandsinventory.ui.activity.OrderListActivity
 import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_LIST_RESULT_CODE
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ZERO_STRING
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -58,8 +59,11 @@ class CustomerListAdapter(private val activity: ListingActivity) : ListingOperat
                 deleteCustomer(itemView.tag as CustomerModel, itemView.context, pos)
             }
             imgCustomerItemEdit.setOnClickListener {
-                openCustomerScreen((itemView.tag as CustomerModel).id,
-                        (itemView.tag as CustomerModel).customerID, ViewMode.UPDATE.ordinal)
+                var model = (itemView.tag as CustomerModel)
+                model.id?.let {
+                    val numericId = model.customerID ?: ZERO_STRING
+                    openCustomerScreen(it, numericId, ViewMode.UPDATE.ordinal)
+                }
             }
         }
     }
@@ -82,34 +86,40 @@ class CustomerListAdapter(private val activity: ListingActivity) : ListingOperat
                 .contactPersonNumber
         holder.tvCustomerGstNumber.text = mItem.customerGstNumber
         if (mItem.imagePath != null) {
-            if (mItem.imagePath.contains(AppConstants.HTTP, ignoreCase = true)) {
-                var uri: Uri = Uri.parse(mItem.imagePath)
-                Glide.with(activity)
-                        .load(uri)
-                        .placeholder(android.R.drawable.ic_menu_gallery)
-                        .crossFade()
-                        .into(holder.imgCustomerItemLogo)
-            } else {
+            var lamda = {
                 val bitmap = BitmapFactory.decodeFile(mItem.imagePath)
                 if (null != holder.imgCustomerItemLogo && null != bitmap) {
                     holder.imgCustomerItemLogo.setImageBitmap(bitmap)
                 }
             }
+            mItem.imagePath?.let {
+                if (it.contains(AppConstants.HTTP, ignoreCase = true)) {
+                    var uri: Uri = Uri.parse(mItem.imagePath)
+                    Glide.with(activity)
+                            .load(uri)
+                            .placeholder(android.R.drawable.ic_menu_gallery)
+                            .crossFade()
+                            .into(holder.imgCustomerItemLogo)
+                }
+            } ?: lamda
         }
         holder.cardView.setOnClickListener { v ->
             if (isOrderSelectionCall) {
                 setResult(mItem)
             } else {
-                openCustomerScreen(item.id, item.customerID,
-                        ViewMode.VIEW_ONLY.ordinal)
+                item.id?.let {
+                    val numericcCustomerId = item.customerID ?: ZERO_STRING
+                    openCustomerScreen(it, numericcCustomerId,
+                            ViewMode.VIEW_ONLY.ordinal)
+                }
             }
         }
     }
 
     private fun setResult(mItem: CustomerModel) {
         val intent = Intent()
-        intent.putExtra(CustomerListAdapter.CUSTOMER_ID,
-                if (!mItem.id.isEmpty()) mItem.id else mItem.customerID)
+        var ids = mItem.id ?: mItem.customerID
+        intent.putExtra(CustomerListAdapter.CUSTOMER_ID, ids)
         activity.setResult(ListingActivity.SELECTED, intent)
         activity.finish()
     }

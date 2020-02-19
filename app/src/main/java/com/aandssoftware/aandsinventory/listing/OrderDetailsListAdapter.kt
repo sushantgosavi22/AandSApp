@@ -3,14 +3,17 @@ package com.aandssoftware.aandsinventory.listing
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.view.*
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
+import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.models.CustomerModel
 import com.aandssoftware.aandsinventory.models.InventoryItem
@@ -23,6 +26,7 @@ import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_LIST_RESULT_CODE
+import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -47,27 +51,23 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         var inventoryItemQuantity: TextView
         var inventoryItemDetails: TextView
         var cardView: CardView
+        var llButtons: LinearLayout = itemView.llButtons
 
         init {
             imgInventoryItemLogo = itemView.imgInventoryItemLogo;
             inventoryItemName = itemView.inventoryItemName;
             inventoryItemQuantity = itemView.inventoryItemQuantity;
             inventoryItemDetails = itemView.inventoryItemDetails;
-            cardView = itemView.cardView;
-            itemView.imgInventoryItemHistory.setOnClickListener {
-                showInventoryHistory((itemView.tag as InventoryItem).id)
-            }
+            cardView = itemView.cardView
+
+            itemView.imgInventoryItemHistory.visibility = View.GONE
+            itemView.imgInventoryItemEdit.visibility = View.GONE
+
             itemView.imgInventoryItemDelete.setOnClickListener {
                 var pos: Int = itemView.getTag(R.string.tag) as Int
                 deleteInventory(itemView.tag as InventoryItem, itemView.context, pos)
             }
-            itemView.imgInventoryItemEdit.setOnClickListener {
-                val item = itemView.tag as InventoryItem
-                if (null != item) {
-                    var pos: Int = itemView.getTag(R.string.tag) as Int
-                    showAddInventoryItemFragment(item.id, ViewMode.UPDATE.ordinal, pos)
-                }
-            }
+            llButtons.visibility = View.VISIBLE
         }
     }
 
@@ -89,10 +89,20 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         holder.inventoryItemDetails.text = EMPTY_STRING.plus(mItem.inventoryItemBrandName).plus(" ").plus(mItem
                 .inventoryItemModelName).plus(" ").plus(mItem.inventoryItemColor)
                 .plus(" ").plus(mItem.inventoryItemSize)
-        if (mItem.inventoryItemImagePath != null) {
-            val bitmap = BitmapFactory.decodeFile(mItem.inventoryItemImagePath)
-            if (null != holder.imgInventoryItemLogo && null != bitmap) {
-                holder.imgInventoryItemLogo.setImageBitmap(bitmap)
+
+        mItem.inventoryItemImagePath?.let {
+            if (it.contains(AppConstants.HTTP, ignoreCase = true)) {
+                var uri: Uri = Uri.parse(mItem.inventoryItemImagePath)
+                Glide.with(activity)
+                        .load(uri)
+                        .placeholder(android.R.drawable.ic_menu_gallery)
+                        .crossFade()
+                        .into(holder.imgInventoryItemLogo)
+            } else {
+                val bitmap = BitmapFactory.decodeFile(mItem.inventoryItemImagePath)
+                bitmap?.let {
+                    holder.imgInventoryItemLogo.setImageBitmap(bitmap)
+                }
             }
         }
         holder.cardView.setOnClickListener {
@@ -102,15 +112,11 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
     }
 
     private fun performClick(id: String?, pos: Int) {
-        Navigator.openInventoryScreen(activity, id!!, ViewMode.VIEW_ONLY.ordinal, inventoryType,
-                title, pos)
-    }
-
-    private fun showInventoryHistory(id: String?) {
-        val intent = Intent(activity, ListingActivity::class.java)
-        intent.putExtra(AppConstants.LISTING_TYPE, ListType.LIST_TYPE_INVENTORY_HISTORY.ordinal)
-        intent.putExtra(AppConstants.INVENTORY_ID, id)
-        activity.startActivityForResult(intent, AppConstants.LISTING_REQUEST_CODE)
+        id?.let {
+            Navigator.openInventoryScreen(activity, it,
+                    ViewMode.VIEW_ONLY.ordinal, inventoryType,
+                    title, orderId!!, pos)
+        }
     }
 
     override fun getTitle(): String {
@@ -145,7 +151,8 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         activity.menuInflater.inflate(R.menu.order_details_menu, menu)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             val menuItemAdd = menu.findItem(R.id.actionAdd).setVisible(true)
-            menu.findItem(R.id.actionSave).isVisible = true
+            var actionSave = menu.findItem(R.id.actionSave)
+            actionSave.isVisible = Utils.isAdminUser(activity)
             (activity as OrderDetailsActivity).checkAndDisableOrder(menuItemAdd)
         }
         return true
@@ -236,15 +243,10 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
 
     fun showInventoryListingActivity(customerId: String, orderId: String?) {
         val intent = Intent(activity, ListingActivity::class.java)
-        intent.putExtra(AppConstants.LISTING_TYPE, ListType.LIST_TYPE_INVENTORY.ordinal)
+        intent.putExtra(AppConstants.LISTING_TYPE, ListType.LIST_TYPE_MATERIAL.ordinal)
         intent.putExtra(CustomerListAdapter.CUSTOMER_ID, customerId)
         intent.putExtra(AppConstants.ORDER_ID, orderId)
         activity.startActivityForResult(intent, AppConstants.LISTING_REQUEST_CODE)
-    }
-
-
-    fun showAddInventoryItemFragment(id: String?, viewMode: Int, pos: Int) {
-        Navigator.openInventoryScreen(activity, id!!, viewMode, inventoryType, title, pos)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

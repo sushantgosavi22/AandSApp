@@ -1,7 +1,6 @@
 package com.aandssoftware.aandsinventory.ui.activity
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -9,12 +8,13 @@ import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.listing.OrderDetailsListAdapter
-import com.aandssoftware.aandsinventory.models.callBackListener
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.OrderModel
 import com.aandssoftware.aandsinventory.models.OrderStatus
+import com.aandssoftware.aandsinventory.models.callBackListener
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ORDER_ID
+import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -44,6 +44,7 @@ class OrderDetailsActivity : ListingActivity() {
                 validateAndConfirmOrder(orderModel)
             }
         }
+
     }
 
     private fun validateAndConfirmOrder(orderModel: OrderModel?) {
@@ -97,6 +98,7 @@ class OrderDetailsActivity : ListingActivity() {
                 if (it) {
                     showSnackBarMessage(getString(R.string.order_confirm_successfully))
                     checkAndDisableOrder(menuItemAdd)
+                    isOrderUpdated = true
                 } else {
                     showSnackBarMessage(getString(R.string.unable_to_update_order))
                 }
@@ -111,7 +113,7 @@ class OrderDetailsActivity : ListingActivity() {
         val intent = Intent()
         intent.putExtra(AppConstants.UPDATED, isOrderUpdated)
         intent.putExtra(AppConstants.ORDER_ID, orderModel?.id)
-        intent.putExtras(intent)
+        intent.putExtras(getIntent())
         setResult(AppConstants.ORDER_DETAIL_RELOAD_LIST_RESULT_CODE, intent)
         finish()
         super.onBackPressed()
@@ -141,10 +143,13 @@ class OrderDetailsActivity : ListingActivity() {
             tvContactNameAndNumber.text = customerDetails.contactPerson?.plus(" ").plus(customerDetails
                     .contactPersonNumber)
             tvCustomerGstNumber.text = customerDetails.customerGstNumber
-            if (customerDetails.imagePath != null) {
-                val bitmap = BitmapFactory.decodeFile(customerDetails.imagePath)
-                if (null != imgCustomerItemLogo && null != bitmap) {
-                    imgCustomerItemLogo!!.setImageBitmap(bitmap)
+            customerDetails.imagePath?.let {
+                if (it.contains(AppConstants.HTTP, ignoreCase = true)) {
+                    Glide.with(this)
+                            .load(customerDetails.imagePath)
+                            .placeholder(android.R.drawable.ic_menu_gallery)
+                            .crossFade()
+                            .into(imgCustomerItemLogo)
                 }
             }
         }

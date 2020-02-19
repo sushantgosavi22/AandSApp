@@ -15,7 +15,8 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-      <androidx.appcompat.widget.LinearLayoutCompat
+      <com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout
+        android:id="@+id/llContaint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -23,8 +24,8 @@
         <androidx.appcompat.widget.AppCompatImageView
           android:id="@+id/imgInventoryImg"
           android:layout_width="match_parent"
-          android:layout_height="150dp"
-          android:padding="@dimen/size_20"
+          android:padding="@dimen/size_5"
+          android:layout_height="@dimen/size_150"
           android:src="@drawable/ic_image_add" />
 
         <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
@@ -40,9 +41,11 @@
             app:mandatory="true"
             app:maxLength="@integer/int_256"
             app:maxLengthErrorMsg="@string/error_name_length"
+            app:mandatoryErrorMsg="@string/validation_empty_name"
             app:title="@string/name" />
 
           <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llQuantityAndUnit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2">
@@ -124,6 +127,7 @@
         </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
 
         <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          android:id="@+id/slPrice"
           style="@style/custome_section_style"
           app:sectionHeader="@string/section_title_price">
 
@@ -141,6 +145,7 @@
               android:inputType="numberDecimal"
               app:mandatory="true"
               app:maxLength="@integer/int_15"
+              app:mandatoryErrorMsg="@string/validation_empty_purchase_price"
               app:title="@string/purchase_price" />
 
             <com.aandssoftware.aandsinventory.ui.component.CustomEditText
@@ -152,7 +157,7 @@
               android:hint="@string/unit_price_hint"
               android:inputType="numberDecimal"
               app:mandatory="false"
-              app:maxLength="@integer/int_15"
+              app:maxLength="@integer/int_256"
               app:title="@string/unit_price" />
 
           </androidx.appcompat.widget.LinearLayoutCompat>
@@ -195,6 +200,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_weight="1"
+              android:enabled="false"
               android:hint="@string/cgst_Amount_hint"
               android:inputType="numberDecimal"
               app:mandatory="false"
@@ -204,6 +210,7 @@
           </androidx.appcompat.widget.LinearLayoutCompat>
 
           <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llSgstDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2">
@@ -224,6 +231,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_weight="1"
+              android:enabled="false"
               android:hint="@string/sgst_Amount_hint"
               android:inputType="numberDecimal"
               app:mandatory="false"
@@ -315,6 +323,7 @@
 
 
         <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+          android:id="@+id/slShopDetails"
           style="@style/custome_section_style"
           app:sectionHeader="@string/section_title_shop_details">
 
@@ -335,8 +344,10 @@
             android:hint="@string/purchase_shop_contact"
             android:inputType="numberDecimal"
             app:mandatory="false"
+            app:mobileValidation="true"
             app:maxLength="@integer/int_10"
             app:maxLengthErrorMsg="@string/purchase_shop_contact_length_msg"
+            app:validationErrorMsg="@string/purchase_shop_contact_length_msg"
             app:title="@string/purchase_shop_contact" />
 
 
@@ -363,7 +374,7 @@
           android:text="@string/save"
           app:uiButtonType="PRIMARY" />
 
-      </androidx.appcompat.widget.LinearLayoutCompat>
+      </com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout>
     </ScrollView>
     <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
       android:id="@+id/progress_bar"

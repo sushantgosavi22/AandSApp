@@ -1,7 +1,6 @@
 package com.aandssoftware.aandsinventory.database
 
 import com.aandssoftware.aandsinventory.application.AandSApplication
-import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
 import com.aandssoftware.aandsinventory.models.*
@@ -67,6 +66,14 @@ class CustomerDao {
             return reference
         }
 
+    private val appVersionTableReference: DatabaseReference
+        get() {
+            val reference = AandSApplication.getDatabaseInstance()
+                    .getReference(AppVersion.TABLE_APP_VERSION)
+            reference.keepSynced(true)
+            return reference
+        }
+
     private val userLoginTableReference: DatabaseReference
         get() {
             val reference = AandSApplication.getDatabaseInstance()
@@ -75,17 +82,20 @@ class CustomerDao {
             return reference
         }
 
+
     fun getAllCustomers(valueEventListener: ValueEventListener) {
         customerTableReference.orderByChild(CustomerModel.ORDER_BY_VALUE).addListenerForSingleValueEvent(valueEventListener)
     }
 
     fun saveCustomerItem(mCustomerModel: CustomerModel, dataListener: callBackListener) {
-        customerTableReference.child(mCustomerModel.id).setValue(mCustomerModel) { databaseError, _ ->
-            run {
-                if (null == databaseError) {
-                    dataListener.getCallBack(true)
-                } else {
-                    dataListener.getCallBack(false)
+        mCustomerModel.id?.let {
+            customerTableReference.child(it).setValue(mCustomerModel) { databaseError, _ ->
+                run {
+                    if (null == databaseError) {
+                        dataListener.getCallBack(true)
+                    } else {
+                        dataListener.getCallBack(false)
+                    }
                 }
             }
         }
@@ -113,17 +123,55 @@ class CustomerDao {
     }
 
     fun removeCustomer(customerModel: CustomerModel, completionListener: CompletionListener) {
-        customerTableReference.child(customerModel.id).removeValue(completionListener)
+        customerModel.id?.let {
+            customerTableReference.child(it).removeValue(completionListener)
+        }
     }
 
 
-    fun getOrders(valueEventListener: ValueEventListener) {
-        orderTableReference.orderByChild(OrderModel.ORDER_BY_VALUE).addValueEventListener(valueEventListener)
+    fun removeCustomerDiscountForItem(customerId: String, inventoryId: String, completionListener: CompletionListener) {
+        customerTableReference.child(customerId).child(CustomerModel.DISCOUNTED_ITEM).child(inventoryId).removeValue(completionListener)
+    }
+
+
+    fun addDiscountedItemToCustomer(model: CustomerModel, inventoryId: String, discountedAmount: String, dataListener: callBackListener) {
+        model.id?.let {
+            var map = model.discountedItems
+            if (map == null) {
+                map = HashMap<String, String>()
+            } else {
+                map.put(inventoryId, discountedAmount)
+            }
+            customerTableReference.child(it).child(CustomerModel.DISCOUNTED_ITEM).setValue(map) { databaseError, databaseReference ->
+                if (databaseError == null) {
+                    dataListener.getCallBack(true)
+                } else {
+                    dataListener.getCallBack(false)
+                }
+            }
+        }
+    }
+
+
+    fun getOrders(lastNodeKey: Double, itemToLoad: Int, valueEventListener: ValueEventListener) {
+        var query = orderTableReference.limitToLast(itemToLoad)
+        var defaultLong: Double = 0.0
+        query = if (lastNodeKey == defaultLong) {
+            query.orderByChild(OrderModel.ORDER_BY_VALUE).startAt(lastNodeKey)
+        } else {
+            query.orderByChild(OrderModel.ORDER_BY_VALUE).endAt(lastNodeKey)
+        }
+        query.addListenerForSingleValueEvent(valueEventListener)
     }
 
     fun getCompanyOrders(companyId: String, valueEventListener: ValueEventListener) {
         orderTableReference.orderByChild(OrderModel.ID_ORDER_BY_VALUE).equalTo(companyId).addValueEventListener(valueEventListener)
     }
+
+    fun getCompanyOrdersFromOrderId(companyId: String, orderId: String, inventoryId: String, valueEventListener: ValueEventListener) {
+        orderTableReference.orderByChild(OrderModel.ID_ORDER_BY_VALUE).equalTo(companyId).ref.child(orderId).child(OrderModel.ORDER_ITEMS).child(inventoryId).addListenerForSingleValueEvent(valueEventListener)
+    }
+
 
     fun getNextOrderItemId(listener: GetAlphaNumericAndNumericIdListener) {
         orderCounterReference.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -163,6 +211,7 @@ class CustomerDao {
         itemReference.child(key).setValue(mainInventoryItem) { databaseError, _ ->
             run {
                 if (null == databaseError) {
+                    orderTableReference.child(orderId).child(OrderModel.ORDER_BY_VALUE).setValue(System.currentTimeMillis())
                     dataListener.getCallBack(true)
                 } else {
                     dataListener.getCallBack(false)
@@ -172,29 +221,6 @@ class CustomerDao {
     }
 
     fun saveOrder(alphaNumericOrderId: String, orderModel: OrderModel, dataListener: callBackListener) {
-        /*orderTableReference.child(alphaNumericOrderId).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var model = FirebaseUtil.getInstance().getClassData(dataSnapshot,OrderModel::class.java)
-                if(null==model){
-                    model = OrderModel()
-                    model.id = alphaNumericOrderId
-                    model.customerId = customerModel.id
-                    model.orderId = numericOrderId
-                    model.orderStatus = OrderStatus.CREATED.name
-                    model.orderStatusName = Utils.capitalize(OrderStatus.CREATED.toString())
-                    model.orderDateUpdated = System.currentTimeMillis()
-                    model.orderDateCreated = System.currentTimeMillis()
-                    model.customerModel = customerModel
-                    dataSnapshot.ref.setValue(model)
-                }else{
-                    listener.getCallBack(true)
-                }
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-                listener.getCallBack(false)
-            }
-        })*/
-
         orderTableReference.child(alphaNumericOrderId).setValue(orderModel) { databaseError, _ ->
             run {
                 if (null == databaseError) {
@@ -223,5 +249,9 @@ class CustomerDao {
 
     fun getOrderFromID(orderId: String, valueEventListener: ValueEventListener) {
         orderTableReference.child(orderId).addListenerForSingleValueEvent(valueEventListener)
+    }
+
+    fun getAppVersion(valueEventListener: ValueEventListener) {
+        appVersionTableReference.addListenerForSingleValueEvent(valueEventListener)
     }
 }

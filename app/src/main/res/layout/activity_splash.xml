@@ -1,15 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/llSplash"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context="com.aandssoftware.aandsinventory.ui.activity.SplashActivity">
-  <ImageView
-    android:src="@drawable/splash_screen"
-    android:fitsSystemWindows="true"
-    android:scaleType="fitXY"
+  android:background="@android:color/white">
+
+  <androidx.appcompat.widget.LinearLayoutCompat
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
-</androidx.appcompat.widget.LinearLayoutCompat>
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/size_32"
+    android:visibility="gone"
+    android:layout_alignParentTop="true">
+
+    <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="@font/lato_heavy"
+      android:gravity="center"
+      android:text="@string/owner"
+      android:textColor="@color/brand_color_primary"
+      android:textSize="@dimen/size_30_sp" />
+    <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="@font/lato_heavy"
+      android:gravity="center"
+      android:text="@string/owner_name"
+      android:textColor="@color/brand_color_black"
+      android:textSize="@dimen/size_25_sp" />
+
+  </androidx.appcompat.widget.LinearLayoutCompat>
+
+  <ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:scaleType="centerCrop"
+    android:src="@drawable/aands_logo" />
+
+
+  <androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_marginLeft="@dimen/size_15"
+      android:visibility="gone"
+      android:layout_marginBottom="@dimen/size_22"
+      android:orientation="vertical">
+      <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_10"
+        android:fontFamily="@font/lato_heavy"
+        android:gravity="left"
+        android:text="@string/products"
+        android:textColor="@color/brand_color_primary"
+        android:textSize="@dimen/size_25_sp" />
+      <!--lato_heavy_italic-->
+      <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/size_50"
+        android:layout_marginTop="@dimen/size_5"
+        android:orientation="vertical">
+
+
+        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/lato_semibold"
+          android:gravity="left"
+          android:text="@string/stationary"
+          android:textColor="@color/brand_color_black"
+          android:textSize="@dimen/size_20_sp" />
+
+        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/lato_semibold"
+          android:gravity="left"
+          android:text="@string/packaging"
+          android:textColor="@color/brand_color_black"
+          android:textSize="@dimen/size_20_sp" />
+
+        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/lato_semibold"
+          android:gravity="left"
+          android:text="@string/safety"
+          android:textColor="@color/brand_color_black"
+          android:textSize="@dimen/size_20_sp" />
+        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/lato_semibold"
+          android:gravity="left"
+          android:text="@string/oiling"
+          android:textColor="@color/brand_color_black"
+          android:textSize="@dimen/size_20_sp" />
+
+      </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/size_5"
+      android:layout_marginTop="@dimen/size_10"
+      android:fontFamily="@font/lato_thin"
+      android:gravity="center"
+      android:text="@string/developed_by"
+      android:textSize="@dimen/size_15_sp" />
+
+  </androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>

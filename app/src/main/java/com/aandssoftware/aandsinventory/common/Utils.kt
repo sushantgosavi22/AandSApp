@@ -11,12 +11,13 @@ import com.aandssoftware.aandsinventory.BuildConfig
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.ui.activity.ui.login.LoginActivity
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.google.android.material.snackbar.Snackbar
 import java.lang.Exception
 import java.text.NumberFormat
 import java.util.*
-
+import android.util.Patterns
 
 class Utils {
 
@@ -35,6 +36,11 @@ class Utils {
         @JvmStatic
         fun isEmpty(message: String?, defaultVal: String): String {
             return if (null != message && message.isNotEmpty()) message else defaultVal
+        }
+
+        @JvmStatic
+        fun isEmpty(message: String?, defaultVal: Double): Double {
+            return message?.toDouble() ?: defaultVal
         }
 
         @JvmStatic
@@ -119,6 +125,28 @@ class Utils {
             SharedPrefsUtils.setUserPreference(context, SharedPrefsUtils.CURRENT_USER, null)
             SharedPrefsUtils.setBooleanPreference(context, SharedPrefsUtils.ADMIN_USER, false)
             context.finish()
+        }
+
+        @JvmStatic
+        fun getLoginCustomerId(context: Context): String {
+            var customerId: String = EMPTY_STRING
+            val user = SharedPrefsUtils.getUserPreference(context, SharedPrefsUtils.CURRENT_USER)
+            user?.id?.let {
+                customerId = it
+            }
+            return customerId
+        }
+
+        @JvmStatic
+        fun isAdminUser(context: Context): Boolean {
+            return SharedPrefsUtils.getBooleanPreference(context, SharedPrefsUtils.ADMIN_USER, false)
+        }
+
+
+        @JvmStatic
+        fun validateEmail(email: String): Boolean {
+            val pattern = Patterns.EMAIL_ADDRESS
+            return pattern.matcher(email).matches()
         }
     }
 

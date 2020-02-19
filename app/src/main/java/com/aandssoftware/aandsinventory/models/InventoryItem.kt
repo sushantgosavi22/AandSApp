@@ -198,9 +198,14 @@ open class InventoryItem : Serializable {
     @Expose
     var finalBillAmount: Int = 0
 
+    @SerializedName("discountForCompany")
+    @Expose
+    var discountRateForCompany: Double = 0.0
+
     @SerializedName(TAG)
     @Expose
     var tag: String? = null
+
 
     constructor() {
 
@@ -237,6 +242,7 @@ open class InventoryItem : Serializable {
         this.mrpAmount = item.mrpAmount
         this.quantityBySellingPrice = item.quantityBySellingPrice
         this.finalBillAmount = item.finalBillAmount
+        this.discountRateForCompany = item.discountRateForCompany
         this.tag = item.tag
         this.isAvailable = item.isAvailable
     }

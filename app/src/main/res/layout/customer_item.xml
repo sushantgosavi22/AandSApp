@@ -3,17 +3,16 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:layout_margin="4dp">
+  android:layout_height="wrap_content">
 
   <androidx.cardview.widget.CardView
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
     android:layout_gravity="center"
+    android:layout_margin="@dimen/size_12"
     android:clickable="true"
-    android:elevation="4dp"
+    android:elevation="@dimen/size_5"
     android:foreground="?android:attr/selectableItemBackground">
 
     <RelativeLayout
@@ -25,7 +24,7 @@
         android:id="@+id/llButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/size_5"
         android:layout_alignParentRight="true"
         android:orientation="vertical">
 
@@ -33,73 +32,84 @@
           android:id="@+id/imgCustomerItemEdit"
           android:layout_width="30dp"
           android:layout_height="30dp"
+          android:layout_alignParentTop="true"
+          android:layout_alignParentRight="true"
           android:layout_margin="2dp"
           android:elevation="5dp"
-          android:layout_alignParentRight="true"
-          android:layout_alignParentTop="true"
           android:padding="2dp"
-          android:src="@android:drawable/ic_menu_edit"/>
+          android:src="@android:drawable/ic_menu_edit" />
 
         <ImageView
           android:id="@+id/imgCustomerItemDelete"
           android:layout_width="30dp"
           android:layout_height="30dp"
-          android:elevation="5dp"
-          android:layout_margin="2dp"
-          android:layout_alignParentRight="true"
           android:layout_alignParentTop="true"
+          android:layout_alignParentRight="true"
+          android:layout_margin="2dp"
+          android:elevation="5dp"
           android:padding="2dp"
-          android:src="@android:drawable/ic_menu_delete"/>
+          android:src="@android:drawable/ic_menu_delete" />
 
       </LinearLayout>
 
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/llButtons"
         android:orientation="horizontal">
 
-
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
           android:id="@+id/imgCustomerItemLogo"
-          android:layout_width="50dp"
-          android:layout_height="50dp"
-          android:layout_margin="10dp"
+          android:layout_width="@dimen/size_80"
+          android:layout_height="@dimen/size_100"
           android:layout_gravity="center_vertical"
+          android:scaleType="fitXY"
           android:src="@android:drawable/ic_menu_gallery"
-          android:transitionName="source"/>
+          android:transitionName="source" />
 
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_marginLeft="@dimen/size_10"
+          android:layout_marginRight="@dimen/size_5"
+          android:gravity="center_vertical"
           android:orientation="vertical">
 
           <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvCustomerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:fontFamily="@font/lato_heavy"
             android:textColor="@android:color/black"
-            app:font_name="bold"/>
+            android:textSize="@dimen/size_18_sp"
+            android:maxLines="@integer/int_2"
+            android:ellipsize="end"
+            app:font_name="bold" />
 
           <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvContactNameAndNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            app:font_name="bold"/>
+            app:fontFamily="@font/lato_regular"
+            android:maxLines="@integer/int_1"
+            android:ellipsize="end"
+            android:fontFamily=""
+            android:textSize="@dimen/size_13_sp"
+            app:font_name="bold" />
 
           <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
             android:id="@+id/tvCustomerGstNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:singleLine="true"
-            android:maxLines="1"
-            app:font_name="bold"/>
+            android:maxLines="@integer/int_1"
+            android:ellipsize="end"
+            app:fontFamily="@font/lato_regular"
+            android:textSize="@dimen/size_13_sp"
+            app:font_name="bold" />
 
         </LinearLayout>
       </LinearLayout>

@@ -19,13 +19,13 @@
 
       <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        style="@style/custome_label_regular" />
+        style="@style/custome_label_regular"
+        android:layout_width="wrap_content" />
 
       <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvMandatory"
-        android:layout_width="wrap_content"
         style="@style/custome_label_regular"
+        android:layout_width="wrap_content"
         android:text=" *"
         android:textColor="@color/red_alret"
         android:visibility="gone" />

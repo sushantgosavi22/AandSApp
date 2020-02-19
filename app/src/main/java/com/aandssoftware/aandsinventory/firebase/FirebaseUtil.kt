@@ -9,6 +9,7 @@ import com.aandssoftware.aandsinventory.application.AandSApplication
 import com.aandssoftware.aandsinventory.database.CarouselDao
 import com.aandssoftware.aandsinventory.database.CustomerDao
 import com.aandssoftware.aandsinventory.database.InventoryDao
+import com.aandssoftware.aandsinventory.models.CustomerModel
 import com.aandssoftware.aandsinventory.models.callBackListener
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.google.firebase.database.*
@@ -106,6 +107,7 @@ class FirebaseUtil {
             }
         })
     }
+
 
     fun isInternetConnected(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?

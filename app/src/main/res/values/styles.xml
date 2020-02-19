@@ -126,10 +126,13 @@
 
   <style name="custome_button_style" parent="wrap_match_content">
     <item name="android:layout_margin">@dimen/size_15</item>
-    <item name="android:layout_height">@dimen/size_60</item>
+    <item name="android:layout_height">@dimen/size_50</item>
     <item name="android:padding">@dimen/size_10</item>
     <item name="android:elevation">@dimen/size_3</item>
     <item name="android:gravity">center</item>
+    <item name="android:fontFamily">@font/lato_bold</item>
+    <item name="android:textColor">@android:color/white</item>
+    <item name="android:background">@drawable/custom_button_selector</item>
   </style>
 
   <style name="progress_bar_style">

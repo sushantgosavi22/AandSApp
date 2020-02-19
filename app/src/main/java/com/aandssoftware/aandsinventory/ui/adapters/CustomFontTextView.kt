@@ -11,23 +11,4 @@ import com.aandssoftware.aandsinventory.R
 
 class CustomFontTextView(context: Context, attrs: AttributeSet) : AppCompatTextView(context, attrs) {
 
-    private var typefaceType: Int = 0
-
-    init {
-        val array = context.theme.obtainStyledAttributes(
-                attrs,
-                R.styleable.CustomFontTextView,
-                0, 0)
-        try {
-            typefaceType = array.getInteger(R.styleable.CustomFontTextView_font_name, 0)
-        } finally {
-            array.recycle()
-        }
-        if (VERSION.SDK_INT >= VERSION_CODES.CUPCAKE) {
-            if (!isInEditMode) {
-                //setTypeface(AandSApplication.getDatabaseInstance().getTypeFace(typefaceType));
-            }
-        }
-    }
-
 }

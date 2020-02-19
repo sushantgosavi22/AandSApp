@@ -7,11 +7,18 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.aandssoftware.aandsinventory.R
+import com.aandssoftware.aandsinventory.common.Utils
+import com.aandssoftware.aandsinventory.models.commonModel.CustomError
+import com.aandssoftware.aandsinventory.models.commonModel.ErrorID
+import com.aandssoftware.aandsinventory.models.commonModel.ErrorShowType
+import com.aandssoftware.aandsinventory.models.commonModel.ErrorType
 import com.aandssoftware.aandsinventory.ui.filters.DecimalDigitsInputFilter
 import com.aandssoftware.aandsinventory.ui.filters.DigitsInputFilter
 import com.aandssoftware.aandsinventory.ui.filters.ErrorHandlingViewAdapter
@@ -26,6 +33,8 @@ class CustomEditText : LinearLayoutCompat {
     private var minLength: Int = 0
     private var title: String? = null
     private var maxLengthErrorMsg: String? = null
+    private var mandatoryErrorMsg: String? = null
+    private var validationErrorMsg: String? = null
 
     private lateinit var textChangedListener: TextChangedListener
     private lateinit var errorAdapter: ErrorHandlingViewAdapter
@@ -33,6 +42,9 @@ class CustomEditText : LinearLayoutCompat {
     private lateinit var tvError: AppCompatTextView
     private lateinit var tvTitle: AppCompatTextView
     private lateinit var tvMandatory: AppCompatTextView
+    private var mandatory: Boolean = false
+    var mobileNumberValidation: Boolean = false
+    var emailValidation: Boolean = false
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -77,13 +89,17 @@ class CustomEditText : LinearLayoutCompat {
         maxLength = attribute.getInt(R.styleable.CustomEditTextViewStyle_maxLength, INVALID_INT_ATTRIBUTE)
         minLength = attribute.getInt(R.styleable.CustomEditTextViewStyle_minLength, INVALID_INT_ATTRIBUTE)
         maxLengthErrorMsg = attribute.getString(R.styleable.CustomEditTextViewStyle_maxLengthErrorMsg)
+        mandatoryErrorMsg = attribute.getString(R.styleable.CustomEditTextViewStyle_mandatoryErrorMsg)
+        validationErrorMsg = attribute.getString(R.styleable.CustomEditTextViewStyle_validationErrorMsg)
         title = attribute.getString(R.styleable.CustomEditTextViewStyle_title)
         val gravity = attribute.getInt(R.styleable.CustomEditTextViewStyle_android_gravity, Gravity.LEFT)
         val ellipsize = attribute.getInt(R.styleable.CustomEditTextViewStyle_android_ellipsize, TextUtils.TruncateAt.START.ordinal)
         val lines = attribute.getInt(R.styleable.CustomEditTextViewStyle_android_lines, INVALID_INT_ATTRIBUTE)
         val maxLine = attribute.getInt(R.styleable.CustomEditTextViewStyle_android_maxLines, INVALID_INT_ATTRIBUTE)
         val enable = attribute.getBoolean(R.styleable.CustomEditTextViewStyle_android_enabled, true)
-        val mandatory = attribute.getBoolean(R.styleable.CustomEditTextViewStyle_mandatory, false)
+        mobileNumberValidation = attribute.getBoolean(R.styleable.CustomEditTextViewStyle_mobileValidation, false)
+        emailValidation = attribute.getBoolean(R.styleable.CustomEditTextViewStyle_emailValidation, false)
+        mandatory = attribute.getBoolean(R.styleable.CustomEditTextViewStyle_mandatory, false)
         val fieldContentDescription = attribute.getString(R.styleable.CustomEditTextViewStyle_fieldContentDescription)
         setEditTextContentDescription(fieldContentDescription)
         getInputFilterList(attribute)
@@ -137,18 +153,24 @@ class CustomEditText : LinearLayoutCompat {
 
 
     private fun checkMaxLength(textLength: Int) {
+        var error = getLengthCustomError()
         if (textLength > maxLength) {
             if (maxLengthErrorMsg.isNullOrEmpty()) {
                 val title = String.format(resources.getString(R.string.error_length_common), title, maxLength)
-                errorAdapter.showErrorMessage(title)
+                error.errorMessage = title
+                errorAdapter.showErrorMessage(error)
             } else {
-                errorAdapter.showErrorMessage(maxLengthErrorMsg)
+                errorAdapter.showErrorMessage(error)
             }
         } else {
             if (errorAdapter.isErrorShowing) {
-                errorAdapter.dismissErrorMsg()
+                errorAdapter.dismissError(error)
             }
         }
+    }
+
+    private fun getLengthCustomError(): CustomError {
+        return CustomError(ErrorID.LENGTH_ERROR.ordinal, ErrorType.LOCAL_VALIDATION_ERROR.toString(), maxLengthErrorMsg, ErrorShowType.INLINE_ERROR.toString())
     }
 
     /**
@@ -249,7 +271,7 @@ class CustomEditText : LinearLayoutCompat {
 
 
     /** This method set Lines to Edit text.  */
-    private fun setMaxLines(maxLines: Int) {
+    public fun setMaxLines(maxLines: Int) {
         maxLines.let {
             if (maxLines != INVALID_INT_ATTRIBUTE) {
                 edtValue.maxLines = maxLines
@@ -258,7 +280,7 @@ class CustomEditText : LinearLayoutCompat {
     }
 
     /** This method set Lines to Edit text.  */
-    private fun setLines(lines: Int) {
+    public fun setLines(lines: Int) {
         lines.let {
             if (lines != INVALID_INT_ATTRIBUTE) {
                 edtValue.setLines(lines)
@@ -306,6 +328,15 @@ class CustomEditText : LinearLayoutCompat {
         }
     }
 
+    public fun setOnEditorActionListener(listner: TextView.OnEditorActionListener) {
+        edtValue.setOnEditorActionListener(listner)
+    }
+
+    public fun setImeOptions(imeOption: Int) {
+        edtValue.imeOptions = imeOption
+    }
+
+
     /**
      * This method used to set callback for [TextChangedListener].
      *
@@ -324,10 +355,10 @@ class CustomEditText : LinearLayoutCompat {
 
                     override fun afterTextChanged(s: Editable) {
                         val input = s.toString()
-                        textChangedListener.afterTextChanged(input, true)
                         if (maxLength != INVALID_INT_ATTRIBUTE) {
                             checkMaxLength(s.length)
                         }
+                        textChangedListener.afterTextChanged(input, true)
                     }
                 })
     }
@@ -346,6 +377,93 @@ class CustomEditText : LinearLayoutCompat {
          * @param isErrorMsgCleared weather the error msg cleared of not.
          */
         fun afterTextChanged(text: String, isErrorMsgCleared: Boolean)
+    }
+
+    public fun onSubmitShowError(): Boolean {
+        //check for mandatory filed
+        checkAndInsertMandatoryFieldError()
+        //check for mobile fields
+        checkAndInsertMobileNumberFormatError()
+        //check for Email fields
+        checkAndInsertEmailFormatError()
+        //check for Min Length fields
+        checkAndInsertMinLengthValidationError(getText())
+
+        return errorAdapter.isErrorStillShowing()
+    }
+
+    private fun checkAndInsertMandatoryFieldError() {
+        var error = CustomError(ErrorID.MANDATORY_FIELD_ERROR.ordinal, ErrorType.LOCAL_VALIDATION_ERROR.toString(), context.getString(R.string.common_mandatory_error_message), ErrorShowType.INLINE_ERROR.toString())
+        if (mandatory) {
+            if (getText().trim().isEmpty()) {
+                mandatoryErrorMsg?.let {
+                    error.errorMessage = it
+                }
+                errorAdapter.showErrorMessage(error)
+            } else {
+                errorAdapter.dismissError(error)
+            }
+        } else {
+            errorAdapter.dismissError(error)
+        }
+    }
+
+    private fun checkAndInsertMobileNumberFormatError() {
+        var error = CustomError(ErrorID.MAX_MOBILE_NO.ordinal, ErrorType.LOCAL_VALIDATION_ERROR.toString(), context.getString(R.string.common_error_message), ErrorShowType.INLINE_ERROR.toString())
+        if (mobileNumberValidation) {
+            if (getText().trim().isNotEmpty()) {
+                if (maxLength != INVALID_INT_ATTRIBUTE) {
+                    if (getText().trim().length != maxLength) {
+                        validationErrorMsg?.let {
+                            error.errorMessage = it
+                        }
+                        errorAdapter.showErrorMessage(error)
+                    } else {
+                        errorAdapter.dismissError(error)
+                    }
+                } else {
+                    errorAdapter.dismissError(error)
+                }
+            } else {
+                if (!mandatory) {
+                    errorAdapter.dismissError(error)
+                }
+            }
+        } else {
+            errorAdapter.dismissError(error)
+        }
+    }
+
+    private fun checkAndInsertEmailFormatError() {
+        var error = CustomError(ErrorID.EMAIL_ERROR.ordinal, ErrorType.LOCAL_VALIDATION_ERROR.toString(), context.getString(R.string.common_error_message), ErrorShowType.INLINE_ERROR.toString())
+        if (emailValidation) {
+            if (!Utils.validateEmail(getText())) {
+                validationErrorMsg?.let {
+                    error.errorMessage = it
+                }
+                errorAdapter.showErrorMessage(error)
+            } else {
+                errorAdapter.dismissError(error)
+            }
+        } else {
+            errorAdapter.dismissError(error)
+        }
+    }
+
+    private fun checkAndInsertMinLengthValidationError(value: String) {
+        var error = CustomError(ErrorID.MIN_LENGTH.ordinal, ErrorType.LOCAL_VALIDATION_ERROR.toString(), context.getString(R.string.common_error_message), ErrorShowType.INLINE_ERROR.toString())
+        if (minLength != INVALID_INT_ATTRIBUTE) {
+            if (value.length < minLength) {
+                validationErrorMsg?.let {
+                    error.errorMessage = it
+                }
+                errorAdapter.showErrorMessage(error)
+            } else {
+                errorAdapter.dismissError(error)
+            }
+        } else {
+            errorAdapter.dismissError(error)
+        }
     }
 }
 

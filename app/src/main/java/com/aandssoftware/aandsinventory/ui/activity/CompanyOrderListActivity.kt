@@ -55,7 +55,7 @@ class CompanyOrderListActivity : ListingActivity() {
                     dismissProgressBar()
                     if (result) {
                         val intent = Intent(this@CompanyOrderListActivity, ListingActivity::class.java)
-                        intent.putExtra(AppConstants.LISTING_TYPE, ListType.LIST_TYPE_INVENTORY.ordinal)
+                        intent.putExtra(AppConstants.LISTING_TYPE, ListType.LIST_TYPE_MATERIAL.ordinal)
                         intent.putExtra(CustomerListAdapter.CUSTOMER_ID, customerModel.id)
                         intent.putExtra(AppConstants.ORDER_ID, alphaNumericOrderId)
                         startActivityForResult(intent, AppConstants.LISTING_REQUEST_CODE)

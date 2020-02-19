@@ -16,3 +16,10 @@
 #   public *;
 #}
 
+-optimizationpasses 5
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers
+-dontpreverify
+-verbose
+
+-keep class com.aandssoftware.aandsinventory.models.** { *; }

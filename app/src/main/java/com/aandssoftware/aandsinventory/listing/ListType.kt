@@ -35,18 +35,16 @@ enum class ListType {
         }
     },
 
+    LIST_TYPE_COMPANY_DISCOUNTED_ITEMS {
+        override fun getInstance(activity: ListingActivity): ListingOperations {
+            return CompanyDiscountedItemsListAdapter(activity)
+        }
+    },
 
     LIST_TYPE_COMPANY_ORDER {
         override fun getInstance(activity: ListingActivity): ListingOperations {
             return CompanyOrderListAdapter(activity)
         }
-    },
-
-    LIST_TYPE_COMPANY_MATERIALS {
-        override fun getInstance(activity: ListingActivity): ListingOperations {
-            return OrderListAdapter(activity)
-        }
     };
-
     abstract fun getInstance(activity: ListingActivity): ListingOperations
 }

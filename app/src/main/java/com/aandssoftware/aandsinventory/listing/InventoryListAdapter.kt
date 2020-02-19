@@ -9,21 +9,27 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.*
+import android.view.MenuItem.OnActionExpandListener
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
+import androidx.core.view.MenuItemCompat
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
+import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.ViewMode
+import com.aandssoftware.aandsinventory.ui.activity.CompanyOrderListActivity
 import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.activity.OrderDetailsActivity
 import com.aandssoftware.aandsinventory.ui.activity.OrderListActivity
 import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
+import com.aandssoftware.aandsinventory.ui.component.CustomEditText
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ORDER_RELOAD_LIST_RESULT_CODE
@@ -36,6 +42,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.inventory_item.view.*
 import java.io.Serializable
 import java.util.*
+import java.util.zip.Inflater
 import kotlin.collections.ArrayList
 
 
@@ -47,17 +54,17 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
     private val workRunnable: Runnable
 
     companion object {
-        const val INVENTORY_ID = "inventory_id"
-        const val RECORD_FETCH_AT_TIME = 11
+        const val RECORD_FETCH_AT_TIME = 51
         const val SEARCH_DELAY = 500
     }
 
     private val isOrderSelectionCall: Boolean
         get() {
             val callingActivity = activity.callingActivity
-            return callingActivity != null && callingActivity.className
-                    .equals(OrderListActivity::class.java.name, ignoreCase = true) || callingActivity!!.className
-                    .equals(OrderDetailsActivity::class.java.name, ignoreCase = true)
+            return callingActivity != null &&
+                    callingActivity.className.equals(OrderListActivity::class.java.name, ignoreCase = true) ||
+                    callingActivity!!.className.equals(CompanyOrderListActivity::class.java.name, ignoreCase = true) ||
+                    callingActivity.className.equals(OrderDetailsActivity::class.java.name, ignoreCase = true)
         }
 
     internal var lastNodeKey: Double = 0.0
@@ -79,6 +86,7 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
         var inventoryItemQuantity: AppCompatTextView = itemView.inventoryItemQuantity
         var inventoryItemDetails: AppCompatTextView = itemView.inventoryItemDetails
         var cardView: CardView = itemView.cardView
+        var llButtons: LinearLayout = itemView.llButtons
 
         init {
             imgInventoryItemHistory.setOnClickListener {
@@ -91,6 +99,17 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
             imgInventoryItemEdit.setOnClickListener {
                 var pos: Int = itemView.getTag(R.string.tag) as Int
                 performClick(itemView.tag as InventoryItem, ViewMode.UPDATE.ordinal, pos)
+            }
+
+            cardView.setOnLongClickListener {
+                if (Utils.isAdminUser(activity)) {
+                    getDiscountedAmountDialog(itemView.tag as InventoryItem, activity)
+                }
+                false
+            }
+
+            if (Utils.isAdminUser(activity)) {
+                llButtons.visibility = View.VISIBLE
             }
         }
     }
@@ -269,12 +288,16 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
         activity.menuInflater.inflate(R.menu.inventory_menu, menu)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             val manager = activity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-            menu.findItem(R.id.search).isVisible = true
+            if (!Utils.isAdminUser(activity)) {
+                menu.findItem(R.id.actionAdd).isVisible = false
+            }
+            var menuItem: MenuItem = menu.findItem(R.id.search)
+            menuItem.isVisible = true
             search = menu.findItem(R.id.search).actionView as SearchView
             search?.apply {
-                search!!.visibility = View.VISIBLE
-                search!!.setSearchableInfo(manager.getSearchableInfo(activity.componentName))
-                search!!.setOnQueryTextListener(object : OnQueryTextListener {
+                this.visibility = View.VISIBLE
+                this.setSearchableInfo(manager.getSearchableInfo(activity.componentName))
+                this.setOnQueryTextListener(object : OnQueryTextListener {
                     override fun onQueryTextSubmit(s: String): Boolean {
                         return true
                     }
@@ -284,6 +307,17 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                         return true
                     }
                 })
+                this.setOnSearchClickListener(object : View.OnClickListener {
+                    override fun onClick(p0: View?) {
+                        activity.setActionBarTitleVisibility(View.GONE)
+                    }
+
+                })
+
+                this.setOnCloseListener {
+                    activity.setActionBarTitleVisibility(View.VISIBLE)
+                    false
+                }
             }
 
         }
@@ -347,7 +381,7 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
             AppConstants.GET_INVENTORY_UPDATE_REQUEST_CODE// when we open add inventory screen
             -> when (resultCode) {
                 ORDER_RELOAD_LIST_RESULT_CODE//Open add Inventory for getting quantity
-                -> activity.finish()
+                -> callToOrderActivityAfterGettingQuantity(data)
                 RELOAD_LIST_RESULT_CODE// added Inventory Item then
                 -> callAfterActivityResult(data)
             }
@@ -375,6 +409,42 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                 }
             }
         }
+    }
+
+    private fun callToOrderActivityAfterGettingQuantity(data: Intent?) {
+        data?.let {
+            var intent = Intent()
+            intent.putExtra(AppConstants.UPDATED, true)
+            intent.putExtra(AppConstants.POSITION_IN_LIST, activity.intent.getIntExtra(AppConstants.POSITION_IN_LIST, 0))
+            intent.putExtras(data)
+            activity.setResult(AppConstants.ORDER_RELOAD_LIST_RESULT_CODE, intent)
+            activity.finish()
+        }
+    }
+
+    fun getDiscountedAmountDialog(inventoryItem: InventoryItem, context: Context) {
+        val alertDialogBuilderUserInput = AlertDialog.Builder(context)
+        var view: View = LayoutInflater.from(activity).inflate(R.layout.customer_discount_dialog, null)
+        alertDialogBuilderUserInput
+                .setView(view)
+                .setCancelable(false)
+                .setPositiveButton(context.getString(R.string.yes)) { _, _ ->
+                    var text = view.findViewById<CustomEditText>(R.id.edtDiscountedAmount).getText()
+                    if (text.isNotEmpty()) {
+                        inventoryItem.discountRateForCompany = text.toDouble()
+                        var intentReturn = Intent()
+                        intentReturn.putExtra(AppConstants.INVENTORY_INSTANCE, inventoryItem)
+                        activity.setResult(AppConstants.CUSTOMER_DISCOUNT_RESULT_CODE, intentReturn)
+                        activity.finish()
+                    } else {
+                        activity.showSnackBarMessage(activity.getString(R.string.common_mandatory_error_message))
+                    }
+                }
+                .setNegativeButton(context.getString(R.string.no))
+                { dialogBox, _ -> dialogBox.cancel() }
+
+        val alertDialog = alertDialogBuilderUserInput.create()
+        alertDialog.show()
     }
 
 }

@@ -38,6 +38,12 @@ import java.util.ArrayList
 
 class OrderListAdapter(private val activity: ListingActivity) : ListingOperations {
 
+    internal var lastNodeKey: Double = 0.0
+
+    companion object {
+        const val ORDER_RECORD_FETCH_AT_TIME = 51
+    }
+
     inner class OrderViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
         var tvOrderDate: AppCompatTextView = itemView.tvOrderDate
@@ -54,12 +60,16 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
                 var pos: Int = itemView.getTag(R.string.tag) as Int
                 deleteOrder(itemView.tag as OrderModel, activity, pos)
             }
-            cardView.setOnClickListener { showOrderInventoryActivity(activity, (itemView.tag as OrderModel).id) }
+            cardView.setOnClickListener {
+                var pos: Int = itemView.getTag(R.string.tag) as Int
+                showOrderInventoryActivity(activity, (itemView.tag as OrderModel).id, pos)
+            }
         }
     }
 
-    private fun showOrderInventoryActivity(activity: Activity, orderId: String?) {
-        Navigator.openOrderDetailsScreen(activity, orderId!!)
+    private fun showOrderInventoryActivity(activity: Activity, orderId: String?, pos: Int) {
+        var intent = Intent().putExtra(AppConstants.POSITION_IN_LIST, pos)
+        Navigator.openOrderDetailsScreen(activity, orderId!!, intent)
     }
 
     override fun getActivityLayoutId(): Int {
@@ -107,12 +117,23 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
 
     override fun getResult() {
         activity.showProgressBar()
-        FirebaseUtil.getInstance().getCustomerDao().getOrders(object : ValueEventListener {
+        FirebaseUtil.getInstance().getCustomerDao().getOrders(lastNodeKey, ORDER_RECORD_FETCH_AT_TIME, object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val list = FirebaseUtil.getInstance()
                         .getListData(dataSnapshot, OrderModel::class.java)
                 if (list.isNotEmpty()) {
-                    activity.loadData(list)
+                    list.reverse()
+                    var shouldLoadMore: Boolean
+                    val lastItem = list[list.size - 1]
+                    lastItem.let {
+                        lastNodeKey = lastItem.orderDateUpdated.toDouble()
+                        shouldLoadMore = list.size >= ORDER_RECORD_FETCH_AT_TIME
+                        if (shouldLoadMore) {
+                            list.remove(lastItem)
+                        }
+                    }
+                    activity.reloadNewData(list)
+                    activity.isLoading = shouldLoadMore.not()
                 }
                 activity.dismissProgressBar()
             }
@@ -181,7 +202,35 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             AppConstants.LISTING_REQUEST_CODE // open order List activity ,
-            -> getResult()
+            -> updateOrder(data)
+        }
+    }
+
+    private fun updateOrder(data: Intent?) {
+        data?.let {
+            var isOrderUpdated = data.getBooleanExtra(AppConstants.UPDATED, false)
+            if (isOrderUpdated) {
+                var position = data.getIntExtra(AppConstants.POSITION_IN_LIST, AppConstants.INVALID_ID)
+                if (position != AppConstants.INVALID_ID) {
+                    var orderId = data.getStringExtra(AppConstants.ORDER_ID)
+                    orderId?.let {
+                        activity.showProgressBar()
+                        FirebaseUtil.getInstance().getCustomerDao().getOrderFromID(orderId, object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {
+                                activity.dismissProgressBar()
+                            }
+
+                            override fun onDataChange(p0: DataSnapshot) {
+                                activity.dismissProgressBar()
+                                var model = p0.getValue(OrderModel::class.java)
+                                model?.let {
+                                    activity.updateElement(model, position)
+                                }
+                            }
+                        })
+                    }
+                }
+            }
         }
     }
 

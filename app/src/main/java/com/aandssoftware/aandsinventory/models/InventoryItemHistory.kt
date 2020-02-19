@@ -31,4 +31,7 @@ data class InventoryItemHistory(@SerializedName("id") var id: String? = null) : 
 
     @SerializedName("modifiedDate")
     var modifiedDate: Long = 0
+
+    @SerializedName("inventoryItemName")
+    var inventoryItemName: String? = null
 }

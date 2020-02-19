@@ -3,6 +3,7 @@ package com.aandssoftware.aandsinventory.ui.activity
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.view.View
 import android.widget.ScrollView
 import androidx.core.app.ActivityCompat
 import com.aandssoftware.aandsinventory.R
+import com.aandssoftware.aandsinventory.application.AandSApplication
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
@@ -32,6 +34,8 @@ import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.PICK_IM
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_LIST_RESULT_CODE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.TITLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.VIEW_MODE
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ZERO_STRING
+import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -66,6 +70,7 @@ class AddInventoryActivity : BaseActivity() {
         inventoryId = intent.getStringExtra(INVENTORY_ID)
         orderId = intent.getStringExtra(ORDER_ID)
         viewMode = intent.getIntExtra(VIEW_MODE, ViewMode.ADD.ordinal)
+        checkUserAndHideData()
         if (inventoryId != null && inventoryId.isNotEmpty()) {
             showProgressBar()
             var listener = object : ValueEventListener {
@@ -82,11 +87,24 @@ class AddInventoryActivity : BaseActivity() {
                     dismissProgressBar()
                 }
             }
-            if (inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal) {
+            if (inventoryType == ListType.LIST_TYPE_ORDER_INVENTORY.ordinal) {
+                FirebaseUtil.getInstance().getCustomerDao().getCompanyOrdersFromOrderId(Utils.getLoginCustomerId(this), orderId, inventoryId, listener)
+            } else if (inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal) {
                 FirebaseUtil.getInstance().getInventoryDao().getMaterialInventoryItemFromId(inventoryId, listener)
-            } else {
+            } else if (inventoryType == ListType.LIST_TYPE_INVENTORY.ordinal) {
                 FirebaseUtil.getInstance().getInventoryDao().getInventoryItemFromId(inventoryId, listener)
             }
+        }
+    }
+
+    private fun checkUserAndHideData() {
+        if (!Utils.isAdminUser(this)) {
+            llQuantityAndUnit.visibility = View.GONE
+            edtSellingPrice.visibility = View.GONE
+            edtPurchasePrice.visibility = View.GONE
+            slShopDetails.visibility = View.GONE
+            edtCgstAmount.visibility = View.GONE
+            llSgstDetails.visibility = View.GONE
         }
     }
 
@@ -94,6 +112,10 @@ class AddInventoryActivity : BaseActivity() {
     private fun setUpUI() {
         setupActionBar(title)
         val watcher = CustomTextWatcher(edtQuantity, edtPurchasePrice, edtUnitPrice)
+        val cGstWatcher = CustomGstWatcher(edtCgstPercent, edtUnitPrice, edtCgstAmount)
+        val sGstWatcher = CustomGstWatcher(edtSgstPercent, edtUnitPrice, edtSgstAmount)
+        edtCgstPercent.addTextChangedListener(cGstWatcher)
+        edtSgstPercent.addTextChangedListener(sGstWatcher)
         edtPurchasePrice.addTextChangedListener(watcher)
         edtQuantity.addTextChangedListener(watcher)
         imgInventoryImg.setOnClickListener {
@@ -144,6 +166,13 @@ class AddInventoryActivity : BaseActivity() {
                 }
             }
         }
+        var enable = true
+        edtBrandName.setEditableMode(enable)
+        edtModelName.setEditableMode(enable)
+        edtDescription.setEditableMode(enable)
+        edtColor.setEditableMode(enable)
+        edtSize.setEditableMode(enable)
+        edtHsnCode.setEditableMode(enable)
     }
 
     private fun enabledView(enable: Boolean) {
@@ -222,10 +251,37 @@ class AddInventoryActivity : BaseActivity() {
                 imagePath = it.inventoryItemImagePath
                 if (it.inventoryItemImagePath != null) {
                     var uri: Uri = Uri.parse(imagePath)
-                    Glide.with(this)
+                    Glide.with(AandSApplication.getInstance())
                             .load(uri)
                             .placeholder(R.drawable.ic_image_add)
                             .into(imgInventoryImg)
+                }
+
+                if (!Utils.isAdminUser(this)) {
+                    var sellingPriceDouble = Utils.isEmpty(it.minimumSellingPrice, ZERO_STRING).toDouble()
+                    val user = SharedPrefsUtils.getUserPreference(this, SharedPrefsUtils.CURRENT_USER)
+                    val unit = it.itemQuantityUnit
+                    user?.let { customer ->
+                        var custSellingPrice: String = EMPTY_STRING
+                        var isDiscountedItem = user.discountedItems?.containsKey(it.id) ?: false
+                        if (isDiscountedItem) {
+                            val discount = user.discountedItems?.get(it.id)
+                            discount?.let {
+                                custSellingPrice = Utils.currencyLocale(discount.toDouble())
+                            }
+                        } else {
+                            var discount = if (user.discountPercent == 0.0) {
+                                user.discountPercent
+                            } else {
+                                var discountPercent = user.discountPercent
+                                sellingPriceDouble * discountPercent / 100
+                            }
+                            sellingPriceDouble -= discount
+                            custSellingPrice = Utils.currencyLocale(sellingPriceDouble)
+                        }
+                        custSellingPrice = custSellingPrice.plus(" /  ").plus(unit)
+                        edtUnitPrice.setText(custSellingPrice)
+                    }
                 }
             }
         }
@@ -267,6 +323,12 @@ class AddInventoryActivity : BaseActivity() {
                 val mainInventoryCopy = InventoryItem(it)
                 mainInventoryCopy.itemQuantity = intUpdatedQuantity.toString()
                 mainInventoryCopy.parentId = it.id
+                mainInventoryCopy.inventoryItemBrandName = edtBrandName.getText()
+                mainInventoryCopy.inventoryItemModelName = edtModelName.getText()
+                mainInventoryCopy.description = edtDescription.getText()
+                mainInventoryCopy.inventoryItemColor = edtColor.getText()
+                mainInventoryCopy.inventoryItemSize = edtSize.getText()
+                mainInventoryCopy.hsnCode = edtHsnCode.getText()
                 val message = String.format(resources.getString(R.string.inventory_add_order), intUpdatedQuantity, mainInventoryCopy.inventoryItemName)
                 FirebaseUtil.getInstance().isConnected(callBackListener { online ->
                     if (online) {
@@ -287,35 +349,28 @@ class AddInventoryActivity : BaseActivity() {
     }
 
     private fun onSaveAndUpdateClick() {
-        if (edtName.getText().isNotEmpty()) {
-            if (edtPurchasePrice.getText().isNotEmpty()) {
-                showProgressBar()
-                FirebaseUtil.getInstance().isConnected(callBackListener { online ->
-                    if (online) {
-                        if ((viewMode == ViewMode.UPDATE.ordinal && inventoryId.isNotEmpty())) {
-                            inventory.let {
-                                actionOnSaveAndUpdate(inventoryId, inventory?.inventoryId)
-                            }
-                        } else {
-                            showProgressBar()
-                            FirebaseUtil.getInstance().getInventoryDao().getNextInventoryItemId(object : GetAlphaNumericAndNumericIdListener {
-                                override fun afterGettingIds(alphaNumericId: String, numericId: String) {
-                                    dismissProgressBar()
-                                    actionOnSaveAndUpdate(alphaNumericId, numericId)
-                                }
-                            })
-                        }
+        if (llContaint.validate()) {
+            showProgressBar()
+            FirebaseUtil.getInstance().isConnected(callBackListener { online ->
+                if (online) {
+                    if ((viewMode == ViewMode.UPDATE.ordinal && inventoryId.isNotEmpty())) {
+                        actionOnSaveAndUpdate(inventoryId, inventory?.inventoryId)
                     } else {
-                        showSnackBarMessage(getString(R.string.no_internet_connection))
+                        showProgressBar()
+                        FirebaseUtil.getInstance().getInventoryDao().getNextInventoryItemId(object : GetAlphaNumericAndNumericIdListener {
+                            override fun afterGettingIds(alphaNumericId: String, numericId: String) {
+                                dismissProgressBar()
+                                actionOnSaveAndUpdate(alphaNumericId, numericId)
+                            }
+                        })
                     }
-                })
-            } else {
-                showSnackBarMessage(getString(R.string.validation_empty_purchase_price))
-            }
-        } else {
-            showSnackBarMessage(getString(R.string.validation_empty_name))
+                } else {
+                    showSnackBarMessage(getString(R.string.no_internet_connection))
+                }
+            })
         }
     }
+
 
     private fun actionOnSaveAndUpdate(alphaNumericItemId: String, numericItemId: String?) {
         val item = InventoryItem()
@@ -343,9 +398,9 @@ class AddInventoryActivity : BaseActivity() {
         item.inventoryItemPurchaseDate = System.currentTimeMillis()
         item.inventoryItemLastUpdatedDate = System.currentTimeMillis()
         item.gstPercentage = Utils.isEmptyIntFromString(edtCgstPercent.getText(), 12)
-        item.gstAmount = Utils.isEmptyIntFromString(edtCgstAmount.getText(), 0)
-        item.sgstPercentage = Utils.isEmptyIntFromString(edtSgstPercent.getText(), 0)
-        item.sgstAmount = Utils.isEmptyIntFromString(edtSgstAmount.getText(), 0)
+        item.gstAmount = Utils.isEmptyIntFromString(edtCgstAmount.getText(), 12)
+        item.sgstPercentage = Utils.isEmptyIntFromString(edtSgstPercent.getText(), 12)
+        item.sgstAmount = Utils.isEmptyIntFromString(edtSgstAmount.getText(), 12)
 
         showProgressBar()
         FirebaseUtil.getInstance().getInventoryDao().saveInventoryItem(item, inventoryType, callBackListener {
@@ -364,7 +419,9 @@ class AddInventoryActivity : BaseActivity() {
                 inventory?.let {
                     val map = item.getChangedParamList(it)
                     if (map.isNotEmpty()) {
-                        FirebaseUtil.getInstance().getInventoryDao().saveInventoryItemHistory(alphaNumericItemId, map, DatabaseReference.CompletionListener { databaseError, databaseReference -> dismissProgressBar() })
+                        FirebaseUtil.getInstance().getInventoryDao().saveInventoryItemHistory(alphaNumericItemId, map, DatabaseReference.CompletionListener { databaseError, databaseReference ->
+                            dismissProgressBar()
+                        })
                     }
                 }
             }
@@ -494,4 +551,36 @@ class AddInventoryActivity : BaseActivity() {
             return bd.toDouble()
         }
     }
+
+    private class CustomGstWatcher(private var edtPercent: CustomEditText,
+                                   private var edtUnitPrice: CustomEditText,
+                                   private var edtAmount: CustomEditText) : TextWatcher {
+        override fun afterTextChanged(p0: Editable?) {}
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            try {
+                val strPercent = edtPercent.getText()
+                if (strPercent.isNotEmpty()) {
+                    val unitPrice = Utils.parseCommaSeparatedCurrency(edtUnitPrice.getText())
+                    if (unitPrice > 0) {
+                        val percent = edtPercent.getText().toDouble()
+                        var unitPrice = unitPrice * percent / 100
+                        edtAmount.setText("".plus(unitPrice))
+                    } else {
+                        edtAmount.setText("")
+                    }
+                } else {
+                    edtAmount.setText("")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+    }
+
 }

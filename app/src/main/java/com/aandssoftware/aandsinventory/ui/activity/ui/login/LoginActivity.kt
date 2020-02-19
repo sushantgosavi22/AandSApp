@@ -1,14 +1,19 @@
 package com.aandssoftware.aandsinventory.ui.activity.ui.login
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView.OnEditorActionListener
+import com.aandssoftware.aandsinventory.BuildConfig
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
-import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
+import com.aandssoftware.aandsinventory.models.AppVersion
 import com.aandssoftware.aandsinventory.models.CustomerModel
+import com.aandssoftware.aandsinventory.models.Permissions
 import com.aandssoftware.aandsinventory.models.ViewMode
-import com.aandssoftware.aandsinventory.models.callBackListener
 import com.aandssoftware.aandsinventory.ui.activity.BaseActivity
 import com.aandssoftware.aandsinventory.ui.activity.CarouselDashboardActivity
 import com.aandssoftware.aandsinventory.utilities.AppConstants
@@ -19,16 +24,28 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
 
+
 class LoginActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        setUpUI()
+    }
+
+    private fun setUpUI() {
         btnLogin.setOnClickListener {
-            if (validate() && check()) {
-                performLogin()
+            if (validate()) {
+                checkVersionAndLogin()
             }
         }
+        tvPassword.setImeOptions(EditorInfo.IME_ACTION_DONE)
+        tvPassword.setOnEditorActionListener(OnEditorActionListener { _, actionId, event ->
+            if (event != null && event.keyCode === KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
+                btnLogin.performClick()
+            }
+            false
+        })
 
         btnRegister.setOnClickListener {
             Navigator.openCustomerScreen(this, AppConstants.EMPTY_STRING, AppConstants.EMPTY_STRING, ViewMode.ADD.ordinal, getString(R.string.company_details))
@@ -53,24 +70,26 @@ class LoginActivity : BaseActivity() {
 
     private fun performLogin() {
         showProgressBar()
-        FirebaseUtil.getInstance().isConnected(callBackListener { online ->
-            if (online) {
-                FirebaseUtil.getInstance().getCustomerDao().getCustomerFromUserNameAndPassword(tvUsername.getText(), object : ValueEventListener {
-                    override fun onCancelled(p0: DatabaseError) {
-                        dismissProgressBar()
-                    }
+        if (FirebaseUtil.getInstance().isInternetConnected(this)) {
+            FirebaseUtil.getInstance().getCustomerDao().getCustomerFromUserNameAndPassword(tvUsername.getText(), object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    dismissProgressBar()
+                }
 
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        dismissProgressBar()
-                        dataSnapshot.let {
-                            var model = dataSnapshot.children.first().getValue(CustomerModel::class.java)
-                            model?.let {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    dismissProgressBar()
+                    dataSnapshot.let {
+                        var model = dataSnapshot.children.first().getValue(CustomerModel::class.java)
+                        model?.let {
+                            if (model.blockedUser.not()) {
                                 val username = model.username
                                 val password = model.password
                                 if (tvUsername.getText().equals(username)) {
                                     if (tvPassword.getText().equals(password, ignoreCase = true)) {
                                         SharedPrefsUtils.setUserPreference(this@LoginActivity, CURRENT_USER, model)
-                                        SharedPrefsUtils.setBooleanPreference(this@LoginActivity, SharedPrefsUtils.ADMIN_USER, false)
+                                        var isAdminUser = model.permission?.containsValue(Permissions.ADMIN.toString())
+                                                ?: false
+                                        SharedPrefsUtils.setBooleanPreference(this@LoginActivity, SharedPrefsUtils.ADMIN_USER, isAdminUser)
                                         openDashboardActivity()
                                     } else {
                                         showSnackBarMessage(getString(R.string.password_not_match))
@@ -78,14 +97,18 @@ class LoginActivity : BaseActivity() {
                                 } else {
                                     showSnackBarMessage(getString(R.string.username_not_found))
                                 }
+                            } else {
+                                var message = model.blockedUserMessage
+                                        ?: getString(R.string.common_blocked_user_message)
+                                showSnackBarMessage(message)
                             }
                         }
                     }
-                })
-            } else {
-                showSnackBarMessage(getString(R.string.no_internet_connection))
-            }
-        })
+                }
+            })
+        } else {
+            showSnackBarMessage(getString(R.string.no_internet_connection))
+        }
     }
 
     private fun openDashboardActivity() {
@@ -94,17 +117,39 @@ class LoginActivity : BaseActivity() {
         finish()
     }
 
-    private fun check(): Boolean {
-        var check: Boolean = true
-        if (tvUsername.getText().equals(Utils.getAdminUsername())) {
-            if (tvPassword.getText().equals(Utils.getAdminPass(), ignoreCase = true)) {
-                check = false
-                SharedPrefsUtils.setBooleanPreference(this, SharedPrefsUtils.ADMIN_USER, true)
-                openDashboardActivity()
-                finish()
+
+    private fun checkVersionAndLogin() {
+        FirebaseUtil.getInstance().getCustomerDao().getAppVersion(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val appVersion = FirebaseUtil.getInstance()
+                        .getClassData(dataSnapshot, AppVersion::class.java)
+                appVersion?.let {
+                    if (appVersion.forceUpdate) {
+                        redirectToPlayStore()
+                        finish()
+                    } else if (appVersion.recomondedUpdate) {
+                        redirectToPlayStore()
+                    } else {
+                        if ((BuildConfig.VERSION_CODE < appVersion.updatedVersionCode.toInt())) {
+                            redirectToPlayStore()
+                            finish()
+                        } else {
+                            performLogin()
+                        }
+                    }
+                }
             }
+        })
+    }
+
+    private fun redirectToPlayStore() {
+        val appPackageName = packageName // package name of the app
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
+        } catch (anfe: android.content.ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
         }
-        return check
     }
 }
 

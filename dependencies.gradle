@@ -1,6 +1,5 @@
 // MOST common dependencies are tracked here for easier maintenance
 ext {
-    HILTI_DESIGN_VERSION = "7.0.1"
     PERMISSIONS_DISPATCHER_VERSION = "3.1.0"
     GOOGLE_LOCATIONS_SERVICES_VERSION = "16.0.0"
     BUTTER_KNIFE_VERSION = "10.2.0"

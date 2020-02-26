@@ -57,7 +57,7 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
             } else {
                 Glide.with(activity)
                         .load(mCarouselMenuModel.imageId)
-                        .placeholder(mCarouselMenuModel.defaultImageId)
+                        .placeholder(R.drawable.ic_customer)
                         .into(holder.carouselItemImage)
             }
         }

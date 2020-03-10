@@ -46,7 +46,6 @@ class AddCustomerActivity : ListingActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_add_customer)
         getAndAssignIntentData()
         setUpUI()
     }
@@ -69,10 +68,15 @@ class AddCustomerActivity : ListingActivity() {
     }
 
     private fun setViewByMode() {
-        if (viewMode == ViewMode.VIEW_ONLY.ordinal) {
+        if (viewMode == ViewMode.VIEW_ONLY.ordinal || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) {
             enabledView(false)
             imgCustomerImg.setOnClickListener({})
-            btnSave.visibility = View.GONE
+            imgCustomerImg.isEnabled = false
+            btnSave.visibility = if (viewMode == ViewMode.PASSWORD_UPDATE.ordinal) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
         } else {
             edtCustomerDescription.setLines(3)
             edtCustomerDescription.setMaxLines(3)
@@ -80,7 +84,7 @@ class AddCustomerActivity : ListingActivity() {
             edtCustomerRequirement.setMaxLines(3)
         }
 
-        if (viewMode == ViewMode.ADD.ordinal) {
+        if (viewMode == ViewMode.ADD.ordinal || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) {
             loginDetailsSection.visibility = View.VISIBLE
         }
 
@@ -90,10 +94,20 @@ class AddCustomerActivity : ListingActivity() {
                 Navigator.showMaterialInventoryFor(AddCustomerActivity@ this)
             }
             cardViewList.visibility = View.VISIBLE
-            if (viewMode != ViewMode.VIEW_ONLY.ordinal) {
-                edtDiscountPercent.visibility = View.VISIBLE
+            edtDiscountPercent.visibility = View.VISIBLE
+            if (viewMode == ViewMode.VIEW_ONLY.ordinal
+                    || viewMode == ViewMode.GET_INVENTORY_QUANTITY.ordinal
+                    || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) {
+                edtDiscountPercent.isEnabled = false
+                searchTitle.isEnabled = false
             }
+            if (viewMode == ViewMode.ADD.ordinal) {
+                searchTitle.isEnabled = false
+                searchTitle.visibility = View.GONE
+            }
+
         } else {
+            searchTitle.isEnabled = false
             cardViewList.visibility = View.GONE
             edtDiscountPercent.visibility = View.GONE
         }
@@ -135,7 +149,8 @@ class AddCustomerActivity : ListingActivity() {
     }
 
     private fun setValues() {
-        if ((viewMode == ViewMode.UPDATE.ordinal || viewMode == ViewMode.VIEW_ONLY.ordinal) && null != item) {
+        if ((viewMode == ViewMode.UPDATE.ordinal || viewMode == ViewMode.VIEW_ONLY.ordinal ||
+                        viewMode == ViewMode.PASSWORD_UPDATE.ordinal) && null != item) {
             edtCustomerName.setText(Utils.isEmpty(item.customerName))
             edtCustomerEmail.setText(Utils.isEmpty(item.companyMail))
             edtCustomerContact.setText(Utils.isEmpty(item.customerNumber))
@@ -147,8 +162,13 @@ class AddCustomerActivity : ListingActivity() {
             edtCustomerRequirement.setText(Utils.isEmpty(item.requirement))
             edtDiscountPercent.setText(item.discountPercent.toString())
             edtUsername.setText(item.username)
-            edtPassword.setText(item.password)
-            edtConfirmPassword.setText(item.password)
+            if (viewMode == ViewMode.PASSWORD_UPDATE.ordinal) {
+                edtPassword.setText(EMPTY_STRING)
+                edtConfirmPassword.setText(EMPTY_STRING)
+            } else {
+                edtPassword.setText(item.password)
+                edtConfirmPassword.setText(item.password)
+            }
             imagePath = item.imagePath
             if (item.imagePath != null) {
                 var uri: Uri = Uri.parse(imagePath)
@@ -159,7 +179,7 @@ class AddCustomerActivity : ListingActivity() {
                         .into(imgCustomerImg)
             }
         }
-        btnSave.text = if (viewMode == ViewMode.UPDATE.ordinal) resources.getString(R.string.update) else resources.getString(R.string.save)
+        btnSave.text = if (viewMode == ViewMode.UPDATE.ordinal || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) resources.getString(R.string.update) else resources.getString(R.string.save)
     }
 
     override fun onBackPressed() {
@@ -168,16 +188,16 @@ class AddCustomerActivity : ListingActivity() {
 
     private fun onButtonClick() {
         if (llContaint.validate()) {
-            if (viewMode == ViewMode.ADD.ordinal) {
+            if (viewMode == ViewMode.ADD.ordinal || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) {
                 if (!edtPassword.getText().equals(edtConfirmPassword.getText())) {
                     showSnackBarMessage(getString(R.string.password_not_match))
                     return
                 }
             }
 
-            FirebaseUtil.getInstance().isConnected(callBackListener {
+            FirebaseUtil.getInstance().isConnected(CallBackListener {
                 if (it) {
-                    if (viewMode == ViewMode.UPDATE.ordinal && fireBaseCustomerId.isNotEmpty()) {
+                    if ((viewMode == ViewMode.UPDATE.ordinal || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) && fireBaseCustomerId.isNotEmpty()) {
                         onSubmit(fireBaseCustomerId, numericCustomerId.toLong())
                     } else {
                         showProgressBar()
@@ -211,25 +231,33 @@ class AddCustomerActivity : ListingActivity() {
         model.discountPercent = Utils.isEmpty(edtDiscountPercent.getText(), 0.0)
         model.dateCreated = System.currentTimeMillis()
         model.imagePath = imagePath
-        if (viewMode == ViewMode.ADD.ordinal) {
+        if (viewMode == ViewMode.ADD.ordinal || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) {
             model.username = edtUsername.getText()
             model.password = edtPassword.getText()
-            var map = HashMap<String, String>()
-            map[Permissions.INITIAL_CREATED_PERMISSION.toString()] = Permissions.INITIAL_CREATED_PERMISSION.toString()
-            model.permission = map
+            if (viewMode == ViewMode.PASSWORD_UPDATE.ordinal) {
+                item.let {
+                    model.permission = it.permission
+                }
+            } else {
+                var map = HashMap<String, String>()
+                map[Permissions.INITIAL_CREATED_PERMISSION.toString()] = Permissions.INITIAL_CREATED_PERMISSION.toString()
+                model.permission = map
+            }
         } else {
             item.let {
                 model.username = item.username
                 model.password = item.password
                 model.permission = item.permission
+                model.discountedItems = item.discountedItems
             }
         }
         showProgressBar()
-        FirebaseUtil.getInstance().getCustomerDao().saveCustomerItem(model, callBackListener {
+        FirebaseUtil.getInstance().getCustomerDao().saveCustomerItem(model, CallBackListener {
             dismissProgressBar()
             clearText()
             fireBaseCustomerId = fireBaseUniqueCustomerId
             showSnackBarMessage(if (viewMode == ViewMode.UPDATE.ordinal) resources.getString(R.string.customer_updated_message) else resources.getString(R.string.customer_save_message))
+            onBackPressed()
         })
     }
 
@@ -296,8 +324,16 @@ class AddCustomerActivity : ListingActivity() {
                         if (inventotory is InventoryItem) {
                             inventotory.id?.let {
                                 var discountedAmount = inventotory.discountRateForCompany.toString()
-                                FirebaseUtil.getInstance().getCustomerDao().addDiscountedItemToCustomer(item, it, discountedAmount, callBackListener { sucess ->
+                                FirebaseUtil.getInstance().getCustomerDao().addDiscountedItemToCustomer(item, it, discountedAmount, CallBackListener { sucess ->
                                     if (sucess) {
+                                        var map = item.discountedItems
+                                        if (map == null) {
+                                            map = HashMap<String, String>()
+                                            map.put(it, discountedAmount)
+                                        } else {
+                                            map.put(it, discountedAmount)
+                                        }
+                                        item.discountedItems = map
                                         addElement(inventotory, 0)
                                     } else {
                                         showSnackBarMessage(getString(R.string.failed_to_add_discount))

@@ -10,6 +10,8 @@ class OrderModel : Serializable {
         const val TABLE_ORDER = "order"
         const val ORDER_COUNTER = "orderCounter"
         const val ORDER_ITEMS = "orderItems"
+        const val ORDER_STATUS = "orderStatus"
+        const val ORDER_STATUS_NAME = "orderStatusName"
         const val ORDER_BY_VALUE = "orderDateUpdated"
         const val ID_ORDER_BY_VALUE = "customerId"
         const val ORDER_CUSTOMER_MODEL = "customerModel"

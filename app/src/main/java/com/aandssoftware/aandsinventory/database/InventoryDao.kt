@@ -1,14 +1,24 @@
 package com.aandssoftware.aandsinventory.database
 
+import androidx.annotation.NonNull
 import com.aandssoftware.aandsinventory.application.AandSApplication
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
 import com.aandssoftware.aandsinventory.listing.ListType
-import com.aandssoftware.aandsinventory.models.callBackListener
+import com.aandssoftware.aandsinventory.models.CallBackListener
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.InventoryItemHistory
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 import java.util.*
+import java.nio.file.Files.delete
+import com.google.firebase.storage.StorageReference
+
+
+
+
 
 class InventoryDao {
 
@@ -138,7 +148,7 @@ class InventoryDao {
         getInventoryItemHistoryTableReference(inventoryId).orderByChild(InventoryItemHistory.ORDER_BY_VALUE).addListenerForSingleValueEvent(valueEventListener)
     }
 
-    fun saveInventoryItem(mInventoryItem: InventoryItem, inventoryType: Int, dataListener: callBackListener) {
+    fun saveInventoryItem(mInventoryItem: InventoryItem, inventoryType: Int, dataListener: CallBackListener) {
         if (null != mInventoryItem.id) {
             var ref = if (inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal)
                 materialInventoryItemTableReference
@@ -168,6 +178,11 @@ class InventoryDao {
             }
             reference.child(it).removeValue(completionListener)
         }
+    }
+
+    fun removeInventoryImage(url: String, callBackListener: CallBackListener) {
+        val photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(url)
+        photoRef.delete().addOnSuccessListener { callBackListener.getCallBack(true) }.addOnFailureListener { callBackListener.getCallBack(false) }
     }
 
     fun saveInventoryItemHistory(alphanumericInventoryId: String, hashMap: HashMap<String, Any>, listner: DatabaseReference.CompletionListener) {

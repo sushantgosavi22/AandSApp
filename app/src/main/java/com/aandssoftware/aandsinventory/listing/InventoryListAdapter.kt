@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.*
-import android.view.MenuItem.OnActionExpandListener
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
@@ -17,7 +16,6 @@ import android.widget.SearchView.OnQueryTextListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
-import androidx.core.view.MenuItemCompat
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
@@ -41,8 +39,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.inventory_item.view.*
 import java.io.Serializable
-import java.util.*
-import java.util.zip.Inflater
 import kotlin.collections.ArrayList
 
 
@@ -68,6 +64,11 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
         }
 
     internal var lastNodeKey: Double = 0.0
+
+    private val isAdminUser: Boolean
+        get() {
+            return Utils.isAdminUser(activity)
+        }
 
     private val inventoryType: Int
         get() = activity.intent
@@ -162,24 +163,34 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
         val holder = baseHolder as InventoryViewHolder
         val mItem = item as InventoryItem
         holder.inventoryItemName.text = mItem.inventoryItemName
-        holder.inventoryItemQuantity.text = EMPTY_STRING.plus(mItem.itemQuantity).plus(" ").plus(mItem.itemQuantityUnit)
-        holder.inventoryItemDetails.text = EMPTY_STRING.plus(mItem.inventoryItemBrandName).plus(" ").plus(mItem
+        val quantityDetails = EMPTY_STRING.plus(mItem.itemQuantity).plus(" ").plus(mItem.itemQuantityUnit)
+        val itemDetails = EMPTY_STRING.plus(mItem.inventoryItemBrandName).plus(" ").plus(mItem
                 .inventoryItemModelName).plus(" ").plus(mItem.inventoryItemColor).plus(" ").plus(mItem.inventoryItemSize)
 
+        if (isAdminUser) {
+            holder.inventoryItemQuantity.text = quantityDetails
+            holder.inventoryItemDetails.text = itemDetails
+        } else {
+            holder.inventoryItemQuantity.visibility = View.GONE
+            holder.inventoryItemDetails.text = itemDetails
+        }
+
         mItem.inventoryItemImagePath?.let {
-            if (it.contains(AppConstants.HTTP, ignoreCase = true)) {
+            /*if (it.contains(AppConstants.HTTP, ignoreCase = true)) {
                 var uri: Uri = Uri.parse(mItem.inventoryItemImagePath)
                 Glide.with(activity)
                         .load(uri)
                         .placeholder(android.R.drawable.ic_menu_gallery)
                         .crossFade()
                         .into(holder.imgInventoryItemLogo)
-            } else {
-                val bitmap = BitmapFactory.decodeFile(mItem.inventoryItemImagePath)
-                bitmap?.let {
-                    holder.imgInventoryItemLogo.setImageBitmap(bitmap)
-                }
-            }
+            }*/
+            var firstImage = it.values.toMutableList().first()
+            var uri: Uri = Uri.parse(firstImage)
+            Glide.with(activity)
+                    .load(uri)
+                    .placeholder(android.R.drawable.ic_menu_gallery)
+                    .crossFade()
+                    .into(holder.imgInventoryItemLogo)
         }
         holder.cardView.setOnClickListener {
             var pos: Int = baseHolder.itemView.getTag(R.string.tag) as Int
@@ -191,7 +202,7 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
         if (isOrderSelectionCall) {
             addOrderQuantity(mItem, pos)
         } else {
-            showAddInventoryItemFragment(mItem.id, viewMode, pos)
+            showAddInventoryItemScreen(mItem.id, viewMode, pos)
         }
     }
 
@@ -288,9 +299,6 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
         activity.menuInflater.inflate(R.menu.inventory_menu, menu)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             val manager = activity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-            if (!Utils.isAdminUser(activity)) {
-                menu.findItem(R.id.actionAdd).isVisible = false
-            }
             var menuItem: MenuItem = menu.findItem(R.id.search)
             menuItem.isVisible = true
             search = menu.findItem(R.id.search).actionView as SearchView
@@ -331,7 +339,11 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                 return true
             }
             R.id.actionAdd -> {
-                showAddInventoryItemFragment(EMPTY_STRING, ViewMode.ADD.ordinal, AppConstants.INVALID_ID)
+                if (Utils.isAdminUser(activity)) {
+                    showAddInventoryItemScreen(EMPTY_STRING, ViewMode.ADD.ordinal, AppConstants.INVALID_ID)
+                } else {
+                    showAddInventoryItemScreen(EMPTY_STRING, ViewMode.ADD_INVENTORY_BY_CUSTOMER.ordinal, AppConstants.INVALID_ID)
+                }
                 return true
             }
         }
@@ -342,7 +354,7 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
         activity.finish()
     }
 
-    private fun showAddInventoryItemFragment(id: String?, viewMode: Int, pos: Int) {
+    private fun showAddInventoryItemScreen(id: String?, viewMode: Int, pos: Int) {
         Navigator.openInventoryScreen(activity, id!!, viewMode, inventoryType, title, pos)
     }
 
@@ -399,7 +411,7 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                         activity.updateElement(inventoryInstance, pos)
                     }
                 }
-            } else if (viewMode == ViewMode.ADD.ordinal) {
+            } else if (viewMode == ViewMode.ADD.ordinal || viewMode == ViewMode.ADD_INVENTORY_BY_CUSTOMER.ordinal) {
                 if (data.hasExtra(AppConstants.INVENTORY_INSTANCE)) {
                     val inventoryInstance = data.getSerializableExtra(AppConstants.INVENTORY_INSTANCE)
                     if (inventoryInstance != null) {

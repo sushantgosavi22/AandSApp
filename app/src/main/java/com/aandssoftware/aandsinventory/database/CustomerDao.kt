@@ -87,7 +87,7 @@ class CustomerDao {
         customerTableReference.orderByChild(CustomerModel.ORDER_BY_VALUE).addListenerForSingleValueEvent(valueEventListener)
     }
 
-    fun saveCustomerItem(mCustomerModel: CustomerModel, dataListener: callBackListener) {
+    fun saveCustomerItem(mCustomerModel: CustomerModel, dataListener: CallBackListener) {
         mCustomerModel.id?.let {
             customerTableReference.child(it).setValue(mCustomerModel) { databaseError, _ ->
                 run {
@@ -134,11 +134,12 @@ class CustomerDao {
     }
 
 
-    fun addDiscountedItemToCustomer(model: CustomerModel, inventoryId: String, discountedAmount: String, dataListener: callBackListener) {
+    fun addDiscountedItemToCustomer(model: CustomerModel, inventoryId: String, discountedAmount: String, dataListener: CallBackListener) {
         model.id?.let {
             var map = model.discountedItems
             if (map == null) {
                 map = HashMap<String, String>()
+                map.put(inventoryId, discountedAmount)
             } else {
                 map.put(inventoryId, discountedAmount)
             }
@@ -202,7 +203,7 @@ class CustomerDao {
     }
 
     fun addInventoryToOrder(mainInventoryItem: InventoryItem, orderId: String,
-                            quantity: String, dataListener: callBackListener) {
+                            quantity: String, dataListener: CallBackListener) {
         var itemReference = orderTableReference.child(orderId).child(OrderModel.ORDER_ITEMS)
         var key = itemReference.push().key ?: ZERO_STRING
         mainInventoryItem.parentId = mainInventoryItem.id
@@ -220,7 +221,7 @@ class CustomerDao {
         }
     }
 
-    fun saveOrder(alphaNumericOrderId: String, orderModel: OrderModel, dataListener: callBackListener) {
+    fun saveOrder(alphaNumericOrderId: String, orderModel: OrderModel, dataListener: CallBackListener) {
         orderTableReference.child(alphaNumericOrderId).setValue(orderModel) { databaseError, _ ->
             run {
                 if (null == databaseError) {
@@ -233,7 +234,7 @@ class CustomerDao {
     }
 
 
-    fun updateOrder(updatedOrderModel: OrderModel, dataListener: callBackListener) {
+    fun updateOrder(updatedOrderModel: OrderModel, dataListener: CallBackListener) {
         updatedOrderModel.id?.let {
             orderTableReference.child(updatedOrderModel.id!!).setValue(updatedOrderModel) { databaseError, _ ->
                 run {
@@ -242,6 +243,21 @@ class CustomerDao {
                     } else {
                         dataListener.getCallBack(false)
                     }
+                }
+            }
+        }
+    }
+
+    fun updateOrderStatus(orderId: String, status: String, statusName: String, dataListener: CallBackListener) {
+        var map: HashMap<String, String> = HashMap()
+        map.put(OrderModel.ORDER_STATUS, status)
+        map.put(OrderModel.ORDER_STATUS_NAME, statusName)
+        orderTableReference.child(orderId).setValue(map) { databaseError, _ ->
+            run {
+                if (null == databaseError) {
+                    dataListener.getCallBack(true)
+                } else {
+                    dataListener.getCallBack(false)
                 }
             }
         }

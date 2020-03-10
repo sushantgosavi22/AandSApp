@@ -72,20 +72,21 @@
       app:uiButtonType="PRIMARY" />
 
     <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/tvForgotPass"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center"
-      android:enabled="false"
       android:fontFamily="@font/lato_heavy"
-      android:textColor="@color/venus_color"
-      android:text="@string/or" />
+      android:inputType="textWebEmailAddress"
+      android:textColor="@color/light_blue"
+      android:text="@string/forgot_password" />
 
     <com.ict.assetmanagement.uidesign.button.CustomButton
       android:id="@+id/btnRegister"
-      android:layout_marginBottom="@dimen/size_0"
-      android:layout_marginTop="@dimen/size_0"
       android:layout_marginLeft="@dimen/size_15"
       android:layout_marginRight="@dimen/size_15"
+      android:layout_marginBottom="@dimen/size_0"
+      android:layout_marginTop="@dimen/size_0"
       style="@style/custome_button_style"
       android:text="@string/register"
       app:uiButtonType="PRIMARY" />

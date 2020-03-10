@@ -7,13 +7,20 @@
   <string name="add_at_least_one_item">Please add at-least one item to order.</string>
   <string name="unable_to_update_order">Unable to update order try again.</string>
   <string name="order_confirm_successfully">Order confirm successfully.</string>
+  <string name="order_status_updated_successfully">Order status updated successfully.</string>
+  <string name="failed_order_status_updated">Failed! to update Order Status.</string>
   <string name="common_blocked_user_message">User is blocked Please contact administrator.</string>
   <string name="no_result_found">Result Not Found...</string>
   <string name="no_internet_connection">Please check your Internet Connection and Try again.</string>
   <string name="username_not_found">Unable to found user. Please check the username and try again</string>
   <string name="password_not_match">Password not match recheck and  try again</string>
+  <string name="email_and_number_not_match">Email or number you entered is not match with register email and number. Please try again</string>
+  <string name="inventory_image_limit">Only 4 images allowed per inventory.</string>
+  <string name="inventory_deleted_successfully">Image deleted successfully.</string>
+  <string name="inventory_deleted_failed">Unable to deleted Image. Please try again</string>
   <string name="enter_username">Please Enter Username.</string>
   <string name="enter_password">Please Enter Password.</string>
+  <string name="select_images">Select Images</string>
   <string name="fav">Favorites</string>
   <string name="sort">Sort By</string>
   <string name="no_fav">No Favourites Found</string>
@@ -90,6 +97,8 @@
   <string name="remove_inventory_item_title">Remove Inventory Item</string>
   <string name="customer_discount_dialog_item_title">Discounted Item</string>
   <string name="customer_discount_amount">Discounted Amount</string>
+  <string name="enter_register_mail">Please enter register mail id</string>
+  <string name="enter_register_mobile_number">Please enter register Mobile No.</string>
   <string name="remove_discount_title">Remove Discount</string>
   <string name="failed_to_add_discount">Failed to add discount try again.</string>
   <string name="exit_app_title">Exit</string>
@@ -164,6 +173,7 @@
   <string name="section_title_customer_requirement">Customer Requirements</string>
   <string name="section_title_required_quantity">Required Quantity</string>
   <string name="section_title_login_details">Login Details</string>
+  <string name="section_title_forgot_password">Forgot Password Details</string>
   <!-- TODO: Remove or change this placeholder text -->
   <string name="developed_by">Developer : Sushant Gosavi\n
                                   Cell : 9503166862</string>
@@ -182,6 +192,7 @@
   <string name="username">Username</string>
   <string name="hint_username">User Name</string>
   <string name="password">Password</string>
+  <string name="forgot_password">Forgot Password</string>
   <string name="or">Or</string>
   <string name="confirm_password">Confirm Password</string>
   <string name="action_sign_in">Sign in or register</string>

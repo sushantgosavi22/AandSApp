@@ -11,7 +11,7 @@ import com.aandssoftware.aandsinventory.listing.OrderDetailsListAdapter
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.OrderModel
 import com.aandssoftware.aandsinventory.models.OrderStatus
-import com.aandssoftware.aandsinventory.models.callBackListener
+import com.aandssoftware.aandsinventory.models.CallBackListener
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ORDER_ID
 import com.bumptech.glide.Glide
@@ -94,7 +94,7 @@ class OrderDetailsActivity : ListingActivity() {
             orderModel.orderStatusName = Utils.capitalize(OrderStatus.CONFIRM.toString())
 
             showProgressBar()
-            FirebaseUtil.getInstance().getCustomerDao().updateOrder(orderModel, callBackListener {
+            FirebaseUtil.getInstance().getCustomerDao().updateOrder(orderModel, CallBackListener {
                 if (it) {
                     showSnackBarMessage(getString(R.string.order_confirm_successfully))
                     checkAndDisableOrder(menuItemAdd)

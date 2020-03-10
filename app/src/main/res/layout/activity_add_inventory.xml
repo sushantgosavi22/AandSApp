@@ -21,12 +21,40 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatImageView
-          android:id="@+id/imgInventoryImg"
+        <androidx.appcompat.widget.LinearLayoutCompat
           android:layout_width="match_parent"
-          android:padding="@dimen/size_5"
-          android:layout_height="@dimen/size_150"
-          android:src="@drawable/ic_image_add" />
+          android:orientation="vertical"
+          android:layout_margin="@dimen/size_15"
+          android:layout_height="wrap_content">
+
+          <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+              android:id="@+id/imgAddImageIcon"
+              android:layout_width="@dimen/size_130"
+              android:layout_gravity="center"
+              android:padding="@dimen/size_5"
+              android:layout_height="@dimen/size_130"
+              android:src="@drawable/ic_image_add" />
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
+
+          <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvImages"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            tools:listitem="@layout/multi_image_item"
+            android:layout_height="wrap_content" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
 
         <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
           style="@style/custome_section_style"
@@ -177,6 +205,7 @@
         <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
           style="@style/custome_section_style"
           android:orientation="vertical"
+          android:id="@+id/slGstDetails"
           app:sectionHeader="@string/section_title_gst">
 
           <androidx.appcompat.widget.LinearLayoutCompat

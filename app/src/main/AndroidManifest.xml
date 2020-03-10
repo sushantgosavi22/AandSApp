@@ -29,6 +29,7 @@
     <activity android:name=".ui.activity.OrderListActivity" />
     <activity android:name=".ui.activity.CompanyOrderListActivity" />
     <activity android:name=".ui.activity.CarouselDashboardActivity" />
+
     <activity
       android:name=".ui.activity.BaseActivity"
       android:label="@string/title_activity_base" />

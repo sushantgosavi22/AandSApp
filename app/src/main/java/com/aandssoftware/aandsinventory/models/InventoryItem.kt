@@ -78,7 +78,7 @@ open class InventoryItem : Serializable {
 
     @SerializedName(INVENTORY_ITEM_IMAGE_PATH)
     @Expose
-    var inventoryItemImagePath: String? = null
+    var inventoryItemImagePath: HashMap<String, String>? = null
 
     @SerializedName(INVENTORY_ITEM_ATTACHMENTS)
     @Expose
@@ -201,6 +201,10 @@ open class InventoryItem : Serializable {
     @SerializedName("discountForCompany")
     @Expose
     var discountRateForCompany: Double = 0.0
+
+    @SerializedName("createdBy")
+    @Expose
+    var createdBy: String = InventoryCreatedBy.ADMIN.toString()
 
     @SerializedName(TAG)
     @Expose

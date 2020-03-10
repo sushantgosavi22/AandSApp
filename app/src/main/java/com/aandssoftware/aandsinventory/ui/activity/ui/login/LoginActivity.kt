@@ -1,21 +1,25 @@
 package com.aandssoftware.aandsinventory.ui.activity.ui.login
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView.OnEditorActionListener
+import androidx.appcompat.app.AlertDialog
 import com.aandssoftware.aandsinventory.BuildConfig
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
-import com.aandssoftware.aandsinventory.models.AppVersion
-import com.aandssoftware.aandsinventory.models.CustomerModel
-import com.aandssoftware.aandsinventory.models.Permissions
-import com.aandssoftware.aandsinventory.models.ViewMode
+import com.aandssoftware.aandsinventory.models.*
 import com.aandssoftware.aandsinventory.ui.activity.BaseActivity
 import com.aandssoftware.aandsinventory.ui.activity.CarouselDashboardActivity
+import com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout
+import com.aandssoftware.aandsinventory.ui.component.CustomEditText
+import com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils.Companion.CURRENT_USER
@@ -23,7 +27,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
-
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import org.apache.poi.ss.formula.functions.T
 
 class LoginActivity : BaseActivity() {
 
@@ -49,6 +55,12 @@ class LoginActivity : BaseActivity() {
 
         btnRegister.setOnClickListener {
             Navigator.openCustomerScreen(this, AppConstants.EMPTY_STRING, AppConstants.EMPTY_STRING, ViewMode.ADD.ordinal, getString(R.string.company_details))
+        }
+
+        tvForgotPass.setOnClickListener {
+            if (validaForgotPassword()) {
+                getUserDetailsAndCheck(this)
+            }
         }
     }
 
@@ -149,6 +161,78 @@ class LoginActivity : BaseActivity() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
         } catch (anfe: android.content.ActivityNotFoundException) {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
+        }
+    }
+
+    private fun validaForgotPassword(): Boolean {
+        if (tvUsername.getText().isEmpty()) {
+            showSnackBarMessage(getString(R.string.enter_username))
+            return false
+        }
+        return true
+    }
+
+    private fun checkForgotPasswordDetails(model: CustomerModel, context: Context) {
+        val alertDialogBuilderUserInput = AlertDialog.Builder(context)
+        var view: View = LayoutInflater.from(context).inflate(R.layout.forgot_password_check_dialog, null)
+        var slForgotPassword = view.findViewById<ContaintValidationLinerLayout>(R.id.llContaint)
+        var edtEmail = view.findViewById<CustomEditText>(R.id.edtEmail)
+        var edtMobileNumber = view.findViewById<CustomEditText>(R.id.edtMobileNumber)
+        alertDialogBuilderUserInput
+                .setView(view)
+                .setCancelable(false)
+                .setPositiveButton(context.getString(R.string.yes)) { _, _ -> }
+                .setNegativeButton(context.getString(R.string.no))
+                { dialogBox, _ -> dialogBox.cancel() }
+
+        val alertDialog = alertDialogBuilderUserInput.create()
+        alertDialog.setCancelable(false)
+        alertDialog.setCanceledOnTouchOutside(false)
+        alertDialog.show()
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (slForgotPassword.validate()) {
+                model.companyMail?.let { mail ->
+                    model.customerNumber?.let { number ->
+                        var customerId = model.id ?: AppConstants.EMPTY_STRING
+                        var numericcCustomerId = model.customerID ?: AppConstants.EMPTY_STRING
+                        if (mail.trim().equals(edtEmail.getText().trim(), false) &&
+                                number.trim().equals(edtMobileNumber.getText().trim(), false)) {
+                            Navigator.openCustomerScreen(LoginActivity@ this, customerId, numericcCustomerId, ViewMode.PASSWORD_UPDATE.ordinal, getString(R.string.forgot_password))
+                        } else {
+                            showSnackBarMessage(getString(R.string.email_and_number_not_match))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getUserDetailsAndCheck(context: Context) {
+        showProgressBar()
+        if (FirebaseUtil.getInstance().isInternetConnected(this)) {
+            FirebaseUtil.getInstance().getCustomerDao().getCustomerFromUserNameAndPassword(tvUsername.getText(), object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    dismissProgressBar()
+                }
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    dismissProgressBar()
+                    dataSnapshot.let {
+                        var model = dataSnapshot.children.first().getValue(CustomerModel::class.java)
+                        model?.let {
+                            if (model.blockedUser.not()) {
+                                checkForgotPasswordDetails(model, context)
+                            } else {
+                                var message = model.blockedUserMessage
+                                        ?: getString(R.string.common_blocked_user_message)
+                                showSnackBarMessage(message)
+                            }
+                        }
+                    }
+                }
+            })
+        } else {
+            showSnackBarMessage(getString(R.string.no_internet_connection))
         }
     }
 }

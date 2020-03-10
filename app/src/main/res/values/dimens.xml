@@ -16,10 +16,12 @@
   <dimen name="size_18">18dp</dimen>
   <dimen name="size_22">22dp</dimen>
   <dimen name="size_32">32dp</dimen>
+  <dimen name="size_40">40dp</dimen>
   <dimen name="size_50">50dp</dimen>
   <dimen name="size_60">60dp</dimen>
   <dimen name="size_80">80dp</dimen>
   <dimen name="size_100">100dp</dimen>
+  <dimen name="size_130">130dp</dimen>
   <dimen name="size_150">150dp</dimen>
   <dimen name="size_200">200dp</dimen>
   <dimen name="size_8_sp">8sp</dimen>

@@ -9,14 +9,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.DateUtils
 import com.aandssoftware.aandsinventory.common.Navigator
@@ -24,21 +20,23 @@ import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.models.OrderModel
 import com.aandssoftware.aandsinventory.models.OrderStatus
+import com.aandssoftware.aandsinventory.models.CallBackListener
 import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.activity.OrderListActivity
 import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.order_item.view.*
 import java.io.Serializable
-import java.util.ArrayList
 
 class OrderListAdapter(private val activity: ListingActivity) : ListingOperations {
 
     internal var lastNodeKey: Double = 0.0
+    internal var isAdmin: Boolean = Utils.isAdminUser(activity)
 
     companion object {
         const val ORDER_RECORD_FETCH_AT_TIME = 51
@@ -63,6 +61,15 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
             cardView.setOnClickListener {
                 var pos: Int = itemView.getTag(R.string.tag) as Int
                 showOrderInventoryActivity(activity, (itemView.tag as OrderModel).id, pos)
+            }
+
+            cardView.setOnLongClickListener {
+                if (isAdmin) {
+                    var pos: Int = itemView.getTag(R.string.tag) as Int
+                    var order = itemView.tag as OrderModel
+                    showOrderStatusDialog(order, pos)
+                }
+                false
             }
         }
     }
@@ -230,6 +237,49 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
                         })
                     }
                 }
+            }
+        }
+    }
+
+    private fun showOrderStatusDialog(order: OrderModel, pos: Int) {
+        val empty = arrayOf("No Selection",
+                OrderStatus.PENDING.toString().capitalize(),
+                OrderStatus.DELIVERED.toString().capitalize(),
+                OrderStatus.PAYMENT.toString().capitalize(),
+                OrderStatus.CONFIRM.toString().capitalize(),
+                OrderStatus.CREATED.toString().capitalize(),
+                OrderStatus.FINISH.toString().capitalize())
+
+        val alertDialogBuilderUserInput = AlertDialog.Builder(activity)
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton(activity.getString(R.string.ok)) { _, _ -> }
+                .setNegativeButton(activity.getString(R.string.cancel)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setSingleChoiceItems(empty, 0) { _, _ -> }
+        val alertDialog = alertDialogBuilderUserInput.create()
+        alertDialog.setCancelable(false)
+        alertDialog.setCanceledOnTouchOutside(false)
+        alertDialog.show()
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (alertDialog.listView.checkedItemPosition != 0) {
+                var selected: String = alertDialog.listView.adapter.getItem(alertDialog.listView.checkedItemPosition) as String
+                var status = selected.toUpperCase()
+                var orderId = order.id ?: EMPTY_STRING
+                FirebaseUtil.getInstance().getCustomerDao().updateOrderStatus(orderId, status, selected, CallBackListener {
+                    if (it) {
+                        order.orderStatus = status
+                        activity.showSnackBarMessage(activity.getString(R.string.order_status_updated_successfully))
+                        activity.updateElement(order, pos)
+                    } else {
+                        activity.showSnackBarMessage(activity.getString(R.string.failed_order_status_updated))
+                    }
+                    alertDialog.dismiss()
+                })
+
+            } else {
+                alertDialog.dismiss()
             }
         }
     }

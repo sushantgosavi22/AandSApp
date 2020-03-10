@@ -91,19 +91,22 @@ class CompanyDiscountedItemsListAdapter(private val activity: ListingActivity) :
         holder.inventoryItemDetails.text = Utils.currencyLocale(item.discountRateForCompany)
 
         mItem.inventoryItemImagePath?.let {
-            if (it.contains(AppConstants.HTTP, ignoreCase = true)) {
-                var uri: Uri = Uri.parse(mItem.inventoryItemImagePath)
+
+            /*if (firstImage.contains(AppConstants.HTTP, ignoreCase = true)) {
+                var uri: Uri = Uri.parse(firstImage)
                 Glide.with(activity)
                         .load(uri)
                         .placeholder(android.R.drawable.ic_menu_gallery)
                         .crossFade()
                         .into(holder.imgInventoryItemLogo)
-            } else {
-                val bitmap = BitmapFactory.decodeFile(mItem.inventoryItemImagePath)
-                bitmap?.let {
-                    holder.imgInventoryItemLogo.setImageBitmap(bitmap)
-                }
-            }
+            } */
+            var firstImage = it.values.toMutableList().first()
+            var uri: Uri = Uri.parse(firstImage)
+            Glide.with(activity)
+                    .load(uri)
+                    .placeholder(android.R.drawable.ic_menu_gallery)
+                    .crossFade()
+                    .into(holder.imgInventoryItemLogo)
         }
         holder.cardView.setOnClickListener {
             var pos: Int = baseHolder.itemView.getTag(R.string.tag) as Int

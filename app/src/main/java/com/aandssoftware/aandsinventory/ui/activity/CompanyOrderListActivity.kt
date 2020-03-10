@@ -1,13 +1,12 @@
 package com.aandssoftware.aandsinventory.ui.activity
 
 import android.content.Intent
-import android.os.Bundle
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
 import com.aandssoftware.aandsinventory.listing.CustomerListAdapter
 import com.aandssoftware.aandsinventory.listing.ListType
-import com.aandssoftware.aandsinventory.models.callBackListener
+import com.aandssoftware.aandsinventory.models.CallBackListener
 import com.aandssoftware.aandsinventory.models.CustomerModel
 import com.aandssoftware.aandsinventory.models.OrderModel
 import com.aandssoftware.aandsinventory.models.OrderStatus
@@ -51,7 +50,7 @@ class CompanyOrderListActivity : ListingActivity() {
         FirebaseUtil.getInstance().getCustomerDao().saveOrder(
                 alphaNumericOrderId,
                 getOrderModelNewlyCreated(alphaNumericOrderId, numericOrderId, customerModel),
-                callBackListener { result ->
+                CallBackListener { result ->
                     dismissProgressBar()
                     if (result) {
                         val intent = Intent(this@CompanyOrderListActivity, ListingActivity::class.java)

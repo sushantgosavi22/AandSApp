@@ -4,39 +4,44 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.ScrollView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.aandssoftware.aandsinventory.R
-import com.aandssoftware.aandsinventory.application.AandSApplication
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
 import com.aandssoftware.aandsinventory.listing.ListType
-import com.aandssoftware.aandsinventory.models.callBackListener
+import com.aandssoftware.aandsinventory.models.InventoryCreatedBy
+import com.aandssoftware.aandsinventory.models.CallBackListener
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.ViewMode
+import com.aandssoftware.aandsinventory.ui.adapters.MultiImageSelectionAdapter
 import com.aandssoftware.aandsinventory.ui.component.CustomEditText
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DEFAULT_GST_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.INVALID_ID
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.INVENTORY_ID
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.INVENTORY_INSTANCE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.LISTING_TYPE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ORDER_ID
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ORDER_RELOAD_LIST_RESULT_CODE
-import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.PICK_IMAGE
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.PICK_IMAGE_MULTIPLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_LIST_RESULT_CODE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.TITLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.VIEW_MODE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ZERO_STRING
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
-import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -47,10 +52,13 @@ import kotlinx.android.synthetic.main.activity_add_inventory.btnSave
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
 import java.math.BigDecimal
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class AddInventoryActivity : BaseActivity() {
     var inventory: InventoryItem? = null
-    private var imagePath: String? = null
+    private var imagePath: HashMap<String, String>? = HashMap<String, String>()
+    var imageAdapter: MultiImageSelectionAdapter? = null
     lateinit var title: String
     private var inventoryType: Int = 0
     private lateinit var inventoryId: String
@@ -118,28 +126,48 @@ class AddInventoryActivity : BaseActivity() {
         edtSgstPercent.addTextChangedListener(sGstWatcher)
         edtPurchasePrice.addTextChangedListener(watcher)
         edtQuantity.addTextChangedListener(watcher)
-        imgInventoryImg.setOnClickListener {
-            if (askingForRequest().not()) {
-                openGallery()
-            }
-        }
         setViewByMode()
         btnSave.setOnClickListener {
             onButtonClick()
+        }
+        imgAddImageIcon.setOnClickListener {
+            if (askingForRequest().not()) {
+                callMultiImageSelection()
+            }
         }
         navBarBack.setOnClickListener {
             onBackPressed()
         }
     }
 
+    private fun callMultiImageSelection() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_images)), AppConstants.PICK_IMAGE_MULTIPLE)
+    }
+
     private fun setViewByMode() {
         if (viewMode == ViewMode.VIEW_ONLY.ordinal || viewMode == ViewMode.GET_INVENTORY_QUANTITY.ordinal) {
             enabledView(false)
-            imgInventoryImg.setOnClickListener(null)
+            imgAddImageIcon.setOnClickListener(null)
             setButton("", View.GONE)
             if (viewMode == ViewMode.GET_INVENTORY_QUANTITY.ordinal) {
                 getInventoryQuantityView()
             }
+        }
+
+        if (viewMode == ViewMode.ADD_INVENTORY_BY_CUSTOMER.ordinal) {
+            slPrice.visibility = View.GONE
+            edtPurchasePrice.setText(AppConstants.ZERO_STRING)
+            edtUnitPrice.setText(ZERO_STRING)
+            edtSellingPrice.setText(ZERO_STRING)
+            slGstDetails.visibility = View.GONE
+            edtCgstPercent.setText(DEFAULT_GST_STRING)
+            edtSgstPercent.setText(DEFAULT_GST_STRING)
+            slShopDetails.visibility = View.GONE
+            llQuantityAndUnit.visibility = View.VISIBLE
         }
     }
 
@@ -217,7 +245,6 @@ class AddInventoryActivity : BaseActivity() {
         edtCgstAmount.setText(EMPTY_STRING)
         edtSgstPercent.setText(EMPTY_STRING)
         edtSgstAmount.setText(EMPTY_STRING)
-        imgInventoryImg.setImageResource(R.drawable.ic_image_add)
         edtName.requestFocus()
         scrollView.post {
             scrollView.fullScroll(ScrollView.FOCUS_UP)
@@ -250,12 +277,11 @@ class AddInventoryActivity : BaseActivity() {
 
                 imagePath = it.inventoryItemImagePath
                 if (it.inventoryItemImagePath != null) {
-                    var uri: Uri = Uri.parse(imagePath)
-                    Glide.with(AandSApplication.getInstance())
-                            .load(uri)
-                            .placeholder(R.drawable.ic_image_add)
-                            .into(imgInventoryImg)
+                    var list = setMultiImageAdapterFromHashMap()
+                    var adapter: MultiImageSelectionAdapter? = setMultiImageAdapter(list)
+                    adapter?.loadData(list)
                 }
+
 
                 if (!Utils.isAdminUser(this)) {
                     var sellingPriceDouble = Utils.isEmpty(it.minimumSellingPrice, ZERO_STRING).toDouble()
@@ -330,10 +356,10 @@ class AddInventoryActivity : BaseActivity() {
                 mainInventoryCopy.inventoryItemSize = edtSize.getText()
                 mainInventoryCopy.hsnCode = edtHsnCode.getText()
                 val message = String.format(resources.getString(R.string.inventory_add_order), intUpdatedQuantity, mainInventoryCopy.inventoryItemName)
-                FirebaseUtil.getInstance().isConnected(callBackListener { online ->
+                FirebaseUtil.getInstance().isConnected(CallBackListener { online ->
                     if (online) {
                         showProgressBar()
-                        FirebaseUtil.getInstance().getCustomerDao().addInventoryToOrder(mainInventoryCopy, orderId, newQuantity, callBackListener {
+                        FirebaseUtil.getInstance().getCustomerDao().addInventoryToOrder(mainInventoryCopy, orderId, newQuantity, CallBackListener {
                             dismissProgressBar()
                             showSnackBarMessage(message)
                             setResultToOrderActivity()
@@ -351,7 +377,7 @@ class AddInventoryActivity : BaseActivity() {
     private fun onSaveAndUpdateClick() {
         if (llContaint.validate()) {
             showProgressBar()
-            FirebaseUtil.getInstance().isConnected(callBackListener { online ->
+            FirebaseUtil.getInstance().isConnected(CallBackListener { online ->
                 if (online) {
                     if ((viewMode == ViewMode.UPDATE.ordinal && inventoryId.isNotEmpty())) {
                         actionOnSaveAndUpdate(inventoryId, inventory?.inventoryId)
@@ -379,6 +405,9 @@ class AddInventoryActivity : BaseActivity() {
         if (viewMode != ViewMode.UPDATE.ordinal) {
             item.inventoryType = inventoryType
         }
+        if (viewMode == ViewMode.ADD_INVENTORY_BY_CUSTOMER.ordinal) {
+            item.createdBy = InventoryCreatedBy.CUSTOMER.toString()
+        }
         item.inventoryItemName = edtName.getText()
         item.itemPurchasePrice = edtPurchasePrice.getText()
         item.itemUnitPrice = edtUnitPrice.getText()
@@ -397,28 +426,34 @@ class AddInventoryActivity : BaseActivity() {
         item.purchaseItemShopAddress = edtShopAddress.getText()
         item.inventoryItemPurchaseDate = System.currentTimeMillis()
         item.inventoryItemLastUpdatedDate = System.currentTimeMillis()
-        item.gstPercentage = Utils.isEmptyIntFromString(edtCgstPercent.getText(), 12)
-        item.gstAmount = Utils.isEmptyIntFromString(edtCgstAmount.getText(), 12)
-        item.sgstPercentage = Utils.isEmptyIntFromString(edtSgstPercent.getText(), 12)
-        item.sgstAmount = Utils.isEmptyIntFromString(edtSgstAmount.getText(), 12)
+        item.gstPercentage = Utils.isEmptyIntFromString(edtCgstPercent.getText(), DEFAULT_GST_STRING.toInt())
+        item.gstAmount = Utils.isEmptyIntFromString(edtCgstAmount.getText(), DEFAULT_GST_STRING.toInt())
+        item.sgstPercentage = Utils.isEmptyIntFromString(edtSgstPercent.getText(), DEFAULT_GST_STRING.toInt())
+        item.sgstAmount = Utils.isEmptyIntFromString(edtSgstAmount.getText(), DEFAULT_GST_STRING.toInt())
 
         showProgressBar()
-        FirebaseUtil.getInstance().getInventoryDao().saveInventoryItem(item, inventoryType, callBackListener {
+        FirebaseUtil.getInstance().getInventoryDao().saveInventoryItem(item, inventoryType, CallBackListener {
             clearText()
-            inventoryId = alphaNumericItemId
-            inventory = item
             showSnackBarMessage(if (viewMode == ViewMode.UPDATE.ordinal)
                 resources.getString(R.string.inventory_updated_message)
             else resources.getString(R.string.inventory_save_message))
             dismissProgressBar()
+            saveHistory(alphaNumericItemId, item)
+            inventoryId = alphaNumericItemId
+            inventory = item
+            onBackPressed()
         })
 
+
+    }
+
+    private fun saveHistory(alphaNumericItemId: String, item: InventoryItem) {
         if (viewMode == ViewMode.UPDATE.ordinal) {
             if (inventoryType != ListType.LIST_TYPE_MATERIAL.ordinal) {
-                showProgressBar()
                 inventory?.let {
                     val map = item.getChangedParamList(it)
                     if (map.isNotEmpty()) {
+                        showProgressBar()
                         FirebaseUtil.getInstance().getInventoryDao().saveInventoryItemHistory(alphaNumericItemId, map, DatabaseReference.CompletionListener { databaseError, databaseReference ->
                             dismissProgressBar()
                         })
@@ -429,7 +464,7 @@ class AddInventoryActivity : BaseActivity() {
     }
 
     private fun setResultToCallingActivity(id: String) {
-        if ((viewMode == ViewMode.UPDATE.ordinal || viewMode == ViewMode.ADD.ordinal) && null != inventory) {
+        if ((viewMode == ViewMode.UPDATE.ordinal || viewMode == ViewMode.ADD_INVENTORY_BY_CUSTOMER.ordinal || viewMode == ViewMode.ADD.ordinal) && null != inventory) {
             val intent = Intent()
             intent.putExtra(INVENTORY_ID, id)
             intent.putExtra(INVENTORY_INSTANCE, inventory)
@@ -447,21 +482,12 @@ class AddInventoryActivity : BaseActivity() {
         finish()
     }
 
-    private fun openGallery() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        pickIntent.type = "image/*"
-        val chooserIntent = Intent.createChooser(intent, resources.getString(R.string.select_image))
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
-        startActivityForResult(chooserIntent, PICK_IMAGE)
-    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            PICK_IMAGE ->
+            PICK_IMAGE_MULTIPLE ->
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openGallery();
+                    callMultiImageSelection()
                 } else {
                     showSnackBarMessage(resources.getString(R.string.accept_camera_permission_msg))
                 }
@@ -469,54 +495,93 @@ class AddInventoryActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == PICK_IMAGE) {
-            val selectedImage = data?.data
-            selectedImage?.let {
-                uploadCompanyLogo(selectedImage)
+        if (requestCode == AppConstants.PICK_IMAGE_MULTIPLE) {
+            val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+            if (data?.getData() != null) {
+                val mImageUri = data.getData()
+                mImageUri?.let {
+                    val cursor = contentResolver.query(mImageUri,
+                            filePathColumn, null, null, null)
+                    cursor?.let {
+                        cursor.moveToFirst()
+                        cursor.close()
+                        val mArrayUri = ArrayList<Uri>()
+                        mArrayUri.add(mImageUri)
+                        uploadInventoryImages(mArrayUri)
+                    }
+                }
+            } else {
+                if (data?.getClipData() != null) {
+                    val mClipData = data.getClipData()
+                    val mArrayUri = ArrayList<Uri>()
+                    for (i in 0 until mClipData!!.itemCount) {
+                        val item = mClipData.getItemAt(i)
+                        val uri = item.uri
+                        mArrayUri.add(uri)
+                        // Get the cursor
+                        val cursor = contentResolver.query(uri, filePathColumn, null, null, null)
+                        // Move to first row
+                        cursor?.moveToFirst()
+                        cursor?.close()
+                    }
+                    uploadInventoryImages(mArrayUri)
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun uploadCompanyLogo(filePath: Uri) {
-        var pathName = if (inventoryId.isEmpty()) UUID.randomUUID().toString() else inventoryId
-        val ref = FirebaseStorage.getInstance().reference
-                .child(AppConstants.INVENTORY_IMAGES_STORAGE_PATH.plus("/").plus(pathName))
+    private fun uploadInventoryImages(filePath: ArrayList<Uri>) {
+        var currentImages = imagePath?.size ?: 0
+        var totalImages: Int = currentImages.plus(filePath.size)
         showProgressBar()
-        ref.putFile(filePath)
-                .addOnSuccessListener { taskSnapshot ->
-                    dismissProgressBar()
-                    ref.downloadUrl.addOnSuccessListener { uri ->
-                        imagePath = uri.toString()
-                        filePath.let {
-                            val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-                            val cursor = contentResolver
-                                    .query(filePath, filePathColumn, null, null, null)
-                            if (null != cursor) {
-                                cursor.moveToFirst()
-                                val columnIndex = cursor.getColumnIndex(filePathColumn[0])
-                                val bitmap = BitmapFactory.decodeFile(cursor.getString(columnIndex))
-                                if (null != bitmap) {
-                                    imgInventoryImg.setImageBitmap(bitmap)
+        var counter = 0
+        filePath.forEachIndexed { pos, value ->
+            if (currentImages < AppConstants.INVENTORY_IMAGES_LIMIT) {
+                currentImages++
+                var pathName = if (inventoryId.isEmpty()) UUID.randomUUID().toString() else inventoryId
+                pathName = pathName.plus("_").plus(pos)
+                val ref = FirebaseStorage.getInstance().reference
+                        .child(AppConstants.INVENTORY_IMAGES_STORAGE_PATH.plus("/").plus(pathName))
+                ref.putFile(value)
+                        .addOnSuccessListener { taskSnapshot ->
+                            ref.downloadUrl.addOnSuccessListener { uri ->
+                                counter++
+                                if (imagePath == null) {
+                                    imagePath = HashMap<String, String>()
+                                }
+                                imagePath?.let {
+                                    it.put(it.size.toString().plus("_key"), uri.toString())
+                                    var list = setMultiImageAdapterFromHashMap()
+                                    var adapter = setMultiImageAdapter(list)
+                                    adapter?.addElement(uri, 0)
+                                    if (counter == filePath.size) {
+                                        dismissProgressBar()
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-                .addOnFailureListener { e ->
-                    dismissProgressBar()
-                }
-                .addOnProgressListener { taskSnapshot ->
-                    val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount
-                    showProgressBar()
-                }
+                        .addOnFailureListener { e ->
+                            dismissProgressBar()
+                        }
+                        .addOnProgressListener { taskSnapshot ->
+
+                        }
+            } else {
+                dismissProgressBar()
+            }
+        }
+
+        if (totalImages > AppConstants.INVENTORY_IMAGES_LIMIT) {
+            showSnackBarMessage(getString(R.string.inventory_image_limit))
+        }
     }
 
     private fun askingForRequest(): Boolean {
         val permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
         if (permission) {
             ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), PICK_IMAGE)
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), PICK_IMAGE_MULTIPLE)
         }
         return permission
     }
@@ -581,6 +646,73 @@ class AddInventoryActivity : BaseActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+    }
+
+    private fun setMultiImageAdapter(list: MutableList<Uri>): MultiImageSelectionAdapter? {
+        var adapter: MultiImageSelectionAdapter? = null
+        if (list.isNotEmpty()) {
+            rvImages.visibility = View.VISIBLE
+            imgAddImageIcon.visibility = View.GONE
+            adapter = getImagesAdapter()
+            rvImages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true)
+            rvImages.adapter = adapter
+        } else {
+            rvImages.visibility = View.GONE
+            imgAddImageIcon.visibility = View.VISIBLE
+        }
+        return adapter
+    }
+
+    private fun setMultiImageAdapterFromHashMap(): MutableList<Uri> {
+        val list: MutableList<String>? = imagePath?.values?.toMutableList()
+        val newList: MutableList<Uri> = ArrayList<Uri>()
+        list?.let {
+            list.forEach {
+                newList.add(Uri.parse(it))
+            }
+        }
+        return newList
+    }
+
+
+    private fun getImagesAdapter(): MultiImageSelectionAdapter {
+        var adapter = if (null == imageAdapter) {
+            var rowClickListner = View.OnClickListener {
+                if (askingForRequest().not()) {
+                    callMultiImageSelection()
+                }
+            }
+
+            var deleteClickListner = View.OnClickListener {
+                showProgressBar()
+                var uri: Uri = it.tag as Uri
+                FirebaseUtil.getInstance().getInventoryDao().removeInventoryImage(uri.toString(), object : CallBackListener {
+                    override fun getCallBack(result: Boolean) {
+                        dismissProgressBar()
+                        if (result) {
+                            showSnackBarMessage(getString(R.string.inventory_deleted_successfully))
+                            var pos: Int = imagePath?.values?.indexOf(uri.toString()) ?: INVALID_ID
+                            var deleted = imagePath?.values?.remove(uri.toString()) ?: false
+                            if (deleted) {
+                                var list = setMultiImageAdapterFromHashMap()
+                                var adapter = setMultiImageAdapter(list)
+                                if (pos != INVALID_ID) {
+                                    adapter?.removeAt(pos)
+                                }
+                            }
+                        } else {
+                            showSnackBarMessage(getString(R.string.inventory_deleted_failed))
+                        }
+                    }
+                })
+
+            }
+            imageAdapter = MultiImageSelectionAdapter(this, rowClickListner, deleteClickListner)
+            imageAdapter as MultiImageSelectionAdapter
+        } else {
+            imageAdapter as MultiImageSelectionAdapter
+        }
+        return adapter
     }
 
 }

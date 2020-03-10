@@ -24,7 +24,7 @@ import com.aandssoftware.aandsinventory.ui.filters.DigitsInputFilter
 import com.aandssoftware.aandsinventory.ui.filters.ErrorHandlingViewAdapter
 import java.util.*
 
-class CustomEditText : LinearLayoutCompat {
+open class CustomEditText : LinearLayoutCompat {
 
     private val INVALID_INT_ATTRIBUTE = -2
     private val DEFAULT_LINE = 1
@@ -38,7 +38,7 @@ class CustomEditText : LinearLayoutCompat {
 
     private lateinit var textChangedListener: TextChangedListener
     private lateinit var errorAdapter: ErrorHandlingViewAdapter
-    private lateinit var edtValue: AppCompatEditText
+    protected lateinit var edtValue: AppCompatEditText
     private lateinit var tvError: AppCompatTextView
     private lateinit var tvTitle: AppCompatTextView
     private lateinit var tvMandatory: AppCompatTextView
@@ -246,7 +246,7 @@ class CustomEditText : LinearLayoutCompat {
     }
 
     /** This method set hint to Edit text.  */
-    private fun setHint(hint: String?) {
+    public fun setHint(hint: String?) {
         if (!TextUtils.isEmpty(hint)) {
             edtValue.hint = hint
         }
@@ -258,7 +258,7 @@ class CustomEditText : LinearLayoutCompat {
     }
 
     /** This method set title to Edit text.  */
-    private fun setTitle(title: String?) {
+    public fun setTitle(title: String?) {
         title?.let {
             tvTitle.text = title;
         }

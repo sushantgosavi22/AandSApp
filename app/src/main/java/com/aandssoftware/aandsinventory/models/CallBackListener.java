@@ -1,6 +1,6 @@
 package com.aandssoftware.aandsinventory.models;
 
-public interface callBackListener {
+public interface CallBackListener {
   
   void getCallBack(boolean result);
 }

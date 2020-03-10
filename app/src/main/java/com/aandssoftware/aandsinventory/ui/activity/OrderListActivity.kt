@@ -7,7 +7,7 @@ import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
 import com.aandssoftware.aandsinventory.listing.CustomerListAdapter
 import com.aandssoftware.aandsinventory.listing.ListType
-import com.aandssoftware.aandsinventory.models.callBackListener
+import com.aandssoftware.aandsinventory.models.CallBackListener
 import com.aandssoftware.aandsinventory.models.CustomerModel
 import com.aandssoftware.aandsinventory.models.OrderModel
 import com.aandssoftware.aandsinventory.models.OrderStatus
@@ -72,7 +72,7 @@ class OrderListActivity : ListingActivity() {
         FirebaseUtil.getInstance().getCustomerDao().saveOrder(
                 alphaNumericOrderId,
                 orderModel,
-                callBackListener { result ->
+                CallBackListener { result ->
                     dismissProgressBar()
                     if (result) {
                         var positionInList = 0

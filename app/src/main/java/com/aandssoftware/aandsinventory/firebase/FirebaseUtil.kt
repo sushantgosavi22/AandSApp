@@ -9,8 +9,7 @@ import com.aandssoftware.aandsinventory.application.AandSApplication
 import com.aandssoftware.aandsinventory.database.CarouselDao
 import com.aandssoftware.aandsinventory.database.CustomerDao
 import com.aandssoftware.aandsinventory.database.InventoryDao
-import com.aandssoftware.aandsinventory.models.CustomerModel
-import com.aandssoftware.aandsinventory.models.callBackListener
+import com.aandssoftware.aandsinventory.models.CallBackListener
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.google.firebase.database.*
 
@@ -88,7 +87,7 @@ class FirebaseUtil {
         return numericId
     }
 
-    fun isConnected(dataListener: callBackListener) {
+    fun isConnected(dataListener: CallBackListener) {
         val connectedRef = AandSApplication.getDatabaseInstance().getReference(".info/connected")
         connectedRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {

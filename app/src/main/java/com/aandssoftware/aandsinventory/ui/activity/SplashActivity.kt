@@ -29,13 +29,13 @@ class SplashActivity : BaseActivity(), InstallStateUpdatedListener {
 
     override fun onStateUpdate(state: InstallState?) {
         if (state?.installStatus() == InstallStatus.DOWNLOADED) {
-            popupSnackbarForCompleteUpdate();
+            popupSnackbarForCompleteUpdate()
         } else if (state?.installStatus() == InstallStatus.INSTALLED) {
             if (mAppUpdateManager != null) {
-                mAppUpdateManager.unregisterListener(this);
+                mAppUpdateManager.unregisterListener(this)
             }
         } else {
-            Log.i(LOG, "InstallStateUpdatedListener: state: " + state?.installStatus());
+            Log.i(LOG, "InstallStateUpdatedListener: state: " + state?.installStatus())
         }
 
     }

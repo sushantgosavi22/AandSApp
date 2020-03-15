@@ -99,8 +99,7 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
     override fun getTitle(): String {
         val user = SharedPrefsUtils.getUserPreference(activity, SharedPrefsUtils.CURRENT_USER)
         var name: String = user?.customerName ?: EMPTY_STRING
-        activity.setScreenSubTitle(name)
-        return activity.getString(R.string.order)
+        return name
     }
 
     private fun getStatusBackgroud(context: Context, statusCode: String): Drawable? {

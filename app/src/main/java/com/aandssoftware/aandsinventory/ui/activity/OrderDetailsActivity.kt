@@ -99,6 +99,7 @@ class OrderDetailsActivity : ListingActivity() {
                     showSnackBarMessage(getString(R.string.order_confirm_successfully))
                     checkAndDisableOrder(menuItemAdd)
                     isOrderUpdated = true
+                    reloadActivity()
                 } else {
                     showSnackBarMessage(getString(R.string.unable_to_update_order))
                 }
@@ -107,6 +108,12 @@ class OrderDetailsActivity : ListingActivity() {
         } else {
             showSnackBarMessage(getString(R.string.add_at_least_one_item))
         }
+    }
+
+
+    private fun reloadActivity() {
+        finish()
+        startActivity(intent);
     }
 
     override fun onBackPressed() {

@@ -151,6 +151,7 @@ class AddInventoryActivity : BaseActivity() {
     private fun setViewByMode() {
         if (viewMode == ViewMode.VIEW_ONLY.ordinal || viewMode == ViewMode.GET_INVENTORY_QUANTITY.ordinal) {
             enabledView(false)
+            imgAddImageIcon.isEnabled = false
             imgAddImageIcon.setOnClickListener(null)
             setButton("", View.GONE)
             if (viewMode == ViewMode.GET_INVENTORY_QUANTITY.ordinal) {

@@ -29,6 +29,8 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
+import com.crashlytics.android.Crashlytics
 import org.apache.poi.ss.formula.functions.T
 
 class LoginActivity : BaseActivity() {
@@ -102,6 +104,11 @@ class LoginActivity : BaseActivity() {
                                         var isAdminUser = model.permission?.containsValue(Permissions.ADMIN.toString())
                                                 ?: false
                                         SharedPrefsUtils.setBooleanPreference(this@LoginActivity, SharedPrefsUtils.ADMIN_USER, isAdminUser)
+                                        model.id?.let { id -> CrashlaticsUtil.setUserIdentifier(id) }
+                                        model.username?.let { username ->
+                                            CrashlaticsUtil.setUserName(username)
+                                            CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, username)
+                                        }
                                         openDashboardActivity()
                                     } else {
                                         showSnackBarMessage(getString(R.string.password_not_match))

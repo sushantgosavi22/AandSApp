@@ -40,7 +40,12 @@ class Utils {
 
         @JvmStatic
         fun isEmpty(message: String?, defaultVal: Double): Double {
-            return message?.toDouble() ?: defaultVal
+            try {
+                return if (null != message && message.isNotEmpty()) message?.toDouble() else defaultVal
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return defaultVal;
+            }
         }
 
         @JvmStatic

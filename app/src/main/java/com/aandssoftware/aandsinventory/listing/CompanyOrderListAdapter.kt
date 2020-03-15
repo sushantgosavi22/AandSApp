@@ -25,6 +25,7 @@ import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -116,6 +117,7 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
         activity.showProgressBar()
         FirebaseUtil.getInstance().getCustomerDao().getCompanyOrders(Utils.getLoginCustomerId(activity), object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, dataSnapshot.toString())
                 val list = FirebaseUtil.getInstance()
                         .getListData(dataSnapshot, OrderModel::class.java)
                 if (list.isNotEmpty()) {

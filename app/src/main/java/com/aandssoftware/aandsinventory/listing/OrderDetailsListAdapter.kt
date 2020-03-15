@@ -15,10 +15,7 @@ import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
-import com.aandssoftware.aandsinventory.models.CustomerModel
-import com.aandssoftware.aandsinventory.models.InventoryItem
-import com.aandssoftware.aandsinventory.models.OrderModel
-import com.aandssoftware.aandsinventory.models.ViewMode
+import com.aandssoftware.aandsinventory.models.*
 import com.aandssoftware.aandsinventory.pdfgenarator.PdfGenerator
 import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.activity.OrderDetailsActivity
@@ -31,12 +28,14 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.inventory_item.view.*
 import java.io.Serializable
 import java.util.*
 
 class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOperations {
 
+    var orderModel: OrderModel? = null
     private val orderId: String?
         get() = activity.intent
                 .getStringExtra(AppConstants.ORDER_ID)
@@ -50,6 +49,7 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         var inventoryItemName: TextView
         var inventoryItemQuantity: TextView
         var inventoryItemDetails: TextView
+        var imgInventoryItemDelete: ImageView
         var cardView: CardView
         var llButtons: LinearLayout = itemView.llButtons
 
@@ -58,10 +58,12 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
             inventoryItemName = itemView.inventoryItemName;
             inventoryItemQuantity = itemView.inventoryItemQuantity;
             inventoryItemDetails = itemView.inventoryItemDetails;
+            imgInventoryItemDelete = itemView.imgInventoryItemDelete;
             cardView = itemView.cardView
 
             itemView.imgInventoryItemHistory.visibility = View.GONE
             itemView.imgInventoryItemEdit.visibility = View.GONE
+            itemView.imgInventoryItemDelete.visibility = View.GONE
 
             itemView.imgInventoryItemDelete.setOnClickListener {
                 var pos: Int = itemView.getTag(R.string.tag) as Int
@@ -91,15 +93,6 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
                 .plus(" ").plus(mItem.inventoryItemSize)
 
         mItem.inventoryItemImagePath?.let {
-            /* if (it.contains(AppConstants.HTTP, ignoreCase = true)) {
-                 var uri: Uri = Uri.parse(mItem.inventoryItemImagePath)
-                 Glide.with(activity)
-                         .load(uri)
-                         .placeholder(android.R.drawable.ic_menu_gallery)
-                         .crossFade()
-                         .into(holder.imgInventoryItemLogo)
-             }*/
-
             var firstImage = it.values.toMutableList().first()
             var uri: Uri = Uri.parse(firstImage)
             Glide.with(activity)
@@ -111,6 +104,12 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         holder.cardView.setOnClickListener {
             var pos: Int = baseHolder.itemView.getTag(R.string.tag) as Int
             performClick(mItem.id, pos)
+        }
+
+        orderModel?.orderStatus?.let {
+            if (OrderStatus.valueOf(it) == OrderStatus.CREATED || Utils.isAdminUser(activity)) {
+                holder.imgInventoryItemDelete.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -132,9 +131,9 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         FirebaseUtil.getInstance().getCustomerDao().getOrderFromID(orderId!!,
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val orderModel = FirebaseUtil.getInstance()
+                        orderModel = FirebaseUtil.getInstance()
                                 .getClassData(dataSnapshot, OrderModel::class.java)
-                        if (null != orderModel) {
+                        orderModel?.let { orderModel ->
                             if (orderModel.orderItems.isNotEmpty()) {
                                 val inventoryItems = ArrayList(
                                         orderModel.orderItems.values)

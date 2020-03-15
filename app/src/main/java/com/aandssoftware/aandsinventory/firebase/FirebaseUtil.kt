@@ -11,7 +11,9 @@ import com.aandssoftware.aandsinventory.database.CustomerDao
 import com.aandssoftware.aandsinventory.database.InventoryDao
 import com.aandssoftware.aandsinventory.models.CallBackListener
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.google.firebase.database.*
+import java.lang.Exception
 
 
 class FirebaseUtil {
@@ -53,9 +55,13 @@ class FirebaseUtil {
         var list = ArrayList<T>()
         if (null != dataSnapshot.value) {
             for (children in dataSnapshot.children) {
-                val model = children.getValue(valueType)
-                if (null != model) {
-                    list.add(model)
+                try {
+                    val model = children.getValue(valueType)
+                    if (null != model) {
+                        list.add(model)
+                    }
+                } catch (e: Exception) {
+                    CrashlaticsUtil.logError(CrashlaticsUtil.TAG_ERROR, e.toString())
                 }
             }
         }

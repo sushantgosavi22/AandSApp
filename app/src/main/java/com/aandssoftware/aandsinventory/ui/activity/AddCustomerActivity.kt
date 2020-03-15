@@ -25,6 +25,7 @@ import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.PICK_IM
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_LIST_RESULT_CODE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.TITLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.VIEW_MODE
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

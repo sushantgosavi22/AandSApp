@@ -32,6 +32,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="center"
+      android:lines="@integer/int_1"
+      android:ellipsize="end"
       android:textAppearance="?android:attr/textAppearanceMedium"
       android:textColor="@android:color/white"
       android:textSize="@dimen/size_25_sp"

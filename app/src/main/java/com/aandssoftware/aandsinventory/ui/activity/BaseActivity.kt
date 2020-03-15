@@ -45,7 +45,7 @@ open class BaseActivity : AppCompatActivity() {
         actionBarTitle?.visibility = visibility
     }
 
-    private fun setScreenSubTitle(subTitle: String) {
+    public fun setScreenSubTitle(subTitle: String) {
         val actionBarSubTitle = supportActionBar?.customView?.findViewById<TextView>(R.id.actionBarSubTitle)
         actionBarSubTitle?.visibility = View.VISIBLE
         actionBarSubTitle?.text = subTitle

@@ -78,12 +78,12 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
     override fun onBindSearchViewHolder(baseHolder: BaseViewHolder, position: Int, item: Serializable) {
         val holder = baseHolder as OrderViewHolder
         val mItem = item as OrderModel
-        holder.tvCustomerName.text = EMPTY_STRING.plus(mItem.orderId).plus(") ").plus(mItem.customerModel?.customerName)
+        holder.tvCustomerName.text = EMPTY_STRING.plus(DateUtils.getDateFormatted(mItem.orderDateCreated))
         holder.tvContactNameAndNumber.text = mItem.customerModel?.contactPerson + " " + mItem.customerModel?.contactPersonNumber
         holder.tvFinalAmount.text = Utils.isEmptyInt(mItem.finalBillAmount, "-")
         holder.tvItemCount.text = mItem.orderItems.size.toString()
         holder.tvInvoiceNumber.text = Utils.isEmpty(mItem.invoiceNumber, "-")
-        holder.tvOrderDate.text = DateUtils.getDateFormatted(mItem.orderDateCreated)
+        holder.tvOrderDate.visibility = View.GONE
         holder.tvOrderStatus.text = Utils.isEmpty(mItem.orderStatusName)
         holder.tvOrderStatus.setBackgroundDrawable(
                 getStatusBackgroud(baseHolder.itemView.context, Utils.isEmpty(mItem.orderStatus)))
@@ -97,6 +97,9 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
 
 
     override fun getTitle(): String {
+        val user = SharedPrefsUtils.getUserPreference(activity, SharedPrefsUtils.CURRENT_USER)
+        var name: String = user?.customerName ?: EMPTY_STRING
+        activity.setScreenSubTitle(name)
         return activity.getString(R.string.order)
     }
 

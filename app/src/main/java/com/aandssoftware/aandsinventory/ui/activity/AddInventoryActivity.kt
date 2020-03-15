@@ -679,8 +679,10 @@ class AddInventoryActivity : BaseActivity() {
     private fun getImagesAdapter(): MultiImageSelectionAdapter {
         var adapter = if (null == imageAdapter) {
             var rowClickListner = View.OnClickListener {
-                if (askingForRequest().not()) {
-                    callMultiImageSelection()
+                if ((viewMode == ViewMode.VIEW_ONLY.ordinal || viewMode == ViewMode.GET_INVENTORY_QUANTITY.ordinal).not()) {
+                    if (askingForRequest().not()) {
+                        callMultiImageSelection()
+                    }
                 }
             }
 

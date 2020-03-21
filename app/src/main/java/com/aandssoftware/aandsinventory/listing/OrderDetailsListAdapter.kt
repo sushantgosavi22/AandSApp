@@ -21,6 +21,7 @@ import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.activity.OrderDetailsActivity
 import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DOUBLE_DEFAULT_ZERO
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_LIST_RESULT_CODE
 import com.bumptech.glide.Glide
@@ -87,7 +88,7 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         val holder = baseHolder as InventoryViewHolder
         val mItem = item as InventoryItem
         holder.inventoryItemName.text = mItem.inventoryItemName
-        var priceForItem = if (mItem.finalBillAmount != 0) {
+        var priceForItem = if (mItem.finalBillAmount != DOUBLE_DEFAULT_ZERO) {
             " = " + Utils.currencyLocale(mItem.finalBillAmount.toDouble())
         } else {
             EMPTY_STRING

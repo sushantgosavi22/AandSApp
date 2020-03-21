@@ -108,25 +108,25 @@ class OrderModel : Serializable {
 
     @SerializedName("sgstOrderTotalAmount")
     @Expose
-    var sgstOrderTotalAmount: Int = 0
+    var sgstOrderTotalAmount: Double = 0.0
 
     @SerializedName("gstOrderTotalAmount")
     @Expose
-    var gstOrderTotalAmount: Int = 0
+    var gstOrderTotalAmount: Double = 0.0
 
 
     @SerializedName("totalTaxableAmount")
     @Expose
-    var totalTaxableAmount: Int = 0
+    var totalTaxableAmount: Double = 0.0
 
 
     @SerializedName("gstTotalAmount")
     @Expose
-    var gstTotalAmount: Int = 0
+    var gstTotalAmount: Double = 0.0
 
     @SerializedName("taxableAmountBeforeDiscount")
     @Expose
-    var taxableAmountBeforeDiscount: Int = 0
+    var taxableAmountBeforeDiscount: Double = 0.0
 
 
     @SerializedName("cessAmount")
@@ -135,11 +135,11 @@ class OrderModel : Serializable {
 
     @SerializedName("roundOff")
     @Expose
-    var roundOff: Int = 0
+    var roundOff: Double = 0.0
 
     @SerializedName("totalFigure")
     @Expose
-    var totalFigure: Int = 0
+    var totalFigure: Double = 0.0
 
     @SerializedName("paymentReceived")
     @Expose
@@ -161,7 +161,7 @@ class OrderModel : Serializable {
 
     @SerializedName("finalBillAmount")
     @Expose
-    var finalBillAmount: Int = 0
+    var finalBillAmount: Double = 0.0
 
     constructor() {
 

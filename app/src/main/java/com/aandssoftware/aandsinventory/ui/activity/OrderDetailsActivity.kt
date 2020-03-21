@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 
 
 class OrderDetailsActivity : ListingActivity() {
@@ -66,13 +67,13 @@ class OrderDetailsActivity : ListingActivity() {
             orderModel.orderDateUpdated = currentDate
             orderModel.dueDate = afterDueDate
 
-            var totalGstAmount = 0
-            var totalCgstAmount = 0
-            var totalsgstAmount = 0
-            var billAmount = 0
-            var totalItemPurchasePrice = 0
-            var finalBillAmount = 0
-            var discount = 0
+            var totalGstAmount: Double = 0.0
+            var totalCgstAmount: Double = 0.0
+            var totalsgstAmount: Double = 0.0
+            var billAmount: Double = 0.0
+            var totalItemPurchasePrice: Double = 0.0
+            var finalBillAmount: Double = 0.0
+            var discount: Double = 0.0
 
             var list: List<InventoryItem> = ArrayList<InventoryItem>(orderModel.orderItems.values)
             list.forEachIndexed { index, inventoryItem ->
@@ -85,15 +86,18 @@ class OrderDetailsActivity : ListingActivity() {
             }
             totalGstAmount = totalCgstAmount + totalsgstAmount
             finalBillAmount = billAmount + totalGstAmount
-            orderModel.totalTaxableAmount = totalItemPurchasePrice// ?
-            orderModel.gstOrderTotalAmount = totalCgstAmount// ?
-            orderModel.sgstOrderTotalAmount = totalsgstAmount// ?
-            orderModel.gstTotalAmount = totalGstAmount// ?
-            orderModel.finalBillAmount = finalBillAmount// ?
-            orderModel.taxableAmountBeforeDiscount = totalItemPurchasePrice// ?
+
+            var finalAmountAfterRoundRoud = finalBillAmount.roundToInt()
+            var roundOff = finalBillAmount - finalAmountAfterRoundRoud
+            orderModel.totalTaxableAmount = totalItemPurchasePrice
+            orderModel.gstOrderTotalAmount = totalCgstAmount
+            orderModel.sgstOrderTotalAmount = totalsgstAmount
+            orderModel.gstTotalAmount = totalGstAmount
+            orderModel.finalBillAmount = finalAmountAfterRoundRoud.toDouble()
+            orderModel.taxableAmountBeforeDiscount = totalItemPurchasePrice
             orderModel.cessAmount = 0// ?
-            orderModel.roundOff = 0// ?
-            orderModel.totalFigure = 0// ?
+            orderModel.roundOff = roundOff// ?
+            orderModel.totalFigure = 0.0// ?
             orderModel.paymentReceived = 0// ?
             orderModel.totalCreditApplied = 0// ?
             orderModel.totalDebitApplied = 0// ?

@@ -171,32 +171,32 @@ open class InventoryItem : Serializable {
 
     @SerializedName(ITEM_GST_PERCENTAGE)
     @Expose
-    var gstPercentage: Int = 0
+    var gstPercentage: Double = 0.0
 
     @SerializedName(ITEM_GST_AMOUNT)
     @Expose
-    var gstAmount: Int = 0
+    var gstAmount: Double = 0.0
 
     @SerializedName(ITEM_SGST_PERCENTAGE)
     @Expose
-    var sgstPercentage: Int = 0
+    var sgstPercentage: Double = 0.0
 
     @SerializedName(ITEM_SGST_AMOUNT)
     @Expose
-    var sgstAmount: Int = 0
+    var sgstAmount: Double = 0.0
 
     @SerializedName(ITEM_TAXABLE_AMOUNT)
     @Expose
-    var taxableAmount: Int = 0
+    var taxableAmount: Double = 0.0
 
     @SerializedName(ITEM_MRP_AMOUNT)
     @Expose
-    var mrpAmount: Int = 0
+    var mrpAmount: Double = 0.0
 
 
     @SerializedName(ITEM_FINAL_BILL_AMOUNT)
     @Expose
-    var finalBillAmount: Int = 0
+    var finalBillAmount: Double = 0.0
 
     @SerializedName("discountForCompany")
     @Expose

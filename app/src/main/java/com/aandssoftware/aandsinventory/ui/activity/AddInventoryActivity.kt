@@ -27,7 +27,9 @@ import com.aandssoftware.aandsinventory.models.ViewMode
 import com.aandssoftware.aandsinventory.ui.adapters.MultiImageSelectionAdapter
 import com.aandssoftware.aandsinventory.ui.component.CustomEditText
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DEFAULT_GST_DOUBLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DEFAULT_GST_STRING
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DOUBLE_DEFAULT_ZERO
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.INVALID_ID
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.INVENTORY_ID
@@ -54,6 +56,7 @@ import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 
 class AddInventoryActivity : BaseActivity() {
     var inventory: InventoryItem? = null
@@ -285,31 +288,11 @@ class AddInventoryActivity : BaseActivity() {
                 }
 
                 if (!Utils.isAdminUser(this)) {
-                    var sellingPriceDouble = Utils.isEmpty(it.minimumSellingPrice, ZERO_STRING).toDouble()
-                    val user = SharedPrefsUtils.getUserPreference(this, SharedPrefsUtils.CURRENT_USER)
                     val unit = it.itemQuantityUnit
-                    user?.let { customer ->
-                        var custSellingPrice: String = EMPTY_STRING
-                        var isDiscountedItem = user.discountedItems?.containsKey(it.id) ?: false
-                        if (isDiscountedItem) {
-                            val discount = user.discountedItems?.get(it.id)
-                            discount?.let {
-                                custSellingPrice = Utils.currencyLocale(discount.toDouble())
-                            }
-                        } else {
-                            var discount = if (user.discountPercent == 0.0) {
-                                user.discountPercent
-                            } else {
-                                var discountPercent = user.discountPercent
-                                sellingPriceDouble * discountPercent / 100
-                            }
-                            sellingPriceDouble -= discount
-                            custSellingPrice = Utils.currencyLocale(sellingPriceDouble)
-                        }
-                        //it.minimumSellingPrice = custSellingPrice
-                        custSellingPrice = custSellingPrice.plus(" /  ").plus(unit)
-                        edtUnitPrice.setText(custSellingPrice)
-                    }
+                    var sellingPriceAfterDiscount = Utils.getSellingPriceAfterDiscount(this, it)
+                    var custSellingPrice = Utils.currencyLocale(sellingPriceAfterDiscount)
+                    custSellingPrice = custSellingPrice.plus(" /  ").plus(unit)
+                    edtUnitPrice.setText(custSellingPrice)
                 }
                 setViewByModeAfterSetValue()
             }
@@ -371,13 +354,15 @@ class AddInventoryActivity : BaseActivity() {
                 val mainInventoryCopy = InventoryItem(it)
                 mainInventoryCopy.itemQuantity = intUpdatedQuantity.toString()
                 mainInventoryCopy.parentId = it.id
-                var amountPerQuntity: Int = intUpdatedQuantity * Utils.isEmptyIntFromString(edtSellingPrice.getText(), 0)
-                var cgst: Int = Utils.getAmountOfPercentage(mainInventoryCopy.gstPercentage, amountPerQuntity)
+                var sellingPriceAfterDiscount = Utils.getSellingPriceAfterDiscount(this, mainInventoryCopy)
+                mainInventoryCopy.minimumSellingPrice = sellingPriceAfterDiscount.toString()
+                var amountPerQuntity: Double = intUpdatedQuantity * sellingPriceAfterDiscount
+                var cgst: Double = Utils.getAmountOfPercentage(mainInventoryCopy.gstPercentage, amountPerQuntity)
                 mainInventoryCopy.gstAmount = cgst
-                var sgst: Int = Utils.getAmountOfPercentage(mainInventoryCopy.sgstPercentage, amountPerQuntity)
+                var sgst: Double = Utils.getAmountOfPercentage(mainInventoryCopy.sgstPercentage, amountPerQuntity)
                 mainInventoryCopy.sgstAmount = sgst
                 var totalGstForItem = cgst + sgst
-                mainInventoryCopy.finalBillAmount = amountPerQuntity + totalGstForItem
+                mainInventoryCopy.finalBillAmount = (amountPerQuntity + totalGstForItem)
                 mainInventoryCopy.taxableAmount = amountPerQuntity
                 mainInventoryCopy.inventoryItemBrandName = edtBrandName.getText()
                 mainInventoryCopy.inventoryItemModelName = edtModelName.getText()
@@ -385,6 +370,8 @@ class AddInventoryActivity : BaseActivity() {
                 mainInventoryCopy.inventoryItemColor = edtColor.getText()
                 mainInventoryCopy.inventoryItemSize = edtSize.getText()
                 mainInventoryCopy.hsnCode = edtHsnCode.getText()
+
+
                 val message = String.format(resources.getString(R.string.inventory_add_order), intUpdatedQuantity, mainInventoryCopy.inventoryItemName)
                 FirebaseUtil.getInstance().isConnected(CallBackListener { online ->
                     if (online) {
@@ -445,7 +432,7 @@ class AddInventoryActivity : BaseActivity() {
         item.itemQuantityUnit = Utils.isEmpty(edtUnit.getText(), InventoryItem.DEFAULT_QUANTITY_UNIT)
         item.description = edtDescription.getText()
         item.minimumSellingPrice = edtSellingPrice.getText()
-        item.finalBillAmount = Utils.isEmptyIntFromString(edtSellingPrice.getText(), 0)
+        item.finalBillAmount = Utils.isEmpty(edtSellingPrice.getText(), DOUBLE_DEFAULT_ZERO)
         item.inventoryItemBrandName = edtBrandName.getText()
         item.inventoryItemModelName = edtModelName.getText()
         item.hsnCode = edtHsnCode.getText()
@@ -457,10 +444,10 @@ class AddInventoryActivity : BaseActivity() {
         item.purchaseItemShopAddress = edtShopAddress.getText()
         item.inventoryItemPurchaseDate = System.currentTimeMillis()
         item.inventoryItemLastUpdatedDate = System.currentTimeMillis()
-        item.gstPercentage = Utils.isEmptyIntFromString(edtCgstPercent.getText(), DEFAULT_GST_STRING.toInt())
-        item.gstAmount = Utils.isEmptyIntFromString(edtCgstAmount.getText(), DEFAULT_GST_STRING.toInt())
-        item.sgstPercentage = Utils.isEmptyIntFromString(edtSgstPercent.getText(), DEFAULT_GST_STRING.toInt())
-        item.sgstAmount = Utils.isEmptyIntFromString(edtSgstAmount.getText(), DEFAULT_GST_STRING.toInt())
+        item.gstPercentage = Utils.isEmpty(edtCgstPercent.getText(), DEFAULT_GST_DOUBLE)
+        item.gstAmount = Utils.isEmpty(edtCgstAmount.getText(), DEFAULT_GST_DOUBLE)
+        item.sgstPercentage = Utils.isEmpty(edtSgstPercent.getText(), DEFAULT_GST_DOUBLE)
+        item.sgstAmount = Utils.isEmpty(edtSgstAmount.getText(), DEFAULT_GST_DOUBLE)
 
         showProgressBar()
         FirebaseUtil.getInstance().getInventoryDao().saveInventoryItem(item, inventoryType, CallBackListener {

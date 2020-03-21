@@ -19,7 +19,10 @@ import java.lang.Exception
 import java.text.NumberFormat
 import java.util.*
 import android.util.Patterns
+import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.OrderModel
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DOUBLE_DEFAULT_ZERO
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ZERO_STRING
 import kotlin.math.roundToInt
 
 
@@ -45,7 +48,7 @@ class Utils {
         @JvmStatic
         fun isEmpty(message: String?, defaultVal: Double): Double {
             try {
-                return if (null != message && message.isNotEmpty()) message?.toDouble() else defaultVal
+                return if (null != message && message.isNotEmpty() && !message.equals(ZERO_STRING)) message?.toDouble() else defaultVal
             } catch (e: Exception) {
                 e.printStackTrace()
                 return defaultVal;
@@ -162,8 +165,8 @@ class Utils {
         }
 
         @JvmStatic
-        fun getAmountOfPercentage(percent: Int, ofAmount: Int): Int {
-            return ofAmount * percent / 100
+        fun getAmountOfPercentage(percent: Double, ofAmount: Double): Double {
+            return (ofAmount * percent / 100)
         }
 
 
@@ -183,9 +186,8 @@ class Utils {
         }
 
         @JvmStatic
-        fun getOrderFinalPrice(mItem: OrderModel): Int {
-            var result = 0
-            var arrayList = ArrayList<String>()
+        fun getOrderFinalPrice(mItem: OrderModel): Double {
+            var result: Double = 0.0
             mItem.orderItems.values.forEach {
                 result += it.finalBillAmount
             }
@@ -193,8 +195,8 @@ class Utils {
         }
 
         @JvmStatic
-        fun getOrderGstAmount(mItem: OrderModel): Int {
-            var result = 0
+        fun getOrderGstAmount(mItem: OrderModel): Double {
+            var result: Double = 0.0
             mItem.orderItems.values.forEach {
                 var amount = it.gstAmount + it.sgstAmount
                 result += amount
@@ -203,13 +205,39 @@ class Utils {
         }
 
         @JvmStatic
-        fun getTaxableOrderAmount(mItem: OrderModel): Int {
-            var result = 0
+        fun getTaxableOrderAmount(mItem: OrderModel): Double {
+            var result: Double = 0.0
             mItem.orderItems.values.forEach {
                 result += it.taxableAmount
             }
             return result
         }
+
+        @JvmStatic
+        fun getSellingPriceAfterDiscount(context: Context, inventoryItem: InventoryItem): Double {
+            var sellingPriceDouble = isEmpty(inventoryItem.minimumSellingPrice, DOUBLE_DEFAULT_ZERO)
+            val user = SharedPrefsUtils.getUserPreference(context, SharedPrefsUtils.CURRENT_USER)
+            user?.let {
+                var isDiscountedItem = user.discountedItems?.containsKey(it.id) ?: false
+                if (isDiscountedItem) {
+                    val discount = user.discountedItems?.get(it.id)
+                    discount?.let {
+                        sellingPriceDouble = isEmpty(discount, DOUBLE_DEFAULT_ZERO)
+                    }
+                } else {
+                    var discount = if (user.discountPercent == DOUBLE_DEFAULT_ZERO) {
+                        user.discountPercent
+                    } else {
+                        var discountPercent = user.discountPercent
+                        sellingPriceDouble * discountPercent / 100
+                    }
+                    sellingPriceDouble -= discount
+                }
+            }
+            return sellingPriceDouble
+        }
+
+
     }
 
 }

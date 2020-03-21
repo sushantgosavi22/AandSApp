@@ -107,6 +107,7 @@
   <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
     android:id="@+id/progress_bar"
     style="@style/progress_bar_style"
+    android:elevation="@dimen/size_5"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"

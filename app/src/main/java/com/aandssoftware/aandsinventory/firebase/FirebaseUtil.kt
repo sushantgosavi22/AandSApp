@@ -70,11 +70,15 @@ class FirebaseUtil {
 
     fun <T> getClassData(dataSnapshot: DataSnapshot, valueType: Class<T>): T? {
         var data: T? = null
-        if (null != dataSnapshot.value) {
-            var nullableData = dataSnapshot.getValue(valueType)
-            nullableData?.apply {
-                data = this
+        try {
+            if (null != dataSnapshot.value) {
+                var nullableData = dataSnapshot.getValue(valueType)
+                nullableData?.apply {
+                    data = this
+                }
             }
+        } catch (e: Exception) {
+            CrashlaticsUtil.logError(CrashlaticsUtil.TAG_ERROR, e.toString())
         }
         return data
     }

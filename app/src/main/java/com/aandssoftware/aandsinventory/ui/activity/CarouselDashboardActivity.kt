@@ -6,14 +6,17 @@ import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import com.aandssoftware.aandsinventory.R
+import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.models.CarouselMenuModel
+import com.aandssoftware.aandsinventory.notification.NotificationUtil
 import com.aandssoftware.aandsinventory.ui.adapters.CarouselMenuAdapter
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_carousel_dashboard_actvity.*
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
 import java.util.*
@@ -57,13 +60,6 @@ class CarouselDashboardActivity : BaseActivity() {
         override fun onCancelled(databaseError: DatabaseError) {}
     }
 
-    private fun getPermission(permissions: HashMap<String, String>): String {
-        var value: String = ""
-        permissions.forEach {
-            value.plus(it.value)
-        }
-        return value
-    }
 
     private val adapterInstance: CarouselMenuAdapter
         get() {
@@ -78,6 +74,7 @@ class CarouselDashboardActivity : BaseActivity() {
         setContentView(R.layout.activity_carousel_dashboard_actvity)
         init()
         saveMenu()
+        getToken()
     }
 
     private fun init() {
@@ -135,5 +132,31 @@ class CarouselDashboardActivity : BaseActivity() {
             }
         }
         return true
+    }
+
+    private fun getToken() {
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener(this) { instanceIdResult ->
+            val token = instanceIdResult.token
+            NotificationUtil.onNewToken(token, this)
+        }
+
+        var bundle = intent?.extras
+        if (bundle?.containsKey(NotificationUtil.FLOW_ID) == true) {
+            if (bundle.get(NotificationUtil.FLOW_ID).toString().equals(NotificationUtil.NOTIFICATION_FLOW)) {
+                if (bundle.get(NotificationUtil.NOTIFICATION_TYPE).toString().equals(NotificationUtil.NotificationType.ORDER_CONFIRM_INDICATE_TO_ADMIN.toString(), ignoreCase = true)) {
+                    sendToOrderDetail(bundle)
+                } else if (bundle.get(NotificationUtil.NOTIFICATION_TYPE).toString().equals(NotificationUtil.NotificationType.ORDER_DELIVERED_INDICATE_TO_COMPANY.toString(), ignoreCase = true)) {
+                    sendToOrderDetail(bundle)
+                } else if (bundle.get(NotificationUtil.NOTIFICATION_TYPE).toString().equals(NotificationUtil.NotificationType.ORDER_PAYMNT_INDICATE_TO_COMPANY.toString(), ignoreCase = true)) {
+                    sendToOrderDetail(bundle)
+                }
+            }
+        }
+    }
+
+    private fun sendToOrderDetail(bundle: Bundle?) {
+        var orderId = bundle?.get(NotificationUtil.ORDER_ID).toString()
+        var customerId = bundle?.get(NotificationUtil.CUSTOMER_ID).toString()
+        Navigator.openOrderDetailsScreen(this, orderId, intent)
     }
 }

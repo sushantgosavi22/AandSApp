@@ -12,6 +12,7 @@ import com.aandssoftware.aandsinventory.ui.activity.ui.login.LoginActivity
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ANDROID_APP_UPDATE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.LOG
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.SPLASH_TIME
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -44,7 +45,7 @@ class SplashActivity : BaseActivity(), InstallStateUpdatedListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         checkUpdate()
-
+        showIntentData(intent)
     }
 
     private fun checkUpdate() {
@@ -61,16 +62,22 @@ class SplashActivity : BaseActivity(), InstallStateUpdatedListener {
                 showLogin()
             }
         }
+        mAppUpdateManager.appUpdateInfo.addOnFailureListener {
+            showLogin()
+        }
     }
 
     private fun showLogin() {
         Handler().postDelayed({
             val user = SharedPrefsUtils.getUserPreference(this, SharedPrefsUtils.CURRENT_USER)
-            var intent = Intent(this@SplashActivity, LoginActivity::class.java)
+            var intentLogin = Intent(this@SplashActivity, LoginActivity::class.java)
             if (user != null) {
-                intent = Intent(this@SplashActivity, CarouselDashboardActivity::class.java)
+                intentLogin = Intent(this@SplashActivity, CarouselDashboardActivity::class.java)
             }
-            startActivity(intent)
+            intent?.extras?.let {
+                intentLogin.putExtras(it)
+            }
+            startActivity(intentLogin)
             finish()
         }, SPLASH_TIME)
     }
@@ -96,5 +103,20 @@ class SplashActivity : BaseActivity(), InstallStateUpdatedListener {
         }
         snackbar.setActionTextColor(resources.getColor(R.color.brand_color_primary))
         snackbar.show()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        showIntentData(intent)
+    }
+
+    private fun showIntentData(intent: Intent?) {
+        val extras = intent?.extras
+        if (extras != null) {
+            for (key in extras.keySet()) {
+                val value = extras.get(key)
+                //CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, "Extras received at onNewIntent:  Key: $key Value: $value")
+            }
+        }
     }
 }

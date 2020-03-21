@@ -87,19 +87,26 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         val holder = baseHolder as InventoryViewHolder
         val mItem = item as InventoryItem
         holder.inventoryItemName.text = mItem.inventoryItemName
-        holder.inventoryItemQuantity.text = mItem.itemQuantity.plus(" ").plus(mItem.itemQuantityUnit)
+        var priceForItem = if (mItem.finalBillAmount != 0) {
+            " = " + Utils.currencyLocale(mItem.finalBillAmount.toDouble())
+        } else {
+            EMPTY_STRING
+        }
+        holder.inventoryItemQuantity.text = mItem.itemQuantity.plus(" ").plus(mItem.itemQuantityUnit).plus(priceForItem)
         holder.inventoryItemDetails.text = EMPTY_STRING.plus(mItem.inventoryItemBrandName).plus(" ").plus(mItem
                 .inventoryItemModelName).plus(" ").plus(mItem.inventoryItemColor)
                 .plus(" ").plus(mItem.inventoryItemSize)
 
         mItem.inventoryItemImagePath?.let {
-            var firstImage = it.values.toMutableList().first()
-            var uri: Uri = Uri.parse(firstImage)
-            Glide.with(activity)
-                    .load(uri)
-                    .placeholder(android.R.drawable.ic_menu_gallery)
-                    .crossFade()
-                    .into(holder.imgInventoryItemLogo)
+            if (it.isNotEmpty()) {
+                var firstImage = it.values.toMutableList().first()
+                var uri: Uri = Uri.parse(firstImage)
+                Glide.with(activity)
+                        .load(uri)
+                        .placeholder(android.R.drawable.ic_menu_gallery)
+                        .crossFade()
+                        .into(holder.imgInventoryItemLogo)
+            }
         }
         holder.cardView.setOnClickListener {
             var pos: Int = baseHolder.itemView.getTag(R.string.tag) as Int
@@ -139,6 +146,7 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
                                         orderModel.orderItems.values)
                                 activity.loadData(inventoryItems)
                             }
+                            (activity as OrderDetailsActivity).setValues(orderModel)
                             activity.dismissProgressBar()
                         }
                     }
@@ -232,6 +240,7 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
                             DatabaseReference.CompletionListener { databaseError, _ ->
                                 if (null == databaseError) {
                                     activity.removeAt(pos)
+                                    getResult()
                                 }
                             })
                 }

@@ -15,18 +15,19 @@ import com.aandssoftware.aandsinventory.common.DateUtils
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
-import com.aandssoftware.aandsinventory.models.CarouselMenuModel
-import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.OrderModel
 import com.aandssoftware.aandsinventory.models.OrderStatus
-import com.aandssoftware.aandsinventory.pdfgenarator.swipe
 import com.aandssoftware.aandsinventory.ui.activity.CompanyOrderListActivity
 import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.AD_COUNT_LIMIT
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
-import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -36,6 +37,14 @@ import java.io.Serializable
 
 class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOperations {
 
+    var positionClicked = 0
+    var orderId: String? = EMPTY_STRING
+    var isReady: Boolean = false
+    private lateinit var mInterstitialAd: InterstitialAd
+
+    init {
+        initAndLoadInterstitialAd()
+    }
     inner class OrderViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
         var tvOrderDate: AppCompatTextView = itemView.tvOrderDate
@@ -60,9 +69,50 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
         }
     }
 
-    private fun showOrderInventoryActivity(activity: Activity, orderId: String?, pos: Int) {
-        var intent = Intent().putExtra(AppConstants.POSITION_IN_LIST, pos)
+    private fun showOrderInventoryActivity(activity: Activity, orderIdLocal: String?, pos: Int) {
+        positionClicked = pos
+        orderId = orderIdLocal
+        var count = SharedPrefsUtils.getIntegerPreference(activity, SharedPrefsUtils.AD_INTERSTITIAL_ORDER_LIST_COUNT, 0)
+        if (count <= AD_COUNT_LIMIT) {
+            SharedPrefsUtils.setIntegerPreference(activity, SharedPrefsUtils.AD_INTERSTITIAL_ORDER_LIST_COUNT, (count + 1))
+            navigateToOrderDetailsScreeen()
+        } else {
+            if (isReady && mInterstitialAd.isLoaded) {
+                SharedPrefsUtils.setIntegerPreference(activity, SharedPrefsUtils.AD_INTERSTITIAL_ORDER_LIST_COUNT, 0)
+                mInterstitialAd.show()
+            } else {
+                navigateToOrderDetailsScreeen()
+            }
+        }
+    }
+
+    private fun navigateToOrderDetailsScreeen() {
+        var intent = Intent().putExtra(AppConstants.POSITION_IN_LIST, positionClicked)
         Navigator.openOrderDetailsScreen(activity, orderId!!, intent)
+    }
+
+    private fun initAndLoadInterstitialAd() {
+        mInterstitialAd = InterstitialAd(activity)
+        MobileAds.initialize(activity, activity.getString(R.string.app_id_for_adds))
+        mInterstitialAd.adUnitId = activity.getString(R.string.interstitialAd_comp_order_list01)
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+        mInterstitialAd.adListener = object : AdListener() {
+            // If user clicks on the ad and then presses the back, s/he is directed to DetailActivity.
+            override fun onAdClicked() {
+                super.onAdOpened()
+                mInterstitialAd.adListener.onAdClosed()
+            }
+
+            // If user closes the ad, s/he is directed to DetailActivity.
+            override fun onAdClosed() {
+                navigateToOrderDetailsScreeen()
+            }
+
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                isReady = true
+            }
+        }
     }
 
     override fun getActivityLayoutId(): Int {
@@ -80,10 +130,10 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
         val mItem = item as OrderModel
         holder.tvCustomerName.text = EMPTY_STRING.plus(DateUtils.getDateFormatted(mItem.orderDateCreated))
         holder.tvContactNameAndNumber.text = mItem.customerModel?.contactPerson + " " + mItem.customerModel?.contactPersonNumber
-        holder.tvFinalAmount.text = Utils.isEmptyInt(mItem.finalBillAmount, "-")
+        holder.tvFinalAmount.text = Utils.getOrderFinalPrice(mItem).toString()
         holder.tvItemCount.text = mItem.orderItems.size.toString()
         holder.tvInvoiceNumber.text = Utils.isEmpty(mItem.invoiceNumber, "-")
-        holder.tvOrderDate.visibility = View.GONE
+        holder.tvOrderDate.text = Utils.getItemNames(mItem)
         holder.tvOrderStatus.text = Utils.isEmpty(mItem.orderStatusName)
         holder.tvOrderStatus.setBackgroundDrawable(
                 getStatusBackgroud(baseHolder.itemView.context, Utils.isEmpty(mItem.orderStatus)))
@@ -94,7 +144,6 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
             holder.imgDelete.visibility = View.GONE
         }
     }
-
 
     override fun getTitle(): String {
         val user = SharedPrefsUtils.getUserPreference(activity, SharedPrefsUtils.CURRENT_USER)
@@ -119,7 +168,6 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
         activity.showProgressBar()
         FirebaseUtil.getInstance().getCustomerDao().getCompanyOrders(Utils.getLoginCustomerId(activity), object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, dataSnapshot.toString())
                 val list = FirebaseUtil.getInstance()
                         .getListData(dataSnapshot, OrderModel::class.java)
                 if (list.isNotEmpty()) {

@@ -99,6 +99,14 @@ class CustomerModel : Serializable {
     @Expose
     var discountedItems: HashMap<String, String>? = null
 
+    @SerializedName(LOCATION)
+    @Expose
+    var location: HashMap<String, String>? = null
+
+    @SerializedName(PUSH_NOTIFICATION_TOKEN)
+    @Expose
+    var notificationToken: String? = null
+
     @SerializedName("blockedUser")
     @Expose
     var blockedUser: Boolean = false
@@ -115,5 +123,7 @@ class CustomerModel : Serializable {
         val PASSWORD = "password"
         val PERMISSION = "permission"
         const val DISCOUNTED_ITEM = "discountedItems"
+        const val LOCATION = "location"
+        const val PUSH_NOTIFICATION_TOKEN = "notificationToken"
     }
 }

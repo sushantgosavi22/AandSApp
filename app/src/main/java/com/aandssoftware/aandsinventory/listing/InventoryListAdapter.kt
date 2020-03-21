@@ -32,11 +32,14 @@ import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ORDER_RELOAD_LIST_RESULT_CODE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_LIST_RESULT_CODE
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil.TAG_INFO
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.inventory_item.view.*
 import java.io.Serializable
 import kotlin.collections.ArrayList
@@ -176,21 +179,16 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
         }
 
         mItem.inventoryItemImagePath?.let {
-            /*if (it.contains(AppConstants.HTTP, ignoreCase = true)) {
-                var uri: Uri = Uri.parse(mItem.inventoryItemImagePath)
+            if (it.isNotEmpty()) {
+                var firstImage = it.values.toMutableList().first()
+                var uri: Uri = Uri.parse(firstImage)
                 Glide.with(activity)
                         .load(uri)
                         .placeholder(android.R.drawable.ic_menu_gallery)
                         .crossFade()
                         .into(holder.imgInventoryItemLogo)
-            }*/
-            var firstImage = it.values.toMutableList().first()
-            var uri: Uri = Uri.parse(firstImage)
-            Glide.with(activity)
-                    .load(uri)
-                    .placeholder(android.R.drawable.ic_menu_gallery)
-                    .crossFade()
-                    .into(holder.imgInventoryItemLogo)
+            }
+
         }
         holder.cardView.setOnClickListener {
             var pos: Int = baseHolder.itemView.getTag(R.string.tag) as Int
@@ -255,6 +253,7 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             val list = FirebaseUtil.getInstance()
                                     .getListData(dataSnapshot, InventoryItem::class.java)
+                            CrashlaticsUtil.logInfo(TAG_INFO, Gson().toJson(list))
                             if (list.isNotEmpty()) {
                                 list.reverse()
                                 var shouldLoadMore: Boolean

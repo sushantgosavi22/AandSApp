@@ -1,6 +1,7 @@
 package com.aandssoftware.aandsinventory.ui.activity
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -10,10 +11,8 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.ScrollView
-import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aandssoftware.aandsinventory.R
@@ -21,8 +20,8 @@ import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
 import com.aandssoftware.aandsinventory.listing.ListType
-import com.aandssoftware.aandsinventory.models.InventoryCreatedBy
 import com.aandssoftware.aandsinventory.models.CallBackListener
+import com.aandssoftware.aandsinventory.models.InventoryCreatedBy
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.ViewMode
 import com.aandssoftware.aandsinventory.ui.adapters.MultiImageSelectionAdapter
@@ -42,13 +41,14 @@ import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.TITLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.VIEW_MODE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ZERO_STRING
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_add_inventory.*
-import kotlinx.android.synthetic.main.activity_add_inventory.btnSave
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
 import java.math.BigDecimal
 import java.util.*
@@ -112,7 +112,7 @@ class AddInventoryActivity : BaseActivity() {
             edtPurchasePrice.visibility = View.GONE
             slShopDetails.visibility = View.GONE
             edtCgstAmount.visibility = View.GONE
-            llSgstDetails.visibility = View.GONE
+            edtSgstAmount.visibility = View.GONE
         }
     }
 
@@ -120,13 +120,14 @@ class AddInventoryActivity : BaseActivity() {
     private fun setUpUI() {
         setupActionBar(title)
         val watcher = CustomTextWatcher(edtQuantity, edtPurchasePrice, edtUnitPrice)
-        val cGstWatcher = CustomGstWatcher(edtCgstPercent, edtUnitPrice, edtCgstAmount)
-        val sGstWatcher = CustomGstWatcher(edtSgstPercent, edtUnitPrice, edtSgstAmount)
+        val cGstWatcher = CustomGstWatcher(edtCgstPercent, edtSellingPrice, edtCgstAmount, edtUnitPrice)
+        val sGstWatcher = CustomGstWatcher(edtSgstPercent, edtSellingPrice, edtSgstAmount, edtUnitPrice)
         edtCgstPercent.addTextChangedListener(cGstWatcher)
         edtSgstPercent.addTextChangedListener(sGstWatcher)
         edtPurchasePrice.addTextChangedListener(watcher)
         edtQuantity.addTextChangedListener(watcher)
         setViewByMode()
+        initAndLoadBannerAd()
         btnSave.setOnClickListener {
             onButtonClick()
         }
@@ -178,7 +179,7 @@ class AddInventoryActivity : BaseActivity() {
         addItem.setOnClickListener {
             val value = edtOrderQuantity.text.toString()
             if (value.isNotEmpty()) {
-                var orderQuantity = Integer.parseInt(value)
+                var orderQuantity = Utils.isEmptyIntFromString(value, 0)
                 if (orderQuantity > 0) {
                     orderQuantity += 1
                     edtOrderQuantity.setText(orderQuantity.toString())
@@ -188,7 +189,7 @@ class AddInventoryActivity : BaseActivity() {
         removeItem.setOnClickListener {
             val value = edtOrderQuantity.text.toString()
             if (value.isNotEmpty()) {
-                var orderQuantity = Integer.parseInt(value)
+                var orderQuantity = Utils.isEmptyIntFromString(value, 0)
                 if (orderQuantity > 0) {
                     orderQuantity -= 1
                     edtOrderQuantity.setText(orderQuantity.toString())
@@ -283,7 +284,6 @@ class AddInventoryActivity : BaseActivity() {
                     adapter?.loadData(list)
                 }
 
-
                 if (!Utils.isAdminUser(this)) {
                     var sellingPriceDouble = Utils.isEmpty(it.minimumSellingPrice, ZERO_STRING).toDouble()
                     val user = SharedPrefsUtils.getUserPreference(this, SharedPrefsUtils.CURRENT_USER)
@@ -306,10 +306,12 @@ class AddInventoryActivity : BaseActivity() {
                             sellingPriceDouble -= discount
                             custSellingPrice = Utils.currencyLocale(sellingPriceDouble)
                         }
+                        //it.minimumSellingPrice = custSellingPrice
                         custSellingPrice = custSellingPrice.plus(" /  ").plus(unit)
                         edtUnitPrice.setText(custSellingPrice)
                     }
                 }
+                setViewByModeAfterSetValue()
             }
         }
         if (viewMode == ViewMode.GET_INVENTORY_QUANTITY.ordinal) {
@@ -318,6 +320,25 @@ class AddInventoryActivity : BaseActivity() {
             }
         }
         setButtonText(if (viewMode == ViewMode.UPDATE.ordinal) resources.getString(R.string.update) else resources.getString(R.string.save))
+    }
+
+    private fun setViewByModeAfterSetValue() {
+        if (inventoryType == ListType.LIST_TYPE_ORDER_INVENTORY.ordinal) {
+            llQuantityAndUnit.visibility = View.VISIBLE
+            edtSellingPrice.visibility = View.VISIBLE
+
+            inventory?.let {
+                var totalGstAmount = it.sgstAmount + it.gstAmount
+                var sellingPrice = it.minimumSellingPrice?.let { Utils.parseCommaSeparatedCurrency(it) }
+                        ?: 0
+                var title = EMPTY_STRING.plus(" [ ").plus("Amount ( ")
+                        .plus(it.itemQuantity).plus("*").plus(sellingPrice).plus(" ) ")
+                        .plus(it.taxableAmount).plus(" + ").plus(" GST ").plus(totalGstAmount).plus(" ]")
+                edtSellingPrice.setTitle(getString(R.string.final_bill_amount).plus(title))
+                edtSellingPrice.setText(it.finalBillAmount.toString())
+            }
+        }
+
     }
 
     private fun setButton(text: String, visibility: Int) {
@@ -346,10 +367,18 @@ class AddInventoryActivity : BaseActivity() {
         val newQuantity = edtOrderQuantity.text.toString()
         if (newQuantity.toInt() > 0) {
             inventory?.let {
-                val intUpdatedQuantity = Integer.parseInt(Utils.isEmpty(inventory?.itemQuantity)) - Integer.parseInt(newQuantity)
+                val intUpdatedQuantity = Utils.isEmptyIntFromString(newQuantity, 1)
                 val mainInventoryCopy = InventoryItem(it)
                 mainInventoryCopy.itemQuantity = intUpdatedQuantity.toString()
                 mainInventoryCopy.parentId = it.id
+                var amountPerQuntity: Int = intUpdatedQuantity * Utils.isEmptyIntFromString(edtSellingPrice.getText(), 0)
+                var cgst: Int = Utils.getAmountOfPercentage(mainInventoryCopy.gstPercentage, amountPerQuntity)
+                mainInventoryCopy.gstAmount = cgst
+                var sgst: Int = Utils.getAmountOfPercentage(mainInventoryCopy.sgstPercentage, amountPerQuntity)
+                mainInventoryCopy.sgstAmount = sgst
+                var totalGstForItem = cgst + sgst
+                mainInventoryCopy.finalBillAmount = amountPerQuntity + totalGstForItem
+                mainInventoryCopy.taxableAmount = amountPerQuntity
                 mainInventoryCopy.inventoryItemBrandName = edtBrandName.getText()
                 mainInventoryCopy.inventoryItemModelName = edtModelName.getText()
                 mainInventoryCopy.description = edtDescription.getText()
@@ -416,6 +445,7 @@ class AddInventoryActivity : BaseActivity() {
         item.itemQuantityUnit = Utils.isEmpty(edtUnit.getText(), InventoryItem.DEFAULT_QUANTITY_UNIT)
         item.description = edtDescription.getText()
         item.minimumSellingPrice = edtSellingPrice.getText()
+        item.finalBillAmount = Utils.isEmptyIntFromString(edtSellingPrice.getText(), 0)
         item.inventoryItemBrandName = edtBrandName.getText()
         item.inventoryItemModelName = edtModelName.getText()
         item.hsnCode = edtHsnCode.getText()
@@ -619,15 +649,27 @@ class AddInventoryActivity : BaseActivity() {
     }
 
     private class CustomGstWatcher(private var edtPercent: CustomEditText,
-                                   private var edtUnitPrice: CustomEditText,
-                                   private var edtAmount: CustomEditText) : TextWatcher {
+                                   private var edtSellingPrice: CustomEditText,
+                                   private var edtAmount: CustomEditText,
+                                   private var edtUnitPrice: CustomEditText) : TextWatcher {
         override fun afterTextChanged(p0: Editable?) {}
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             try {
                 val strPercent = edtPercent.getText()
                 if (strPercent.isNotEmpty()) {
-                    val unitPrice = Utils.parseCommaSeparatedCurrency(edtUnitPrice.getText())
+
+                    val unitPrice: Double = if (edtSellingPrice.getText().isNotEmpty()) {
+                        var price: Double = 0.0
+                        try {
+                            price = edtSellingPrice.getText().toDouble()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        price
+                    } else {
+                        Utils.parseCommaSeparatedCurrency(edtUnitPrice.getText())
+                    }
                     if (unitPrice > 0) {
                         val percent = edtPercent.getText().toDouble()
                         var unitPrice = unitPrice * percent / 100
@@ -686,29 +728,12 @@ class AddInventoryActivity : BaseActivity() {
                 }
             }
 
-            var deleteClickListner = View.OnClickListener {
-                showProgressBar()
-                var uri: Uri = it.tag as Uri
-                FirebaseUtil.getInstance().getInventoryDao().removeInventoryImage(uri.toString(), object : CallBackListener {
-                    override fun getCallBack(result: Boolean) {
-                        dismissProgressBar()
-                        if (result) {
-                            showSnackBarMessage(getString(R.string.inventory_deleted_successfully))
-                            var pos: Int = imagePath?.values?.indexOf(uri.toString()) ?: INVALID_ID
-                            var deleted = imagePath?.values?.remove(uri.toString()) ?: false
-                            if (deleted) {
-                                var list = setMultiImageAdapterFromHashMap()
-                                var adapter = setMultiImageAdapter(list)
-                                if (pos != INVALID_ID) {
-                                    adapter?.removeAt(pos)
-                                }
-                            }
-                        } else {
-                            showSnackBarMessage(getString(R.string.inventory_deleted_failed))
-                        }
-                    }
-                })
-
+            var deleteClickListner = View.OnLongClickListener {
+                if (Utils.isAdminUser(this)) {
+                    var uri: Uri = it.tag as Uri
+                    deleteInventoryImage(uri, this)
+                }
+                false
             }
             imageAdapter = MultiImageSelectionAdapter(this, rowClickListner, deleteClickListner)
             imageAdapter as MultiImageSelectionAdapter
@@ -716,6 +741,51 @@ class AddInventoryActivity : BaseActivity() {
             imageAdapter as MultiImageSelectionAdapter
         }
         return adapter
+    }
+
+
+    fun deleteInventoryImage(uri: Uri, context: Context) {
+        val alertDialogBuilderUserInput = AlertDialog.Builder(context)
+        alertDialogBuilderUserInput
+                .setTitle(context.getString(R.string.delete_inventory_image_title))
+                .setMessage(context.getString(R.string.delete_inventory_image))
+                .setCancelable(false)
+                .setPositiveButton(context.getString(R.string.yes)
+                ) { dialogBox, id ->
+                    showProgressBar()
+                    FirebaseUtil.getInstance().getInventoryDao().removeInventoryImage(uri.toString(), object : CallBackListener {
+                        override fun getCallBack(result: Boolean) {
+                            dismissProgressBar()
+                            if (result) {
+                                showSnackBarMessage(getString(R.string.inventory_deleted_successfully))
+                                var pos: Int = imagePath?.values?.indexOf(uri.toString())
+                                        ?: INVALID_ID
+                                var deleted = imagePath?.values?.remove(uri.toString()) ?: false
+                                if (deleted) {
+                                    var list = setMultiImageAdapterFromHashMap()
+                                    var adapter = setMultiImageAdapter(list)
+                                    if (pos != INVALID_ID) {
+                                        adapter?.removeAt(pos)
+                                    }
+                                }
+                            } else {
+                                showSnackBarMessage(getString(R.string.inventory_deleted_failed))
+                            }
+                        }
+                    })
+                }
+                .setNegativeButton(
+                        context.getString(R.string.no)
+                ) { dialogBox, id -> dialogBox.cancel() }
+
+        val alertDialog = alertDialogBuilderUserInput.create()
+        alertDialog.show()
+    }
+
+    private fun initAndLoadBannerAd() {
+        MobileAds.initialize(this, getString(R.string.app_id_for_adds))
+        adViewBannerAddInventory01.loadAd(AdRequest.Builder().build())
+        adViewBannerAddInventory02.loadAd(AdRequest.Builder().build())
     }
 
 }

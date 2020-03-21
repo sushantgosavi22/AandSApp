@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.multi_image_item.view.*
 import java.io.Serializable
 
 
-class MultiImageSelectionAdapter(val activity: BaseActivity, val listner: View.OnClickListener, val deleteListner: View.OnClickListener) : RecyclerView.Adapter<MultiImageSelectionAdapter.ViewHolder>() {
+class MultiImageSelectionAdapter(val activity: BaseActivity, val listner: View.OnClickListener, val deleteListner: View.OnLongClickListener) : RecyclerView.Adapter<MultiImageSelectionAdapter.ViewHolder>() {
     private var data: MutableList<Uri> = ArrayList<Uri>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,13 +36,14 @@ class MultiImageSelectionAdapter(val activity: BaseActivity, val listner: View.O
             holder.itemView.requestFocus()
         }
         holder.ivGallery
-        //holder.itemView.tag = item
-        holder.imgDelete.tag = item
+        holder.itemView.tag = item
+        //holder.imgDelete.tag = item
         Glide.with(activity)
                 .load(item)
                 .placeholder(R.drawable.ic_image_add)
                 .into(holder.ivGallery)
         holder.itemView.setOnClickListener(listner)
+        holder.itemView.setOnLongClickListener(deleteListner)
     }
 
 
@@ -51,23 +52,24 @@ class MultiImageSelectionAdapter(val activity: BaseActivity, val listner: View.O
         internal var imgDelete: AppCompatImageView = itemView.imgDelete
 
         init {
+            imgDelete.visibility = View.GONE
             itemView.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
                     // run scale animation and make it bigger
                     val anim = AnimationUtils.loadAnimation(activity, R.anim.scale_in)
                     itemView.startAnimation(anim)
                     anim.setFillAfter(true)
-                    imgDelete.visibility = View.GONE
+                    //imgDelete.visibility = View.GONE
                 } else {
                     // run scale animation and make it smaller
                     val anim = AnimationUtils.loadAnimation(activity, R.anim.scale_out)
                     itemView.startAnimation(anim)
                     anim.setFillAfter(true)
-                    imgDelete.visibility = View.VISIBLE
+                    //imgDelete.visibility = View.VISIBLE
                 }
             }
 
-            imgDelete.setOnClickListener(deleteListner)
+            // imgDelete.setOnClickListener(deleteListner)
         }
     }
 

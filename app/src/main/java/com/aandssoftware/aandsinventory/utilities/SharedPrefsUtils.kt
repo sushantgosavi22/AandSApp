@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import com.aandssoftware.aandsinventory.R
+import com.aandssoftware.aandsinventory.models.AppVersion
 import com.aandssoftware.aandsinventory.models.CustomerModel
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.google.gson.Gson
@@ -18,6 +19,9 @@ class SharedPrefsUtils {
 
         const val CURRENT_USER: String = "user"
         const val ADMIN_USER: String = "adminUser"
+        const val APP_VERSION: String = "appVersion"
+        const val AD_INTERSTITIAL_ORDER_LIST_COUNT: String = "adCountInterstitialOrderListCount"
+        const val AD_INTERSTITIAL_MATERIAL_LIST_COUNT: String = "adCountInterstitialMaterialListCount"
         /**
          * Helper method to retrieve a String value from [SharedPreferences].
          *
@@ -215,5 +219,32 @@ class SharedPrefsUtils {
             return value
         }
 
+        @JvmStatic
+        fun setAppVersionPreference(context: Context, key: String, model: AppVersion?): Boolean {
+            val preferences = context.getSharedPreferences(context.getString(R.string.app_version), Context.MODE_PRIVATE)
+            if (preferences != null) {
+                val editor = preferences.edit()
+                if (model != null) {
+                    editor.putString(key, Gson().toJson(model))
+                } else {
+                    editor.putString(key, null)
+                }
+                return editor.commit()
+            }
+            return false
+        }
+
+        @JvmStatic
+        fun getAppVersionPreference(context: Context, key: String): AppVersion? {
+            var value: AppVersion? = null
+            val preferences = context.getSharedPreferences(context.getString(R.string.app_version), Context.MODE_PRIVATE)
+            if (preferences != null) {
+                val data = preferences.getString(key, null)
+                data?.let {
+                    value = Gson().fromJson(data, AppVersion::class.java)
+                }
+            }
+            return value
+        }
     }
 }

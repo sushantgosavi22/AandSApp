@@ -198,9 +198,17 @@
             android:hint="@string/selling_price_hint"
             android:inputType="numberDecimal"
             app:mandatory="false"
-            app:maxLength="@integer/int_10"
+            app:maxLength="@integer/int_15"
             app:title="@string/selling_price" />
         </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+          android:id="@+id/adViewBannerAddInventory01"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          ads:adSize="BANNER"
+          ads:adUnitId="@string/banner_add_inventory01"><!--testing_banner_unit_id-->
+        </com.google.android.gms.ads.AdView>
 
         <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
           style="@style/custome_section_style"
@@ -350,6 +358,14 @@
             app:title="@string/description" />
         </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
 
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+          android:id="@+id/adViewBannerAddInventory02"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          ads:adSize="BANNER"
+          ads:adUnitId="@string/banner_add_inventory02"> <!--testing_banner_unit_id-->
+        </com.google.android.gms.ads.AdView>
 
         <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
           android:id="@+id/slShopDetails"

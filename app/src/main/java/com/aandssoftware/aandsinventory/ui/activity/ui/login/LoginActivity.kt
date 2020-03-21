@@ -13,13 +13,14 @@ import androidx.appcompat.app.AlertDialog
 import com.aandssoftware.aandsinventory.BuildConfig
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
+import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.models.*
+import com.aandssoftware.aandsinventory.notification.NotificationUtil
 import com.aandssoftware.aandsinventory.ui.activity.BaseActivity
 import com.aandssoftware.aandsinventory.ui.activity.CarouselDashboardActivity
 import com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout
 import com.aandssoftware.aandsinventory.ui.component.CustomEditText
-import com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils.Companion.CURRENT_USER
@@ -27,11 +28,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
 import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
-import com.crashlytics.android.Crashlytics
-import org.apache.poi.ss.formula.functions.T
 
 class LoginActivity : BaseActivity() {
 
@@ -93,34 +90,39 @@ class LoginActivity : BaseActivity() {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     dismissProgressBar()
                     dataSnapshot.let {
-                        var model = dataSnapshot.children.first().getValue(CustomerModel::class.java)
-                        model?.let {
-                            if (model.blockedUser.not()) {
-                                val username = model.username
-                                val password = model.password
-                                if (tvUsername.getText().equals(username)) {
-                                    if (tvPassword.getText().equals(password, ignoreCase = true)) {
-                                        SharedPrefsUtils.setUserPreference(this@LoginActivity, CURRENT_USER, model)
-                                        var isAdminUser = model.permission?.containsValue(Permissions.ADMIN.toString())
-                                                ?: false
-                                        SharedPrefsUtils.setBooleanPreference(this@LoginActivity, SharedPrefsUtils.ADMIN_USER, isAdminUser)
-                                        model.id?.let { id -> CrashlaticsUtil.setUserIdentifier(id) }
-                                        model.username?.let { username ->
-                                            CrashlaticsUtil.setUserName(username)
-                                            CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, username)
+                        var list: List<CustomerModel> = FirebaseUtil.getInstance().getListData(dataSnapshot, CustomerModel::class.java)
+                        if (list.isNotEmpty()) {
+                            var model: CustomerModel? = list.filter { it.password.equals(tvPassword.getText(), ignoreCase = true) }.getOrNull(0)
+                            model?.let {
+                                if (model.blockedUser.not()) {
+                                    val username = model.username
+                                    val password = model.password
+                                    if (tvUsername.getText().equals(username)) {
+                                        if (tvPassword.getText().equals(password, ignoreCase = true)) {
+                                            SharedPrefsUtils.setUserPreference(this@LoginActivity, CURRENT_USER, model)
+                                            var isAdminUser = model.permission?.containsValue(Permissions.ADMIN.toString())
+                                                    ?: false
+                                            SharedPrefsUtils.setBooleanPreference(this@LoginActivity, SharedPrefsUtils.ADMIN_USER, isAdminUser)
+                                            model.id?.let { id -> CrashlaticsUtil.setUserIdentifier(id) }
+                                            model.username?.let { username ->
+                                                CrashlaticsUtil.setUserName(username)
+                                                CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, username)
+                                            }
+                                            openDashboardActivity()
+                                        } else {
+                                            showSnackBarMessage(getString(R.string.password_not_match))
                                         }
-                                        openDashboardActivity()
                                     } else {
-                                        showSnackBarMessage(getString(R.string.password_not_match))
+                                        showSnackBarMessage(getString(R.string.username_not_found))
                                     }
                                 } else {
-                                    showSnackBarMessage(getString(R.string.username_not_found))
+                                    var message = model.blockedUserMessage
+                                            ?: getString(R.string.common_blocked_user_message)
+                                    showSnackBarMessage(message)
                                 }
-                            } else {
-                                var message = model.blockedUserMessage
-                                        ?: getString(R.string.common_blocked_user_message)
-                                showSnackBarMessage(message)
-                            }
+                            } ?: showSnackBarMessage(getString(R.string.password_not_match))
+                        } else {
+                            showSnackBarMessage(getString(R.string.user_not_found))
                         }
                     }
                 }
@@ -131,18 +133,26 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun openDashboardActivity() {
-        var intent = Intent(this, CarouselDashboardActivity::class.java);
-        startActivity(intent);
+        var intentDashboard = Intent(this, CarouselDashboardActivity::class.java)
+        intent?.extras?.let {
+            intentDashboard.putExtras(it)
+        }
+        startActivity(intentDashboard);
         finish()
     }
 
 
     private fun checkVersionAndLogin() {
+        showProgressBar()
         FirebaseUtil.getInstance().getCustomerDao().getAppVersion(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {}
+            override fun onCancelled(p0: DatabaseError) {
+                dismissProgressBar()
+            }
+
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val appVersion = FirebaseUtil.getInstance()
                         .getClassData(dataSnapshot, AppVersion::class.java)
+                SharedPrefsUtils.setAppVersionPreference(this@LoginActivity, SharedPrefsUtils.APP_VERSION, appVersion)
                 appVersion?.let {
                     if (appVersion.forceUpdate) {
                         redirectToPlayStore()
@@ -158,6 +168,7 @@ class LoginActivity : BaseActivity() {
                         }
                     }
                 }
+                dismissProgressBar()
             }
         })
     }

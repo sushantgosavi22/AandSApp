@@ -3,6 +3,7 @@ package com.aandssoftware.aandsinventory.common
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.text.TextUtils
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
@@ -18,6 +19,9 @@ import java.lang.Exception
 import java.text.NumberFormat
 import java.util.*
 import android.util.Patterns
+import com.aandssoftware.aandsinventory.models.OrderModel
+import kotlin.math.roundToInt
+
 
 class Utils {
 
@@ -51,7 +55,16 @@ class Utils {
         @JvmStatic
         fun isEmptyIntFromString(message: String?, defaultVal: Int): Int {
             try {
-                return if (null != message && message.isNotEmpty()) isEmptyInt(message.toInt(), defaultVal.toString()).toInt() else defaultVal
+                return if (null != message && message.isNotEmpty()) {
+                    var valueInt: Int? = null
+                    valueInt = message.toIntOrNull()
+                    if (valueInt == null) {
+                        valueInt = message.toDouble().roundToInt()
+                    }
+                    valueInt
+                } else {
+                    defaultVal
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 return defaultVal;
@@ -114,15 +127,9 @@ class Utils {
         }
 
         @JvmStatic
-        fun getAdminUsername(): String {
-            return BuildConfig.USERNAME
+        fun getFirebaseKey(): String {
+            return BuildConfig.FIREBASE_SERVER_KEY
         }
-
-        @JvmStatic
-        fun getAdminPass(): String {
-            return BuildConfig.PASSWORD
-        }
-
 
         @JvmStatic
         fun Logout(context: Activity) {
@@ -153,7 +160,59 @@ class Utils {
             val pattern = Patterns.EMAIL_ADDRESS
             return pattern.matcher(email).matches()
         }
+
+        @JvmStatic
+        fun getAmountOfPercentage(percent: Int, ofAmount: Int): Int {
+            return ofAmount * percent / 100
+        }
+
+
+        @JvmStatic
+        fun getItemNames(mItem: OrderModel): String {
+            var result = EMPTY_STRING
+            var arrayList = ArrayList<String>()
+            mItem.orderItems.forEach {
+                it.value.inventoryItemName?.let {
+                    arrayList.add(it)
+                }
+            }
+            if (arrayList.isNotEmpty()) {
+                result = TextUtils.join(", ", arrayList)
+            }
+            return result
+        }
+
+        @JvmStatic
+        fun getOrderFinalPrice(mItem: OrderModel): Int {
+            var result = 0
+            var arrayList = ArrayList<String>()
+            mItem.orderItems.values.forEach {
+                result += it.finalBillAmount
+            }
+            return result
+        }
+
+        @JvmStatic
+        fun getOrderGstAmount(mItem: OrderModel): Int {
+            var result = 0
+            mItem.orderItems.values.forEach {
+                var amount = it.gstAmount + it.sgstAmount
+                result += amount
+            }
+            return result
+        }
+
+        @JvmStatic
+        fun getTaxableOrderAmount(mItem: OrderModel): Int {
+            var result = 0
+            mItem.orderItems.values.forEach {
+                result += it.taxableAmount
+            }
+            return result
+        }
     }
 
-
 }
+
+
+

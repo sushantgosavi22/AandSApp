@@ -46,7 +46,7 @@ open class InventoryItem : Serializable {
         const val INVENTORY_ITEM_HISTORY = "History"
         const val INVENTORY_TYPE = "InventoryType"
         const val INVENTORY_PARENT_ID = "ParentId"
-        const val ITEM_GST_PERCENTAGE = "gstPeercentage"
+        const val ITEM_GST_PERCENTAGE = "gstPercentage"
         const val ITEM_GST_AMOUNT = "gstAmount"
         const val ITEM_SGST_PERCENTAGE = "sgstPeercentage"
         const val ITEM_SGST_AMOUNT = "sgstAmount"

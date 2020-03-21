@@ -21,15 +21,19 @@ import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.models.OrderModel
 import com.aandssoftware.aandsinventory.models.OrderStatus
 import com.aandssoftware.aandsinventory.models.CallBackListener
+import com.aandssoftware.aandsinventory.models.CustomerModel
+import com.aandssoftware.aandsinventory.notification.NotificationUtil
 import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.activity.OrderListActivity
 import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.order_item.view.*
 import java.io.Serializable
 
@@ -94,7 +98,7 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
         val mItem = item as OrderModel
         holder.tvCustomerName.text = mItem.customerModel?.customerName
         holder.tvContactNameAndNumber.text = mItem.customerModel?.contactPerson + " " + mItem.customerModel?.contactPersonNumber
-        holder.tvFinalAmount.text = Utils.isEmptyInt(mItem.finalBillAmount, "-")
+        holder.tvFinalAmount.text = Utils.getOrderFinalPrice(mItem).toString()
         holder.tvItemCount.text = mItem.orderItems.size.toString()
         holder.tvInvoiceNumber.text = Utils.isEmpty(mItem.invoiceNumber, "-")
         holder.tvOrderDate.text = DateUtils.getDateFormatted(mItem.orderDateCreated)
@@ -208,7 +212,7 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            AppConstants.LISTING_REQUEST_CODE // open order List activity ,
+            AppConstants.LISTING_REQUEST_CODE // open order List activity
             -> updateOrder(data)
         }
     }
@@ -270,8 +274,10 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
                 FirebaseUtil.getInstance().getCustomerDao().updateOrderStatus(orderId, status, selected, CallBackListener {
                     if (it) {
                         order.orderStatus = status
+                        order.orderStatusName = selected
                         activity.showSnackBarMessage(activity.getString(R.string.order_status_updated_successfully))
                         activity.updateElement(order, pos)
+                        sendOrderStatusNotificationToCompany(order)
                     } else {
                         activity.showSnackBarMessage(activity.getString(R.string.failed_order_status_updated))
                     }
@@ -282,6 +288,44 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
                 alertDialog.dismiss()
             }
         }
+    }
+
+    private fun sendOrderStatusNotificationToCompany(order: OrderModel) {
+        var map = HashMap<String, String>()
+        map.put(NotificationUtil.BODY, Utils.getItemNames(order))
+        map.put(NotificationUtil.ORDER_ID, order.id ?: EMPTY_STRING)
+        map.put(NotificationUtil.CUSTOMER_ID, order.customerId ?: EMPTY_STRING)
+        map.put(NotificationUtil.FLOW_ID, NotificationUtil.NOTIFICATION_FLOW)
+
+        if (order.orderStatus?.equals(OrderStatus.DELIVERED.toString(), ignoreCase = true) == true
+                || order.orderStatus?.equals(OrderStatus.PAYMENT.toString(), ignoreCase = true) == true) {
+            FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(order.customerId
+                    ?: EMPTY_STRING,
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            var model = FirebaseUtil.getInstance().getClassData(dataSnapshot, CustomerModel::class.java)
+                            model?.let {
+                                CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, Gson().toJson(model))
+                                model.notificationToken?.let { token ->
+                                    if (order.orderStatus?.equals(OrderStatus.DELIVERED.toString(), ignoreCase = true) == true) {
+                                        map.put(NotificationUtil.TITLE, NotificationUtil.ORDER_DELIVERED_TITLE)
+                                        map.put(NotificationUtil.NOTIFICATION_TYPE, NotificationUtil.NotificationType.ORDER_DELIVERED_INDICATE_TO_COMPANY.toString())
+                                        NotificationUtil.sendNotification(token, map, CallBackListener {})
+                                    } else if (order.orderStatus?.equals(OrderStatus.PAYMENT.toString(), ignoreCase = true) == true) {
+                                        map.put(NotificationUtil.TITLE, NotificationUtil.ORDER_PAYMENT_TITLE.plus(order.invoiceNumber
+                                                ?: EMPTY_STRING))
+                                        map.put(NotificationUtil.NOTIFICATION_TYPE, NotificationUtil.NotificationType.ORDER_PAYMNT_INDICATE_TO_COMPANY.toString())
+                                        NotificationUtil.sendNotification(token, map, CallBackListener {})
+                                    }
+                                }
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {}
+                    })
+        }
+
+
     }
 
 }

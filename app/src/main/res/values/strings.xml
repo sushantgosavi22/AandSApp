@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">A and S Stationary</string>
+  <string name="app_name">A and S Distributors</string>
   <string name="inventory_list_title">Inventory List</string>
   <string name="inventoryMenu">Carousel Menu</string>
   <string name="fetching_records_please_wait">Fetching Records, Please Wait</string>
@@ -10,12 +10,15 @@
   <string name="order_status_updated_successfully">Order status updated successfully.</string>
   <string name="failed_order_status_updated">Failed! to update Order Status.</string>
   <string name="common_blocked_user_message">User is blocked Please contact administrator.</string>
+  <string name="user_not_found">User Not Found! Please check username and password and try again.</string>
   <string name="no_result_found">Result Not Found...</string>
   <string name="no_internet_connection">Please check your Internet Connection and Try again.</string>
   <string name="username_not_found">Unable to found user. Please check the username and try again</string>
   <string name="password_not_match">Password not match recheck and  try again</string>
   <string name="email_and_number_not_match">Email or number you entered is not match with register email and number. Please try again</string>
   <string name="inventory_image_limit">Only 4 images allowed per inventory.</string>
+  <string name="delete_inventory_image_title">Delete Image.</string>
+  <string name="delete_inventory_image">Do you really want to delete inventory image?.</string>
   <string name="inventory_deleted_successfully">Image deleted successfully.</string>
   <string name="inventory_deleted_failed">Unable to deleted Image. Please try again</string>
   <string name="enter_username">Please Enter Username.</string>
@@ -30,6 +33,17 @@
   <string name="purchase_price_hint">Ex. 1,000</string>
   <string name="item_name">Item Name</string>
   <string name="select_image">Select Image</string>
+
+  <!--AdMod-->
+  <string name="app_id_for_adds">ca-app-pub-6054010600013654~3617661011</string>
+  <string name="testing_banner_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+  <string name="testing_interstitialAd_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+  <string name="banner_customer_detail01">ca-app-pub-6054010600013654/2726223500</string>
+  <string name="banner_add_inventory01">ca-app-pub-6054010600013654/9809333140</string>
+  <string name="banner_add_inventory02">ca-app-pub-6054010600013654/2599065143</string>
+  <string name="interstitialAd_comp_order_list01">ca-app-pub-6054010600013654/1071388725</string>
+  <string name="interstitial_material_list_01">ca-app-pub-6054010600013654/4173863089</string>
+  <!--AdMod-->
 
   <string name="error_length_common">%s should be maximum of %d character.</string>
   <string name="name">Name</string>
@@ -120,6 +134,7 @@
   <string name="customer_phone">Company Contact</string>
   <string name="customer_phone_hint">Ex. Company contact number</string>
   <string name="customer_gst">GST Number</string>
+  <string name="gst_on_order">GST on Order</string>
   <string name="customer_gst_hint">Ex. 08AAACS8449C1ZP</string>
   <string name="customer_discount_percent">Discount Percent</string>
   <string name="customer_discount_percent_hint">Ex. 1 %</string>
@@ -156,6 +171,7 @@
   <string name="common_error_message">Please Enter valid value.</string>
   <string name="customer_not_found">Customer Not Found!</string>
   <string name="number_of_item">Item Count</string>
+  <string name="taxableAmount">Taxable Amount</string>
   <string name="invoice_number">Invoice Number</string>
   <string name="final_bill_amount">Bill Amount</string>
   <string name="inventory_add_order">%d %s added successfully to order.</string>

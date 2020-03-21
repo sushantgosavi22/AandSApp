@@ -10,6 +10,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.DatabaseReference.CompletionListener
 import com.google.firebase.database.ValueEventListener
+import java.util.*
+import kotlin.collections.HashMap
 
 class CustomerDao {
 
@@ -90,6 +92,20 @@ class CustomerDao {
     fun saveCustomerItem(mCustomerModel: CustomerModel, dataListener: CallBackListener) {
         mCustomerModel.id?.let {
             customerTableReference.child(it).setValue(mCustomerModel) { databaseError, _ ->
+                run {
+                    if (null == databaseError) {
+                        dataListener.getCallBack(true)
+                    } else {
+                        dataListener.getCallBack(false)
+                    }
+                }
+            }
+        }
+    }
+
+    fun storeNotificationTokenToCustomerItem(mCustomerModel: CustomerModel, token: String, dataListener: CallBackListener) {
+        mCustomerModel.id?.let {
+            customerTableReference.child(it).child(CustomerModel.PUSH_NOTIFICATION_TOKEN).setValue(token) { databaseError, _ ->
                 run {
                     if (null == databaseError) {
                         dataListener.getCallBack(true)
@@ -233,7 +249,6 @@ class CustomerDao {
         }
     }
 
-
     fun updateOrder(updatedOrderModel: OrderModel, dataListener: CallBackListener) {
         updatedOrderModel.id?.let {
             orderTableReference.child(updatedOrderModel.id!!).setValue(updatedOrderModel) { databaseError, _ ->
@@ -249,16 +264,14 @@ class CustomerDao {
     }
 
     fun updateOrderStatus(orderId: String, status: String, statusName: String, dataListener: CallBackListener) {
-        var map: HashMap<String, String> = HashMap()
+        var map: HashMap<String, Any> = HashMap()
         map.put(OrderModel.ORDER_STATUS, status)
         map.put(OrderModel.ORDER_STATUS_NAME, statusName)
-        orderTableReference.child(orderId).setValue(map) { databaseError, _ ->
-            run {
-                if (null == databaseError) {
-                    dataListener.getCallBack(true)
-                } else {
-                    dataListener.getCallBack(false)
-                }
+        orderTableReference.child(orderId).updateChildren(map) { databaseError, _ ->
+            if (null == databaseError) {
+                dataListener.getCallBack(true)
+            } else {
+                dataListener.getCallBack(false)
             }
         }
     }

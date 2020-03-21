@@ -25,8 +25,9 @@ import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.PICK_IM
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_LIST_RESULT_CODE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.TITLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.VIEW_MODE
-import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.bumptech.glide.Glide
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -55,6 +56,7 @@ class AddCustomerActivity : ListingActivity() {
     private fun setUpUI() {
         setupActionBar(title)
         setViewByMode()
+        initAndLoadBannerAd()
         imgCustomerImg.setOnClickListener {
             if (askingForRequest().not()) {
                 openGallery()
@@ -390,5 +392,11 @@ class AddCustomerActivity : ListingActivity() {
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), PICK_IMAGE)
         }
         return permission
+    }
+
+    private fun initAndLoadBannerAd() {
+        MobileAds.initialize(this, getString(R.string.app_id_for_adds))
+        val adRequest = AdRequest.Builder().build()
+        adViewBannerCustomerDetails01.loadAd(adRequest)
     }
 }

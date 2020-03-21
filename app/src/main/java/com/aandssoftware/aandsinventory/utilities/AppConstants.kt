@@ -14,10 +14,11 @@ class AppConstants {
         const val BASE_URL = ""
         const val EMPTY_STRING: String = ""
         const val ZERO_STRING: String = "0"
-        const val DEFAULT_GST_STRING: String = "12"
+        const val DEFAULT_GST_STRING: String = "6"
         const val DOUBLE_DEFAULT_ZERO_STRING: String = 0.0.toString()
         const val SNACK_BAR_MAX_LINES = 3
         const val ANDROID_APP_UPDATE = 4
+        const val AD_COUNT_LIMIT = 4
         const val INVENTORY_IMAGES_LIMIT = 4
         const val PICK_IMAGE = 100
         const val INVALID_ID = -1

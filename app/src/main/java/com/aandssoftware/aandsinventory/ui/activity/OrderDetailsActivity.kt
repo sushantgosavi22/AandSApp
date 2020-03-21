@@ -8,19 +8,23 @@ import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.listing.OrderDetailsListAdapter
-import com.aandssoftware.aandsinventory.models.InventoryItem
-import com.aandssoftware.aandsinventory.models.OrderModel
-import com.aandssoftware.aandsinventory.models.OrderStatus
-import com.aandssoftware.aandsinventory.models.CallBackListener
+import com.aandssoftware.aandsinventory.models.*
+import com.aandssoftware.aandsinventory.notification.NotificationUtil
+import com.aandssoftware.aandsinventory.notification.NotificationUtil.ORDER_CONFIRM_TITLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ORDER_ID
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
+import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class OrderDetailsActivity : ListingActivity() {
@@ -34,14 +38,16 @@ class OrderDetailsActivity : ListingActivity() {
     }
 
     private fun init() {
-
         getOrderFromIntent()
         navBarBack.setOnClickListener {
             onBackPressed()
         }
         btnConfirm.setOnClickListener {
             orderModel?.let {
-                validateAndConfirmOrder(orderModel)
+                //we want updated order model thats why
+                //newly added or updated inventry should save
+                var model = (operations as OrderDetailsListAdapter).orderModel
+                validateAndConfirmOrder(model)
             }
         }
 
@@ -72,8 +78,10 @@ class OrderDetailsActivity : ListingActivity() {
             list.forEachIndexed { index, inventoryItem ->
                 totalsgstAmount += inventoryItem.sgstAmount
                 totalCgstAmount += inventoryItem.gstAmount
-                totalItemPurchasePrice += Utils.isEmptyIntFromString(inventoryItem.itemPurchasePrice, 0)
-                billAmount += inventoryItem.finalBillAmount
+                var itemQuantity = Utils.isEmptyIntFromString(inventoryItem.itemQuantity, 1)
+                var singleItemPurchasePrice = itemQuantity * Utils.isEmptyIntFromString(inventoryItem.finalBillAmount.toString(), 0)
+                totalItemPurchasePrice += singleItemPurchasePrice
+                billAmount += singleItemPurchasePrice
             }
             totalGstAmount = totalCgstAmount + totalsgstAmount
             finalBillAmount = billAmount + totalGstAmount
@@ -99,7 +107,7 @@ class OrderDetailsActivity : ListingActivity() {
                     showSnackBarMessage(getString(R.string.order_confirm_successfully))
                     checkAndDisableOrder(menuItemAdd)
                     isOrderUpdated = true
-                    reloadActivity()
+                    showNotificationForOrderConfirm(orderModel)
                 } else {
                     showSnackBarMessage(getString(R.string.unable_to_update_order))
                 }
@@ -110,6 +118,39 @@ class OrderDetailsActivity : ListingActivity() {
         }
     }
 
+    private fun showNotificationForOrderConfirm(mItem: OrderModel) {
+        var appVersion = SharedPrefsUtils.getAppVersionPreference(this, SharedPrefsUtils.APP_VERSION)
+        appVersion?.let {
+            var customerId = appVersion.adminCustomerId ?: AppConstants.EMPTY_STRING
+            FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(customerId,
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            var model = FirebaseUtil.getInstance().getClassData(dataSnapshot, CustomerModel::class.java)
+                            model?.let {
+                                CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, Gson().toJson(model))
+                                model.notificationToken?.let { token ->
+                                    var map = HashMap<String, String>()
+                                    map.put(NotificationUtil.TITLE, ORDER_CONFIRM_TITLE.plus(mItem.customerModel?.customerName))
+                                    map.put(NotificationUtil.BODY, Utils.getItemNames(mItem))
+                                    map.put(NotificationUtil.ORDER_ID, mItem.id ?: EMPTY_STRING)
+                                    map.put(NotificationUtil.CUSTOMER_ID, mItem.customerId
+                                            ?: EMPTY_STRING)
+                                    map.put(NotificationUtil.FLOW_ID, NotificationUtil.NOTIFICATION_FLOW)
+                                    map.put(NotificationUtil.NOTIFICATION_TYPE, NotificationUtil.NotificationType.ORDER_CONFIRM_INDICATE_TO_ADMIN.toString())
+                                    NotificationUtil.sendNotification(token, map, CallBackListener {
+                                        reloadActivity()
+                                    })
+                                }
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            reloadActivity()
+                        }
+                    })
+        } ?: reloadActivity()
+
+    }
 
     private fun reloadActivity() {
         finish()
@@ -144,7 +185,7 @@ class OrderDetailsActivity : ListingActivity() {
         }
     }
 
-    private fun setValues(orderModel: OrderModel?) {
+    public fun setValues(orderModel: OrderModel?) {
         orderModel?.customerModel?.let { customerDetails ->
             tvCustomerName.text = Utils.isEmpty(customerDetails.customerName, "-")
             tvContactNameAndNumber.text = customerDetails.contactPerson?.plus(" ").plus(customerDetails
@@ -159,6 +200,19 @@ class OrderDetailsActivity : ListingActivity() {
                             .into(imgCustomerItemLogo)
                 }
             }
+            if (orderModel.orderItems.isNotEmpty()) {
+                llOrderDetails.visibility = View.VISIBLE
+                btnConfirm.visibility = View.VISIBLE
+                tvInvoiceNumber.text = orderModel.invoiceNumber
+                tvItemCount.text = orderModel.orderItems.size.toString()
+                tvFinalAmount.text = Utils.getOrderFinalPrice(orderModel).toString()
+                tvGstAmount.text = Utils.getOrderGstAmount(orderModel).toString()
+                tvTaxableAmount.text = Utils.getTaxableOrderAmount(orderModel).toString()
+            } else {
+                llOrderDetails.visibility = View.GONE
+                btnConfirm.visibility = View.GONE
+            }
+
         }
         checkAndDisableOrder(menuItemAdd)
     }

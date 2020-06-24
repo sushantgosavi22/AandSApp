@@ -10,8 +10,10 @@ public enum CarouselMenuType {
   COMPANY_ORDER("COMPANY_ORDER"),
   COMPANY_PROFILE("COMPANY_PROFILE"),
   COMPANY_MATERIALS("COMPANY_MATERIALS"),
-  ABOUT_US("ABOUT_US");
-  
+  ABOUT_US("ABOUT_US"),
+  ADMIN_PANNEL("ADMIN_PANNEL"),
+  FEEDBACK("FEEDBACK");
+
   String orders;
   
   CarouselMenuType(String orders) {

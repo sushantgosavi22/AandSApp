@@ -20,6 +20,7 @@ class SharedPrefsUtils {
         const val CURRENT_USER: String = "user"
         const val ADMIN_USER: String = "adminUser"
         const val APP_VERSION: String = "appVersion"
+        const val FIREBASE_TOKEN: String = "firebaseToken"
         const val AD_INTERSTITIAL_ORDER_LIST_COUNT: String = "adCountInterstitialOrderListCount"
         const val AD_INTERSTITIAL_MATERIAL_LIST_COUNT: String = "adCountInterstitialMaterialListCount"
         /**

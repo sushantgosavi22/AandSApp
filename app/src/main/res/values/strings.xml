@@ -85,6 +85,7 @@
   <string name="item_size_hint">Ex. Regular</string>
   <string name="ok">OK</string>
   <string name="yes">YES</string>
+  <string name="send">SEND</string>
   <string name="exit">EXIT</string>
   <string name="profile">Profile</string>
   <string name="about_us">About Us</string>
@@ -190,6 +191,7 @@
   <string name="section_title_required_quantity">Required Quantity</string>
   <string name="section_title_login_details">Login Details</string>
   <string name="section_title_forgot_password">Forgot Password Details</string>
+  <string name="section_title_feedback">Feedback</string>
   <!-- TODO: Remove or change this placeholder text -->
   <string name="developed_by">Developer : Sushant Gosavi\n
                                   Cell : 9503166862</string>
@@ -217,6 +219,11 @@
   <string name="invalid_username">Not a valid username</string>
   <string name="invalid_password">Password must be >5 characters</string>
   <string name="login_failed">"Login failed"</string>
+  <string name="channel_id">channel_id_aands</string>
+  <string name="channel_name">channel_name_aands</string>
+  <string name="feedback_title">Subject</string>
+  <string name="title">Small Title</string>
+  <string name="feedback_message">Message...</string>
 
 
 </resources>

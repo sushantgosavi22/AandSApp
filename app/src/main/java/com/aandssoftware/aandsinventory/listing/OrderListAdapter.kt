@@ -314,7 +314,7 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
                                     } else if (order.orderStatus?.equals(OrderStatus.PAYMENT.toString(), ignoreCase = true) == true) {
                                         map.put(NotificationUtil.TITLE, NotificationUtil.ORDER_PAYMENT_TITLE.plus(order.invoiceNumber
                                                 ?: EMPTY_STRING))
-                                        map.put(NotificationUtil.NOTIFICATION_TYPE, NotificationUtil.NotificationType.ORDER_PAYMNT_INDICATE_TO_COMPANY.toString())
+                                        map.put(NotificationUtil.NOTIFICATION_TYPE, NotificationUtil.NotificationType.ORDER_PAYMENT_INDICATE_TO_COMPANY.toString())
                                         NotificationUtil.sendNotification(token, map, CallBackListener {})
                                     }
                                 }

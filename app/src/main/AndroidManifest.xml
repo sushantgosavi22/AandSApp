@@ -66,10 +66,6 @@
     </service>
 
     <provider
-      android:name=".pdfgenarator.ShareContentProvider"
-      android:authorities="com.aandssoftware.aandsinventory"
-      android:exported="true" />
-    <provider
       android:name=".pdfgenarator.CommonFileProvider"
       android:authorities="${applicationId}.provider"
       android:exported="false"

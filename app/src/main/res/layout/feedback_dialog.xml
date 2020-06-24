@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_margin="4dp">
+
+  <androidx.cardview.widget.CardView
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:layout_gravity="center"
+    android:padding="5dp"
+    android:clickable="true"
+    android:elevation="4dp"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+        app:sectionHeader="@string/section_title_feedback"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+      <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+          android:id="@+id/tvFeedbackTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/title"
+          android:inputType="text|textEmailAddress"
+          android:selectAllOnFocus="true"
+          app:mandatory="true"
+          app:maxLength="@integer/int_256"
+          app:title="@string/feedback_title" />
+
+      <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+          android:id="@+id/edtFeedbackDescription"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="left|top"
+          android:hint="@string/feedback_message"
+          android:inputType="textMultiLine|textCapSentences"
+          android:lines="@integer/int_15"
+          android:maxLines="@integer/int_15"
+          app:mandatory="true"
+          app:maxLength="@integer/int_500"
+          app:title="@string/description" />
+    </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+  </androidx.cardview.widget.CardView>
+</RelativeLayout>

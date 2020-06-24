@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_username"
-        android:inputType="textPersonName|textEmailAddress"
+        android:inputType="text|textEmailAddress"
         android:selectAllOnFocus="true"
         app:mandatory="true"
         app:maxLength="@integer/int_256"

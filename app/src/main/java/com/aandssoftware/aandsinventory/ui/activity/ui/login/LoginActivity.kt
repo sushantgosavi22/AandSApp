@@ -13,10 +13,8 @@ import androidx.appcompat.app.AlertDialog
 import com.aandssoftware.aandsinventory.BuildConfig
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
-import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.models.*
-import com.aandssoftware.aandsinventory.notification.NotificationUtil
 import com.aandssoftware.aandsinventory.ui.activity.BaseActivity
 import com.aandssoftware.aandsinventory.ui.activity.CarouselDashboardActivity
 import com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout
@@ -28,7 +26,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
+import com.aandssoftware.aandsinventory.common.Utils
+import com.aandssoftware.aandsinventory.firebase.SimpleFirebase
 import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
+import com.google.firebase.database.DatabaseReference
+import com.google.gson.Gson
 
 class LoginActivity : BaseActivity() {
 
@@ -40,9 +42,9 @@ class LoginActivity : BaseActivity() {
 
     private fun setUpUI() {
         btnLogin.setOnClickListener {
-            if (validate()) {
-                checkVersionAndLogin()
-            }
+             if (validate()) {
+                 checkVersionAndLogin()
+             }
         }
         tvPassword.setImeOptions(EditorInfo.IME_ACTION_DONE)
         tvPassword.setOnEditorActionListener(OnEditorActionListener { _, actionId, event ->

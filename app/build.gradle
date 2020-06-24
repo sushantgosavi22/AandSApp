@@ -3,7 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
-apply plugin: 'com.google.gms.google-services'
 apply from: "${rootProject.projectDir}/dependencies.gradle"
 
 android {
@@ -15,8 +14,8 @@ android {
         applicationId "com.aandssoftware.aandsinventory"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "3.1"
         multiDexEnabled true
         buildConfigField "String", "FIREBASE_SERVER_KEY", "\""+getFirebaseKey()+"\""
     }
@@ -66,6 +65,20 @@ android {
         abortOnError false
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def project = "AandSApp"
+            def SEP = "_"
+            //def flavor = variant.productFlavors[0].name
+            def buildType = variant.variantData.variantConfiguration.buildType.name
+            def version = variant.versionName
+            def date = new Date();
+            def formattedDate = date.format('ddMMyy_HHmm')
+            //def newApkName = project + SEP + flavor + SEP + buildType + SEP + version + SEP + formattedDate + ".apk"
+            def newApkName = project + SEP + buildType + SEP + version + SEP + formattedDate + ".apk"
+            outputFileName = new File(newApkName)
+        }
+    }
 }
 
 def getFirebaseKey() {
@@ -100,6 +113,10 @@ dependencies {
     implementation "com.google.firebase:firebase-analytics:$FIREBASE_ANALITICS_VERSION"
     implementation "com.google.firebase:firebase-database:$FIREBASE_DATABASE_VERSION"
     implementation "com.google.firebase:firebase-storage:$FIREBASE_DATABASE_STORAGE_VERSION"
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
+
+    //Crashlatics and analytics
+    implementation 'com.google.firebase:firebase-analytics:17.2.1'
     implementation 'com.google.firebase:firebase-messaging:20.1.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
@@ -110,3 +127,5 @@ dependencies {
     implementation rxDependencies.values()
     implementation networkDependencies.values()
 }
+
+apply plugin: 'com.google.gms.google-services'

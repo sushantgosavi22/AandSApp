@@ -8,6 +8,7 @@ data class InventoryItemHistory(@SerializedName("id") var id: String? = null) : 
 
     companion object {
         const val TABLE_INVENTORY_ITEM_HISTORY = "itemHistory"
+        const val ARRAY_NAME = "items"
         const val ORDER_BY_VALUE = "modifiedDate"
     }
 

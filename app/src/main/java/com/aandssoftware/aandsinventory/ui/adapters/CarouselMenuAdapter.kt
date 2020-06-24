@@ -1,28 +1,37 @@
 package com.aandssoftware.aandsinventory.ui.adapters
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
+import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.listing.ListType
 import com.aandssoftware.aandsinventory.models.CarouselMenuModel
 import com.aandssoftware.aandsinventory.models.CarouselMenuType
 import com.aandssoftware.aandsinventory.models.CustomerModel
 import com.aandssoftware.aandsinventory.models.ViewMode
+import com.aandssoftware.aandsinventory.notification.NotificationUtil
 import com.aandssoftware.aandsinventory.ui.activity.BaseActivity
 import com.aandssoftware.aandsinventory.ui.activity.CompanyOrderListActivity
 import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.activity.OrderListActivity
 import com.aandssoftware.aandsinventory.ui.adapters.CarouselMenuAdapter.ViewHolder
+import com.aandssoftware.aandsinventory.ui.component.CustomEditText
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdListener
@@ -32,7 +41,9 @@ import com.google.android.gms.ads.MobileAds
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.item_carousel_menu.view.*
+import java.util.ArrayList
 
 
 class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: List<CarouselMenuModel>) : RecyclerView.Adapter<ViewHolder>() {
@@ -86,6 +97,8 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
                 CarouselMenuType.COMPANY_MATERIALS -> showCompanyMaterialListing(activity, ListType.LIST_TYPE_MATERIAL)
                 CarouselMenuType.COMPANY_PROFILE -> showCompanyProfile(activity)
                 CarouselMenuType.ABOUT_US -> showCompanyProfile(activity, mCarouselMenuModel)
+                CarouselMenuType.FEEDBACK ->feedbackDialog(false)
+                CarouselMenuType.ADMIN_PANNEL ->feedbackDialog(true)
                 else -> showListing(activity, ListType.LIST_TYPE_MATERIAL)
             }
         }
@@ -192,5 +205,89 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
         }
     }
 
+
+    private fun feedbackDialog( sendMailToAllCustomer : Boolean) {
+        val alertDialogBuilderUserInput = AlertDialog.Builder(activity)
+        var view: View = LayoutInflater.from(activity).inflate(R.layout.feedback_dialog, null)
+        alertDialogBuilderUserInput
+                .setView(view)
+                .setCancelable(false)
+                .setPositiveButton(activity.getString(R.string.send)) {dialogBox, _ ->
+                    var feedbackTitle = view.findViewById<CustomEditText>(R.id.tvFeedbackTitle).getText()
+                    var feedbackDescription = view.findViewById<CustomEditText>(R.id.edtFeedbackDescription).getText()
+                    if (feedbackTitle.isNotEmpty() && feedbackDescription.isNotEmpty()) {
+                        getAdminMailAndSendMail(sendMailToAllCustomer,feedbackTitle,feedbackDescription)
+                        dialogBox.cancel()
+                    } else {
+                        activity.showSnackBarMessage(activity.getString(R.string.common_mandatory_error_message))
+                    }
+                }
+                .setNegativeButton(activity.getString(R.string.cancel))
+                { dialogBox, _ -> dialogBox.cancel() }
+
+        val alertDialog = alertDialogBuilderUserInput.create()
+        alertDialog.show()
+    }
+
+    private fun sendMail(recipient: Array<String>,subject: String,body: String){
+        val i = Intent(Intent.ACTION_SEND)
+        i.type = "message/rfc822"
+        i.putExtra(Intent.EXTRA_BCC, recipient)//EXTRA_EMAIL
+        i.putExtra(Intent.EXTRA_SUBJECT, subject)
+        i.putExtra(Intent.EXTRA_TEXT, body)
+        try {
+            activity.startActivity(Intent.createChooser(i, "Send mail..."))
+        } catch (ex: ActivityNotFoundException) {
+            Toast.makeText(activity, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun getAdminMailAndSendMail(sendMailToAllCustomer : Boolean,subject: String,body: String){
+        if(sendMailToAllCustomer){
+            activity.showProgressBar()
+            FirebaseUtil.getInstance().getCustomerDao().getAllCustomers(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    activity.dismissProgressBar()
+                    val result = ArrayList<String>()
+                    if (null != dataSnapshot.value) {
+                        for (children in dataSnapshot.children) {
+                            val model = children.getValue(CustomerModel::class.java)
+                            model?.companyMail?.let {
+                                result.add(it)
+                            }
+                        }
+                        if(result.isNotEmpty()){
+                            sendMail(result.toTypedArray(),subject,body)
+                        }
+                    }
+
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    activity.dismissProgressBar()
+                }
+            })
+
+        }else{
+            activity.showProgressBar()
+            var appVersion = SharedPrefsUtils.getAppVersionPreference(activity, SharedPrefsUtils.APP_VERSION)
+            appVersion?.let {
+                var customerId = appVersion.adminCustomerId ?: AppConstants.EMPTY_STRING
+                FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(customerId,
+                        object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                activity.dismissProgressBar()
+                                var model = FirebaseUtil.getInstance().getClassData(dataSnapshot, CustomerModel::class.java)
+                                model?.companyMail?.let {mailId->
+                                    sendMail(arrayOf(mailId),subject,body)
+                                }
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                activity.dismissProgressBar()
+                            }
+                        })
+            }
+        }
+    }
 
 }

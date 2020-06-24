@@ -10,7 +10,6 @@ import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.listing.OrderDetailsListAdapter
 import com.aandssoftware.aandsinventory.models.*
 import com.aandssoftware.aandsinventory.notification.NotificationUtil
-import com.aandssoftware.aandsinventory.notification.NotificationUtil.ORDER_CONFIRM_TITLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ORDER_ID
@@ -134,7 +133,7 @@ class OrderDetailsActivity : ListingActivity() {
                                 CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, Gson().toJson(model))
                                 model.notificationToken?.let { token ->
                                     var map = HashMap<String, String>()
-                                    map.put(NotificationUtil.TITLE, ORDER_CONFIRM_TITLE.plus(mItem.customerModel?.customerName))
+                                    map.put(NotificationUtil.TITLE,NotificationUtil.ORDER_CONFIRM_TITLE.plus(mItem.customerModel?.customerName))
                                     map.put(NotificationUtil.BODY, Utils.getItemNames(mItem))
                                     map.put(NotificationUtil.ORDER_ID, mItem.id ?: EMPTY_STRING)
                                     map.put(NotificationUtil.CUSTOMER_ID, mItem.customerId
@@ -207,11 +206,11 @@ class OrderDetailsActivity : ListingActivity() {
             if (orderModel.orderItems.isNotEmpty()) {
                 llOrderDetails.visibility = View.VISIBLE
                 btnConfirm.visibility = View.VISIBLE
-                tvInvoiceNumber.text = orderModel.invoiceNumber
+                tvInvoiceNumber.text = getString(R.string.invoice_number).plus(" ").plus(orderModel.invoiceNumber?:"")
                 tvItemCount.text = orderModel.orderItems.size.toString()
-                tvFinalAmount.text = Utils.getOrderFinalPrice(orderModel).toString()
-                tvGstAmount.text = Utils.getOrderGstAmount(orderModel).toString()
-                tvTaxableAmount.text = Utils.getTaxableOrderAmount(orderModel).toString()
+                tvFinalAmount.text = Utils.currencyLocale(Utils.getOrderFinalPrice(orderModel))
+                tvGstAmount.text = Utils.currencyLocale(Utils.getOrderGstAmount(orderModel))
+                tvTaxableAmount.text =Utils.currencyLocale( Utils.getTaxableOrderAmount(orderModel))
             } else {
                 llOrderDetails.visibility = View.GONE
                 btnConfirm.visibility = View.GONE

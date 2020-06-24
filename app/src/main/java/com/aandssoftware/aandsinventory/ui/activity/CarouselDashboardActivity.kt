@@ -147,7 +147,7 @@ class CarouselDashboardActivity : BaseActivity() {
                     sendToOrderDetail(bundle)
                 } else if (bundle.get(NotificationUtil.NOTIFICATION_TYPE).toString().equals(NotificationUtil.NotificationType.ORDER_DELIVERED_INDICATE_TO_COMPANY.toString(), ignoreCase = true)) {
                     sendToOrderDetail(bundle)
-                } else if (bundle.get(NotificationUtil.NOTIFICATION_TYPE).toString().equals(NotificationUtil.NotificationType.ORDER_PAYMNT_INDICATE_TO_COMPANY.toString(), ignoreCase = true)) {
+                } else if (bundle.get(NotificationUtil.NOTIFICATION_TYPE).toString().equals(NotificationUtil.NotificationType.ORDER_PAYMENT_INDICATE_TO_COMPANY.toString(), ignoreCase = true)) {
                     sendToOrderDetail(bundle)
                 }
             }

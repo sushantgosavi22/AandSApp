@@ -8,24 +8,39 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.annotation.RequiresApi
+import android.os.Bundle
+import android.view.View
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
 import com.aandssoftware.aandsinventory.listing.CustomerListAdapter
 import com.aandssoftware.aandsinventory.listing.ListType
-import com.aandssoftware.aandsinventory.models.CallBackListener
-import com.aandssoftware.aandsinventory.models.CustomerModel
-import com.aandssoftware.aandsinventory.models.OrderModel
-import com.aandssoftware.aandsinventory.models.OrderStatus
+import com.aandssoftware.aandsinventory.models.*
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.CREATE_ORDER
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.fab_button_layout.*
 
 class CompanyOrderListActivity : ListingActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fab?.setOnClickListener {
+            showInventoryListingActivity(Utils.getLoginCustomerId(this), EMPTY_STRING)
+        }
+        getIntentData()
+    }
+
+    private fun getIntentData() {
+       var shouldCreateOrder : Boolean = intent?.getBooleanExtra(AppConstants.CREATE_ORDER, false)?: false
+        if(shouldCreateOrder){
+            fab.performClick()
+        }
+    }
 
     fun showInventoryListingActivity(customerId: String, orderId: String) {
         showProgressBar()

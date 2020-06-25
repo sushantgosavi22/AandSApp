@@ -9,9 +9,11 @@ import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
+import com.aandssoftware.aandsinventory.listing.ListType
 import com.aandssoftware.aandsinventory.models.CarouselMenuModel
 import com.aandssoftware.aandsinventory.notification.NotificationUtil
 import com.aandssoftware.aandsinventory.ui.adapters.CarouselMenuAdapter
+import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -19,6 +21,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_carousel_dashboard_actvity.*
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
+import kotlinx.android.synthetic.main.fab_button_layout.*
 import java.util.*
 
 
@@ -81,6 +84,10 @@ class CarouselDashboardActivity : BaseActivity() {
         setupActionBar(getString(R.string.dashboard))
         navBarBack?.setOnClickListener {
             onBackPressed()
+        }
+
+        fab.setOnClickListener {
+            menuAdapter.showCompanyOrderActivity(this, ListType.LIST_TYPE_COMPANY_ORDER,true)
         }
     }
 

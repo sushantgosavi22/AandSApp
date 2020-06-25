@@ -11,8 +11,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.core.widget.NestedScrollView.OnScrollChangeListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.aandssoftware.aandsinventory.R;
 import com.aandssoftware.aandsinventory.listing.ListType;
 import com.aandssoftware.aandsinventory.listing.ListingOperations;
@@ -28,15 +26,9 @@ public class ListingActivity extends BaseActivity {
   private boolean isLoading = false;
   private BaseAdapter baseAdapter;
   public static final int SELECTED = 104;
-  @BindView(R.id.recyclerView)
   RecyclerView recyclerView;
-  
-  @BindView(R.id.noResultFoundLayout)
   AppCompatTextView noResultFoundLayout;
-  
-  @BindView(R.id.nestedScrollView)
   NestedScrollView nestedScrollView;
-  
   protected ListingOperations operations;
   
   @Override
@@ -50,10 +42,16 @@ public class ListingActivity extends BaseActivity {
     getListingOperations();
     setContentView(operations.getActivityLayoutId());
     setupActionBar(operations.getTitle());
-    ButterKnife.bind(this);
+    setView();
     setUpList();
   }
-  
+
+  private void setView() {
+    recyclerView = findViewById(R.id.recyclerView);
+    noResultFoundLayout = findViewById(R.id.noResultFoundLayout);
+    nestedScrollView = findViewById(R.id.nestedScrollView);
+  }
+
   private void getListingOperations() {
     if (null != getIntent() && getIntent().hasExtra(AppConstants.LISTING_TYPE)) {
       ListType result = ListType.values()[getIntent().getIntExtra(AppConstants.LISTING_TYPE, -1)];

@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_username"
-        android:inputType="text|textEmailAddress"
+        android:inputType="text|textEmailAddress|textWebEmailAddress"
         android:selectAllOnFocus="true"
         app:mandatory="true"
         app:maxLength="@integer/int_256"
@@ -77,7 +77,7 @@
       android:layout_height="wrap_content"
       android:gravity="center"
       android:fontFamily="@font/lato_heavy"
-      android:inputType="textWebEmailAddress"
+      android:inputType="text"
       android:textColor="@color/light_blue"
       android:text="@string/forgot_password" />
 

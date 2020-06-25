@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
+import kotlinx.android.synthetic.main.fab_button_layout.*
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.roundToInt
@@ -50,7 +51,10 @@ class OrderDetailsActivity : ListingActivity() {
                 validateAndConfirmOrder(model)
             }
         }
-
+        fabText?.text = getString(R.string.add_button)
+        fab.setOnClickListener {
+            (operations as  OrderDetailsListAdapter).actionAdd()
+        }
     }
 
     private fun validateAndConfirmOrder(orderModel: OrderModel?) {
@@ -223,13 +227,21 @@ class OrderDetailsActivity : ListingActivity() {
     public fun checkAndDisableOrder(itemAdd: MenuItem?) {
         menuItemAdd = itemAdd
         orderModel?.orderStatus?.let {
-            if (OrderStatus.valueOf(it) != OrderStatus.CREATED) {
+            if (OrderStatus.valueOf(it) != OrderStatus.CREATED && !Utils.isAdminUser(this)) {
                 btnConfirm.visibility = View.GONE
                 if (null != itemAdd) {
                     itemAdd.isVisible = false
                 }
             }
         }
+        itemAdd?.let {
+            if(it.isVisible){
+               fabLayout.visibility = View.VISIBLE
+            }else{
+                fabLayout.visibility = View.GONE
+            }
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

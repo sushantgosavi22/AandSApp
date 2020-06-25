@@ -5,8 +5,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ScrollView
 import androidx.core.app.ActivityCompat
@@ -173,13 +176,8 @@ class AddCustomerActivity : ListingActivity() {
                 edtConfirmPassword.setText(item.password)
             }
             imagePath = item.imagePath
-            if (item.imagePath != null) {
-                var uri: Uri = Uri.parse(imagePath)
-                Glide.with(this)
-                        .load(uri)
-                        .placeholder(R.drawable.ic_image_add)
-                        .crossFade()
-                        .into(imgCustomerImg)
+            item.imagePath?.let {
+                setImageToView(it)
             }
         }
         btnSave.text = if (viewMode == ViewMode.UPDATE.ordinal || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) resources.getString(R.string.update) else resources.getString(R.string.save)
@@ -187,6 +185,15 @@ class AddCustomerActivity : ListingActivity() {
 
     override fun onBackPressed() {
         setResultToCallingActivity(fireBaseCustomerId)
+    }
+
+    private fun setImageToView(path : String){
+        var uri: Uri = Uri.parse(path)
+        Glide.with(this)
+                .load(uri)
+                .placeholder(R.drawable.ic_image_add)
+                .crossFade()
+                .into(imgCustomerImg)
     }
 
     private fun onButtonClick() {
@@ -361,16 +368,22 @@ class AddCustomerActivity : ListingActivity() {
                     dismissProgressBar()
                     ref.downloadUrl.addOnSuccessListener { uri ->
                         imagePath = uri.toString()
-                        filePath.let {
-                            val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-                            val cursor = contentResolver
-                                    .query(filePath, filePathColumn, null, null, null)
-                            if (null != cursor) {
-                                cursor.moveToFirst()
-                                val columnIndex = cursor.getColumnIndex(filePathColumn[0])
-                                val bitmap = BitmapFactory.decodeFile(cursor.getString(columnIndex))
-                                if (null != bitmap) {
-                                    imgCustomerImg.setImageBitmap(bitmap)
+                        if(imagePath?.contains("https") == true){
+                            imagePath?.let {
+                                setImageToView(it)
+                            }
+                        }else{
+                            filePath.let {
+                                val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+                                val cursor = contentResolver
+                                        .query(filePath, filePathColumn, null, null, null)
+                                if (null != cursor) {
+                                    cursor.moveToFirst()
+                                    val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+                                    val bitmap = BitmapFactory.decodeFile(cursor.getString(columnIndex))
+                                    if (null != bitmap) {
+                                        imgCustomerImg.setImageBitmap(bitmap)
+                                    }
                                 }
                             }
                         }
@@ -399,4 +412,27 @@ class AddCustomerActivity : ListingActivity() {
         val adRequest = AdRequest.Builder().build()
         adViewBannerCustomerDetails01.loadAd(adRequest)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.add_customer_menu, menu)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            var actionSave = menu.findItem(R.id.actionEdit)
+            actionSave.isVisible  = intent?.getBooleanExtra(AppConstants.CUSTOMER_EDIT_PROFILE_IS_ON,false)?:false
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.actionEdit -> {
+                finish()
+                intent.putExtra(VIEW_MODE,ViewMode.UPDATE.ordinal)
+                startActivity(intent);
+                return true
+            }
+        }
+        return true
+    }
+
+
 }

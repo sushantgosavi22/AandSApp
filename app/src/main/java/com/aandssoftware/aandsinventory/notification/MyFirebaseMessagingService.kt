@@ -8,13 +8,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
-import android.support.annotation.RequiresApi
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.aandssoftware.aandsinventory.R
+import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.ui.activity.SplashActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import java.util.*
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -58,8 +59,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .setSound(soundUri)
                 .setContentIntent(pendingIntent)
 
-        val notificationId = (Date().getTime() / 1000L % Int.MAX_VALUE) as Int
-        notificationManager.notify(notificationId, notificationBuilder.build())
+        val atomicInteger = Utils. getAtomicIntegerUniqueId()
+        notificationManager.notify(atomicInteger, notificationBuilder.build())
+        Log.d("NID",atomicInteger.toString())
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

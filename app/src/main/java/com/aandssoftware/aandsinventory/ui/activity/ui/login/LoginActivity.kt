@@ -27,7 +27,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
 import com.aandssoftware.aandsinventory.common.Utils
-import com.aandssoftware.aandsinventory.firebase.SimpleFirebase
 import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
@@ -55,7 +54,7 @@ class LoginActivity : BaseActivity() {
         })
 
         btnRegister.setOnClickListener {
-            Navigator.openCustomerScreen(this, AppConstants.EMPTY_STRING, AppConstants.EMPTY_STRING, ViewMode.ADD.ordinal, getString(R.string.company_details))
+            Navigator.openCustomerScreen(this, AppConstants.EMPTY_STRING, AppConstants.EMPTY_STRING, ViewMode.ADD.ordinal, getString(R.string.company_details),false)
         }
 
         tvForgotPass.setOnClickListener {
@@ -217,7 +216,7 @@ class LoginActivity : BaseActivity() {
                         var numericcCustomerId = model.customerID ?: AppConstants.EMPTY_STRING
                         if (mail.trim().equals(edtEmail.getText().trim(), false) &&
                                 number.trim().equals(edtMobileNumber.getText().trim(), false)) {
-                            Navigator.openCustomerScreen(LoginActivity@ this, customerId, numericcCustomerId, ViewMode.PASSWORD_UPDATE.ordinal, getString(R.string.forgot_password))
+                            Navigator.openCustomerScreen(LoginActivity@ this, customerId, numericcCustomerId, ViewMode.PASSWORD_UPDATE.ordinal, getString(R.string.forgot_password),false)
                         } else {
                             showSnackBarMessage(getString(R.string.email_and_number_not_match))
                         }
@@ -253,6 +252,19 @@ class LoginActivity : BaseActivity() {
             })
         } else {
             showSnackBarMessage(getString(R.string.no_internet_connection))
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == AppConstants.GET_CUSTOMER_UPDATE_REQUEST_CODE &&  resultCode == AppConstants.RELOAD_LIST_RESULT_CODE){
+            data?.let{
+               it.getStringExtra(AppConstants.FIRE_BASE_CUSTOMER_ID)?.let{
+                   if(it.isNotEmpty()){
+                       showSnackBarMessage(resources.getString(R.string.customer_save_message))
+                   }
+               }
+            }
         }
     }
 }

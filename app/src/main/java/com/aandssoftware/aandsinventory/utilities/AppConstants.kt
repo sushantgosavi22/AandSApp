@@ -46,6 +46,8 @@ class AppConstants {
         const val CUSTOMER_IMAGES_STORAGE_PATH: String = "customerImages"
         const val INVENTORY_IMAGES_STORAGE_PATH: String = "inventoryImages"
         const val DISCOUNTED_AMOUNT: String = "discountedAmount"
+        const val CREATE_ORDER: String = "createOrder"
+        const val CUSTOMER_EDIT_PROFILE_IS_ON: String = "customerEditProfile"
         /*Intent Data Passing */
 
         /*Start Activity For Result ID */

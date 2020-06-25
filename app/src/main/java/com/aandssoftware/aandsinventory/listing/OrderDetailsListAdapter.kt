@@ -187,7 +187,7 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         return true
     }
 
-    private fun actionAdd() {
+    fun actionAdd() {
         orderId?.let {
             activity.showProgressBar()
             FirebaseUtil.getInstance().getCustomerDao().getOrderFromID(it, object : ValueEventListener {

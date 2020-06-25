@@ -33,13 +33,14 @@ class Navigator {
 
 
         @JvmStatic
-        fun openCustomerScreen(activity: AppCompatActivity, fireBaseCustomerId: String, numericCustomerId: String, viewMode: Int, title: String) {
+        fun openCustomerScreen(activity: AppCompatActivity, fireBaseCustomerId: String, numericCustomerId: String, viewMode: Int, title: String, customerEditProfileIsOn: Boolean) {
             val intent = Intent(activity, AddCustomerActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             intent.putExtra(AppConstants.FIRE_BASE_CUSTOMER_ID, fireBaseCustomerId)
             intent.putExtra(AppConstants.NUMERIC_CUSTOMER_ID, numericCustomerId)
             intent.putExtra(AppConstants.VIEW_MODE, viewMode)
             intent.putExtra(AppConstants.TITLE, title)
+            intent.putExtra(AppConstants.CUSTOMER_EDIT_PROFILE_IS_ON, customerEditProfileIsOn)
             intent.putExtra(AppConstants.LISTING_TYPE, ListType.LIST_TYPE_COMPANY_DISCOUNTED_ITEMS.ordinal)
             activity.startActivityForResult(intent, AppConstants.GET_CUSTOMER_UPDATE_REQUEST_CODE)
         }

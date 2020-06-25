@@ -93,7 +93,7 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
                 CarouselMenuType.INVENTORY -> showListing(activity, ListType.LIST_TYPE_INVENTORY)
                 CarouselMenuType.INVENTORY_HISTORY -> showListing(activity, ListType.LIST_TYPE_INVENTORY_HISTORY)
                 CarouselMenuType.MATERIALS -> showListing(activity, ListType.LIST_TYPE_MATERIAL)
-                CarouselMenuType.COMPANY_ORDER -> showCompanyOrderActivity(activity, ListType.LIST_TYPE_COMPANY_ORDER)
+                CarouselMenuType.COMPANY_ORDER -> showCompanyOrderActivity(activity, ListType.LIST_TYPE_COMPANY_ORDER,false)
                 CarouselMenuType.COMPANY_MATERIALS -> showCompanyMaterialListing(activity, ListType.LIST_TYPE_MATERIAL)
                 CarouselMenuType.COMPANY_PROFILE -> showCompanyProfile(activity)
                 CarouselMenuType.ABOUT_US -> showCompanyProfile(activity, mCarouselMenuModel)
@@ -137,7 +137,7 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
         user?.let {
             user.id?.let { id ->
                 val custId = user.customerID ?: AppConstants.ZERO_STRING
-                Navigator.openCustomerScreen(activity, id, custId, ViewMode.VIEW_ONLY.ordinal, activity.getString(R.string.profile))
+                Navigator.openCustomerScreen(activity, id, custId, ViewMode.VIEW_ONLY.ordinal, activity.getString(R.string.profile),true)
             }
         }
     }
@@ -155,7 +155,7 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
                                 model.id?.let { id ->
                                     var customerID = model.customerID
                                             ?: AppConstants.ZERO_STRING
-                                    Navigator.openCustomerScreen(activity, id, customerID, ViewMode.VIEW_ONLY.ordinal, activity.getString(R.string.about_us))
+                                    Navigator.openCustomerScreen(activity, id, customerID, ViewMode.VIEW_ONLY.ordinal, activity.getString(R.string.about_us),false)
                                 }
                             }
                             activity.dismissProgressBar()
@@ -175,9 +175,10 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
         activity.startActivityForResult(intent, AppConstants.LISTING_REQUEST_CODE)
     }
 
-    private fun showCompanyOrderActivity(activity: Activity, type: ListType) {
+     fun showCompanyOrderActivity(activity: Activity, type: ListType, shouldCreateOrder : Boolean) {
         val intent = Intent(activity, CompanyOrderListActivity::class.java)
         intent.putExtra(AppConstants.LISTING_TYPE, type.ordinal)
+        intent.putExtra(AppConstants.CREATE_ORDER, shouldCreateOrder)
         activity.startActivityForResult(intent, AppConstants.LISTING_REQUEST_CODE)
     }
 

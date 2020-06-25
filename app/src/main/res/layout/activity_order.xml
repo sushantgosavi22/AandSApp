@@ -1,286 +1,298 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical"
-  tools:context=".ui.activity.OrderDetailsActivity">
-
-  <androidx.appcompat.widget.LinearLayoutCompat
-    android:id="@+id/llListData"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_above="@+id/btnConfirm"
-    android:layout_alignParentTop="true"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.OrderDetailsActivity">
 
-    <androidx.cardview.widget.CardView
-      android:id="@+id/cardView"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/size_5"
-      android:background="@color/honey_dew_color"
-      android:clickable="true"
-      android:elevation="@dimen/size_10"
-      android:foreground="?android:attr/selectableItemBackground">
-
-      <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
-          android:background="@color/honey_dew_color"
-          android:orientation="horizontal">
-
-
-          <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imgCustomerItemLogo"
-            android:layout_width="@dimen/size_80"
-            android:layout_height="@dimen/size_100"
-            android:layout_gravity="center_vertical"
-            android:src="@android:drawable/ic_menu_gallery" />
-
-
-          <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/size_10"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:id="@+id/tvCustomerName"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:fontFamily="@font/lato_heavy"
-              android:textColor="@color/colorAccent"
-              android:textSize="@dimen/size_15_sp" />
-
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-                android:id="@+id/tvInvoiceNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:fontFamily="@font/lato_bold_italic"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/size_14_sp" />
-
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:id="@+id/tvContactNameAndNumber"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:fontFamily="@font/lato_regular"
-              android:textSize="@dimen/size_12_sp" />
-
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:id="@+id/tvCustomerGstNumber"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:fontFamily="@font/lato_regular"
-              android:maxLines="1"
-              android:singleLine="true"
-              android:textSize="@dimen/size_12_sp" />
-          </LinearLayout>
-        </LinearLayout>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:id="@+id/llOrderDetails"
-          android:layout_marginLeft="@dimen/size_5"
-          android:visibility="visible"
-          android:orientation="horizontal"
-          android:weightSum="@integer/int_5">
-
-          <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/size_2"
-            android:layout_weight="@integer/int_1"
-            android:orientation="vertical">
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="left"
-              android:fontFamily="@font/lato_medium"
-              android:text="@string/number_of_item"
-              android:textColor="@android:color/darker_gray"
-              android:textSize="@dimen/size_12_sp"
-              android:typeface="serif" />
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:id="@+id/tvItemCount"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="left"
-              android:fontFamily="@font/lato_semibold"
-              android:textColor="@android:color/black"
-              android:textSize="@dimen/size_14_sp" />
-
-          </androidx.appcompat.widget.LinearLayoutCompat>
-
-          <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/size_2"
-            android:layout_weight="@integer/int_1"
-            android:orientation="vertical">
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="left"
-              android:fontFamily="@font/lato_medium"
-              android:text="@string/taxableAmount"
-              android:textColor="@android:color/darker_gray"
-              android:textSize="@dimen/size_12_sp"
-              android:typeface="serif" />
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:id="@+id/tvTaxableAmount"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="left"
-              android:fontFamily="@font/lato_semibold"
-              android:textColor="@android:color/black"
-              android:textSize="@dimen/size_14_sp" />
-
-          </androidx.appcompat.widget.LinearLayoutCompat>
-          <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/size_2"
-            android:layout_weight="@integer/int_1"
-            android:orientation="vertical">
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="left"
-              android:fontFamily="@font/lato_medium"
-              android:text="@string/gst_on_order"
-              android:textColor="@android:color/darker_gray"
-              android:textSize="@dimen/size_12_sp"
-              android:typeface="serif" />
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:id="@+id/tvGstAmount"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="left"
-              android:fontFamily="@font/lato_semibold"
-              android:textColor="@android:color/black"
-              android:textSize="@dimen/size_14_sp" />
-
-          </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-          <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/size_2"
-            android:layout_weight="@integer/int_1"
-            android:orientation="vertical">
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="left"
-              android:fontFamily="@font/lato_medium"
-              android:text="@string/final_bill_amount"
-              android:textColor="@android:color/darker_gray"
-              android:textSize="@dimen/size_12_sp"
-              android:typeface="serif" />
-            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-              android:id="@+id/tvFinalAmount"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="left"
-              android:fontFamily="@font/lato_semibold"
-              android:textColor="@android:color/black"
-              android:textSize="@dimen/size_14_sp" />
-
-          </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-      </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.cardview.widget.CardView>
-
-    <!--<androidx.cardview.widget.CardView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_margin="5dp"
-      android:clickable="true"
-      android:elevation="10dp"
-      android:foreground="?android:attr/selectableItemBackground"
-      android:padding="@dimen/size_10">-->
-
-    <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/cararra_color">
-
-      <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/searchTitle"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llListData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/btnConfirm"
         android:layout_alignParentTop="true"
-        android:background="@color/cararra_color"
-        android:textColor="@color/gravel_color"
-        android:visibility="gone" />
+        android:orientation="vertical">
 
-      <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/searchTitle"
-        android:fillViewport="true">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_5"
+            android:background="@color/honey_dew_color"
+            android:clickable="true"
+            android:elevation="@dimen/size_10"
+            android:foreground="?android:attr/selectableItemBackground">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:background="@color/honey_dew_color"
+                    android:orientation="horizontal">
+
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgCustomerItemLogo"
+                        android:layout_width="@dimen/size_80"
+                        android:layout_height="@dimen/size_100"
+                        android:layout_gravity="center_vertical"
+                        android:src="@android:drawable/ic_menu_gallery" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/size_10"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:id="@+id/tvCustomerName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/lato_heavy"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="@dimen/size_15_sp" />
+
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:id="@+id/tvInvoiceNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:fontFamily="@font/lato_bold_italic"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/size_14_sp" />
+
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:id="@+id/tvContactNameAndNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/lato_regular"
+                            android:textSize="@dimen/size_12_sp" />
+
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:id="@+id/tvCustomerGstNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/lato_regular"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:textSize="@dimen/size_12_sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/llOrderDetails"
+                    android:layout_marginLeft="@dimen/size_10"
+                    android:layout_marginBottom="@dimen/size_10"
+                    android:visibility="visible"
+                    android:orientation="horizontal"
+                    android:weightSum="@integer/int_5">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/size_2"
+                        android:layout_weight="@integer/int_1"
+                        android:orientation="vertical">
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:fontFamily="@font/lato_medium"
+                            android:text="@string/number_of_item"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="@dimen/size_12_sp"
+                            android:typeface="serif" />
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:id="@+id/tvItemCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:fontFamily="@font/lato_semibold"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/size_14_sp" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/size_2"
+                        android:layout_weight="@integer/int_1"
+                        android:orientation="vertical">
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:fontFamily="@font/lato_medium"
+                            android:text="@string/taxableAmount"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="@dimen/size_12_sp"
+                            android:typeface="serif" />
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:id="@+id/tvTaxableAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:fontFamily="@font/lato_semibold"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/size_14_sp" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/size_2"
+                        android:layout_weight="@integer/int_1"
+                        android:orientation="vertical">
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:fontFamily="@font/lato_medium"
+                            android:text="@string/gst_on_order"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="@dimen/size_12_sp"
+                            android:typeface="serif" />
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:id="@+id/tvGstAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:fontFamily="@font/lato_semibold"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/size_14_sp" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/size_2"
+                        android:layout_weight="@integer/int_1"
+                        android:orientation="vertical">
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:fontFamily="@font/lato_medium"
+                            android:text="@string/final_bill_amount"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="@dimen/size_12_sp"
+                            android:typeface="serif" />
+                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                            android:id="@+id/tvFinalAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:fontFamily="@font/lato_semibold"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/size_14_sp" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.cardview.widget.CardView>
+
+        <!--<androidx.cardview.widget.CardView
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:orientation="vertical">
+          android:layout_margin="5dp"
+          android:clickable="true"
+          android:elevation="10dp"
+          android:foreground="?android:attr/selectableItemBackground"
+          android:padding="@dimen/size_10">-->
 
-          <RelativeLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-              android:id="@+id/recyclerView"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@android:color/white"
-              android:nestedScrollingEnabled="false" />
+            android:layout_height="match_parent"
+            android:background="@color/cararra_color">
 
             <androidx.appcompat.widget.AppCompatTextView
-              android:id="@+id/noResultFoundLayout"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_centerInParent="true"
-              android:layout_margin="@dimen/size_5"
-              android:drawablePadding="@dimen/size_5"
-              android:visibility="gone" />
+                android:id="@+id/searchTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@color/cararra_color"
+                android:textColor="@color/gravel_color"
+                android:visibility="gone" />
 
-          </RelativeLayout>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-      </androidx.core.widget.NestedScrollView>
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/searchTitle"
+                android:fillViewport="true">
 
-    </RelativeLayout>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-    <!--</androidx.cardview.widget.CardView>-->
-  </androidx.appcompat.widget.LinearLayoutCompat>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-  <com.ict.assetmanagement.uidesign.button.CustomButton
-    android:id="@+id/btnConfirm"
-    style="@style/custome_button_style"
-    android:layout_alignParentBottom="true"
-    android:text="@string/confirm"
-    app:uiButtonType="PRIMARY" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/white"
+                            android:nestedScrollingEnabled="false" />
 
-  <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
-    android:id="@+id/progress_bar"
-    style="@style/progress_bar_style"
-    android:visibility="gone" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/noResultFoundLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="@dimen/size_5"
+                            android:drawablePadding="@dimen/size_5"
+                            android:visibility="gone" />
+
+                    </RelativeLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+
+        </RelativeLayout>
+
+        <!--</androidx.cardview.widget.CardView>-->
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.ict.assetmanagement.uidesign.button.CustomButton
+        android:id="@+id/btnConfirm"
+        style="@style/custome_button_style"
+        android:layout_alignParentBottom="true"
+        android:text="@string/confirm"
+        app:uiButtonType="PRIMARY" />
+
+    <include
+        android:id="@+id/fabLayout"
+        layout="@layout/fab_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/size_10"
+        android:layout_marginBottom="@dimen/size_80"
+        android:visibility="visible"
+        android:layout_height="wrap_content" />
+
+    <com.aandssoftware.aandsinventory.ui.component.CustomProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/progress_bar_style"
+        android:visibility="gone" />
 
 </RelativeLayout>

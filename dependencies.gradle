@@ -2,7 +2,6 @@
 ext {
     PERMISSIONS_DISPATCHER_VERSION = "3.1.0"
     GOOGLE_LOCATIONS_SERVICES_VERSION = "16.0.0"
-    BUTTER_KNIFE_VERSION = "10.2.0"
     GSON_VERSION = "2.8.5"
     AUTO_VALUE_VERSION = "1.5.2"
     AUTO_VALUE_PARCELABLE_EXT_VERSION = "0.2.5"
@@ -46,7 +45,9 @@ ext {
     ANDROIDX_TEST_VERSION = "1.1.1"
     ANDROID_WORK_RUNTIME_VERSION = "2.2.0"
     MOCKITO_KOTLIN_VERSION = "2.2.0"
-    FIREBASE_ANALITICS_VERSION = "17.2.0"
+    FIREBASE_MESSAGEING_VERSION = "20.1.2"
+    FIREBASE_CRASHLATICS_VERSION = "2.10.1"
+    FIREBASE_ANALITICS_VERSION = "17.2.1"
     FIREBASE_DATABASE_VERSION = "19.2.0"
     FIREBASE_DATABASE_STORAGE_VERSION = "19.1.0"
 
@@ -77,23 +78,14 @@ ext {
     ]
 
     networkDependencies = [
+            okHttp3Logging        : "com.squareup.okhttp3:logging-interceptor:$LOGGING_INTERCEPTOR_VERSION",
             gsonSerializer        : "com.google.code.gson:gson:$GSON_VERSION",
-            retrofit              : "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION",
+           /* retrofit              : "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION",
             retrofitGsonConverter : "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION",
             retrofitRxJavaAdapter : "com.squareup.retrofit2:adapter-rxjava2:$RETROFIT_RX_VERSION",
             okHttp3Logging        : "com.squareup.okhttp3:logging-interceptor:$LOGGING_INTERCEPTOR_VERSION",
             picassoImageLoader    : "com.squareup.picasso:picasso:$PICASSO_VERSION",
-            picassoImageDownLoader: "com.jakewharton.picasso:picasso2-okhttp3-downloader:$PICASSO_DOWNLOADER_VERSION"
+            picassoImageDownLoader: "com.jakewharton.picasso:picasso2-okhttp3-downloader:$PICASSO_DOWNLOADER_VERSION"*/
     ]
 
-   /* unitTestDependencies = [
-            jUnit                    : "junit:junit:$JUNIT_VERSION",
-            mockito                  : "org.mockito:mockito-core:$MOCKITO_VERSION",
-            powerMockJunitExtension  : "org.powermock:powermock-module-junit4:$POWERMOCK_VERSION",
-            powerMockJunitBootstrap  : "org.powermock:powermock-module-junit4-rule:$POWERMOCK_VERSION",
-            powerMockJunitClassLoader: "org.powermock:powermock-classloading-xstream:$POWERMOCK_CLASSLOADER_VERSION",
-            powerMockMockitoExtension: "org.powermock:powermock-api-mockito2:$POWERMOCK_VERSION",
-            assertJCore              : "org.assertj:assertj-core:$ASSERTJ_VERSION",
-            mockWebServer            : "com.squareup.okhttp3:mockwebserver:$MOCK_WEB_SERVER"
-    ]*/
 }

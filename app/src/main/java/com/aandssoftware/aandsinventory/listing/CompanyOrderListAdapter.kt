@@ -116,7 +116,7 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
     }
 
     override fun getActivityLayoutId(): Int {
-        return R.layout.activity_listing
+        return R.layout.activity_listing_with_fab_button
     }
 
 
@@ -130,7 +130,7 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
         val mItem = item as OrderModel
         holder.tvCustomerName.text = EMPTY_STRING.plus(DateUtils.getDateFormatted(mItem.orderDateCreated))
         holder.tvContactNameAndNumber.text = mItem.customerModel?.contactPerson + " " + mItem.customerModel?.contactPersonNumber
-        holder.tvFinalAmount.text = Utils.getOrderFinalPrice(mItem).toString()
+        holder.tvFinalAmount.text = Utils.currencyLocale(Utils.getOrderFinalPrice(mItem))     //Utils.round(Utils.getOrderFinalPrice(mItem),2).toString()
         holder.tvItemCount.text = mItem.orderItems.size.toString()
         holder.tvInvoiceNumber.text = Utils.isEmpty(mItem.invoiceNumber, "-")
         holder.tvOrderDate.text = Utils.getItemNames(mItem)

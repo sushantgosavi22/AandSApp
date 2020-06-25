@@ -2,7 +2,8 @@ package com.aandssoftware.aandsinventory.listing;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import android.view.LayoutInflater;

@@ -83,6 +83,7 @@
   <string name="item_color_hint">Ex. Blue</string>
   <string name="item_size">Size</string>
   <string name="item_size_hint">Ex. Regular</string>
+  <string name="order_fab">ORDER</string>
   <string name="ok">OK</string>
   <string name="yes">YES</string>
   <string name="send">SEND</string>
@@ -224,6 +225,7 @@
   <string name="feedback_title">Subject</string>
   <string name="title">Small Title</string>
   <string name="feedback_message">Message...</string>
+  <string name="add_button">ADD</string>
 
 
 </resources>

@@ -178,7 +178,7 @@ class CustomerListAdapter(private val activity: ListingActivity) : ListingOperat
     }
 
     fun openCustomerScreen(customerId: String, numericcCustomerId: String, viewMode: Int) {
-        Navigator.openCustomerScreen(activity, customerId, numericcCustomerId, viewMode, title)
+        Navigator.openCustomerScreen(activity, customerId, numericcCustomerId, viewMode, title,false)
     }
 
     fun deleteCustomer(customerModel: CustomerModel, context: Context, pos: Int) {

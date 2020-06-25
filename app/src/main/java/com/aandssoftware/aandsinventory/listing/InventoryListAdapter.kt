@@ -20,6 +20,7 @@ import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
+import com.aandssoftware.aandsinventory.models.InventoryCreatedBy
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.ViewMode
 import com.aandssoftware.aandsinventory.ui.activity.CompanyOrderListActivity

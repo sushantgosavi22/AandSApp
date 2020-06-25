@@ -23,6 +23,8 @@ import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.OrderModel
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DOUBLE_DEFAULT_ZERO
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ZERO_STRING
+import java.math.BigDecimal
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.roundToInt
 
 
@@ -30,6 +32,7 @@ class Utils {
 
     companion object {
 
+        private var atomicInteger = AtomicInteger(0)
         @JvmStatic
         fun showToast(message: String, context: Context) {
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -218,9 +221,9 @@ class Utils {
             var sellingPriceDouble = isEmpty(inventoryItem.minimumSellingPrice, DOUBLE_DEFAULT_ZERO)
             val user = SharedPrefsUtils.getUserPreference(context, SharedPrefsUtils.CURRENT_USER)
             user?.let {
-                var isDiscountedItem = user.discountedItems?.containsKey(it.id) ?: false
+                var isDiscountedItem = user.discountedItems?.containsKey(inventoryItem.id) ?: false
                 if (isDiscountedItem) {
-                    val discount = user.discountedItems?.get(it.id)
+                    val discount = user.discountedItems?.get(inventoryItem.id)
                     discount?.let {
                         sellingPriceDouble = isEmpty(discount, DOUBLE_DEFAULT_ZERO)
                     }
@@ -237,6 +240,18 @@ class Utils {
             return sellingPriceDouble
         }
 
+        public fun round(d: Double, decimalPlace: Int): Double {
+            var bd = BigDecimal(d.toString())
+            bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP)
+            return bd.toDouble()
+        }
+
+        fun getAtomicIntegerUniqueId() : Int{
+            if(atomicInteger == null){
+                atomicInteger = AtomicInteger(0)
+            }
+           return  atomicInteger.incrementAndGet()
+        }
 
     }
 

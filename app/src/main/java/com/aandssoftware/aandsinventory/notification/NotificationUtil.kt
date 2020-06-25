@@ -95,9 +95,9 @@ class NotificationUtil {
         val NOTIFICATION_FLOW = "notification_flow"
         val TITLE = "title"
         val MESSAGE = "message"
-        val ORDER_DELIVERED_TITLE = "Order Delivered"
+        val ORDER_DELIVERED_TITLE = "Order Delivered "
         val ORDER_PAYMENT_TITLE = "Payment is pending for invoice number "
         val NOTIFICATION_TYPE = "notification_type"
-        val ORDER_CONFIRM_TITLE = "Order Confirm"
+        val ORDER_CONFIRM_TITLE = "Order Confirmed by "
     }
 }

@@ -617,7 +617,7 @@ class AddInventoryActivity : BaseActivity() {
                     "1".toDouble()
                 val purchasePrice = edtPurchasePrice.getText().toDouble()
                 var unitPrice = purchasePrice / quantity
-                unitPrice = round(unitPrice, 2)
+                unitPrice =Utils.round(unitPrice, 2)
                 if (unitPrice > -1) {
                     edtUnitPrice.setText("" + Utils.currencyLocale(unitPrice))
                 } else {
@@ -626,12 +626,6 @@ class AddInventoryActivity : BaseActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }
-
-        private fun round(d: Double, decimalPlace: Int): Double {
-            var bd = BigDecimal(d.toString())
-            bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP)
-            return bd.toDouble()
         }
     }
 
@@ -660,6 +654,7 @@ class AddInventoryActivity : BaseActivity() {
                     if (unitPrice > 0) {
                         val percent = edtPercent.getText().toDouble()
                         var unitPrice = unitPrice * percent / 100
+                        unitPrice =Utils.round(unitPrice, 2)
                         edtAmount.setText("".plus(unitPrice))
                     } else {
                         edtAmount.setText("")

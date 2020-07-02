@@ -22,7 +22,8 @@ class NotificationUtil {
     enum class NotificationType {
         ORDER_DELIVERED_INDICATE_TO_COMPANY,
         ORDER_PAYMENT_INDICATE_TO_COMPANY,
-        ORDER_CONFIRM_INDICATE_TO_ADMIN
+        ORDER_CONFIRM_INDICATE_TO_ADMIN,
+        ENQUIRY_FOR_PRODUCT_PRICE
     }
 
     companion object {
@@ -91,6 +92,7 @@ class NotificationUtil {
         val BODY = "body"
         val ORDER_ID = "order_id"
         val CUSTOMER_ID = "customer_id"
+        val INVENTORY_ID = "inventory_id"
         val FLOW_ID = "flow_id"
         val NOTIFICATION_FLOW = "notification_flow"
         val TITLE = "title"
@@ -99,5 +101,6 @@ class NotificationUtil {
         val ORDER_PAYMENT_TITLE = "Payment is pending for invoice number "
         val NOTIFICATION_TYPE = "notification_type"
         val ORDER_CONFIRM_TITLE = "Order Confirmed by "
+        val ENQUIRY_NOTIFICATION_TITLE = "Enquiry For Product "
     }
 }

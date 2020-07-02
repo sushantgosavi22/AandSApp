@@ -10,27 +10,31 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aandssoftware.aandsinventory.R
+import com.aandssoftware.aandsinventory.common.DateUtils
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
 import com.aandssoftware.aandsinventory.listing.ListType
-import com.aandssoftware.aandsinventory.models.CallBackListener
-import com.aandssoftware.aandsinventory.models.InventoryCreatedBy
-import com.aandssoftware.aandsinventory.models.InventoryItem
-import com.aandssoftware.aandsinventory.models.ViewMode
+import com.aandssoftware.aandsinventory.models.*
+import com.aandssoftware.aandsinventory.notification.NotificationUtil
 import com.aandssoftware.aandsinventory.ui.adapters.MultiImageSelectionAdapter
+import com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout
 import com.aandssoftware.aandsinventory.ui.component.CustomEditText
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DEFAULT_GST_DOUBLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DEFAULT_GST_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DOUBLE_DEFAULT_ZERO
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ENQUIRY_MAIL_BODY
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ENQUIRY_MAIL_SUBJECT
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ENQUIRY_NOTIFICATION_MASSAGE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.INVALID_ID
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.INVENTORY_ID
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.INVENTORY_INSTANCE
@@ -42,6 +46,7 @@ import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.RELOAD_
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.TITLE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.VIEW_MODE
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ZERO_STRING
+import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
@@ -50,13 +55,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_add_inventory.*
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
-import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.math.roundToInt
 
 class AddInventoryActivity : BaseActivity() {
     var inventory: InventoryItem? = null
@@ -283,8 +287,10 @@ class AddInventoryActivity : BaseActivity() {
                 imagePath = it.inventoryItemImagePath
                 if (it.inventoryItemImagePath != null) {
                     var list = setMultiImageAdapterFromHashMap()
-                    var adapter: MultiImageSelectionAdapter? = setMultiImageAdapter(list)
-                    adapter?.loadData(list)
+                    if(list.isNotEmpty()){
+                        var adapter: MultiImageSelectionAdapter? = setMultiImageAdapter(list)
+                        adapter?.loadData(list)
+                    }
                 }
 
                 if (!Utils.isAdminUser(this)) {
@@ -293,6 +299,18 @@ class AddInventoryActivity : BaseActivity() {
                     var custSellingPrice = Utils.currencyLocale(sellingPriceAfterDiscount)
                     custSellingPrice = custSellingPrice.plus(" /  ").plus(unit)
                     edtUnitPrice.setText(custSellingPrice)
+
+                    rlNoPriceInventory.visibility  =  if(sellingPriceAfterDiscount==AppConstants.DOUBLE_DEFAULT_ZERO){
+                        View.VISIBLE
+                    }else{
+                        View.GONE
+                    }
+                    btnEnquiry.setOnClickListener {
+                        inventory?.let {
+                            enquiryDialog(AddInventoryActivity@this,it)
+                        }
+
+                    }
                 }
                 setViewByModeAfterSetValue()
             }
@@ -321,7 +339,6 @@ class AddInventoryActivity : BaseActivity() {
                 edtSellingPrice.setText(it.finalBillAmount.toString())
             }
         }
-
     }
 
     private fun setButton(text: String, visibility: Int) {
@@ -356,6 +373,7 @@ class AddInventoryActivity : BaseActivity() {
                 mainInventoryCopy.parentId = it.id
                 var sellingPriceAfterDiscount = Utils.getSellingPriceAfterDiscount(this, mainInventoryCopy)
                 mainInventoryCopy.minimumSellingPrice = sellingPriceAfterDiscount.toString()
+                mainInventoryCopy.itemUnitPrice = sellingPriceAfterDiscount.toString()
                 var amountPerQuntity: Double = intUpdatedQuantity * sellingPriceAfterDiscount
                 var cgst: Double = Utils.getAmountOfPercentage(mainInventoryCopy.gstPercentage, amountPerQuntity)
                 mainInventoryCopy.gstAmount = cgst
@@ -370,21 +388,20 @@ class AddInventoryActivity : BaseActivity() {
                 mainInventoryCopy.inventoryItemColor = edtColor.getText()
                 mainInventoryCopy.inventoryItemSize = edtSize.getText()
                 mainInventoryCopy.hsnCode = edtHsnCode.getText()
+                mainInventoryCopy.discountRateForCompany = Utils.getDiscount(this,it)
 
 
                 val message = String.format(resources.getString(R.string.inventory_add_order), intUpdatedQuantity, mainInventoryCopy.inventoryItemName)
-                FirebaseUtil.getInstance().isConnected(CallBackListener { online ->
-                    if (online) {
-                        showProgressBar()
-                        FirebaseUtil.getInstance().getCustomerDao().addInventoryToOrder(mainInventoryCopy, orderId, newQuantity, CallBackListener {
-                            dismissProgressBar()
-                            showSnackBarMessage(message)
-                            setResultToOrderActivity()
-                        })
-                    } else {
-                        showSnackBarMessage(getString(R.string.no_internet_connection))
-                    }
-                })
+                if (FirebaseUtil.getInstance().isInternetConnected(this)) {
+                    showProgressBar()
+                    FirebaseUtil.getInstance().getCustomerDao().addInventoryToOrder(mainInventoryCopy, orderId, newQuantity, CallBackListener {
+                        dismissProgressBar()
+                        showSnackBarMessage(message)
+                        setResultToOrderActivity()
+                    })
+                } else {
+                    showSnackBarMessage(getString(R.string.no_internet_connection))
+                }
             }
         } else {
             showSnackBarMessage(getString(R.string.enter_quantity))
@@ -394,23 +411,21 @@ class AddInventoryActivity : BaseActivity() {
     private fun onSaveAndUpdateClick() {
         if (llContaint.validate()) {
             showProgressBar()
-            FirebaseUtil.getInstance().isConnected(CallBackListener { online ->
-                if (online) {
-                    if ((viewMode == ViewMode.UPDATE.ordinal && inventoryId.isNotEmpty())) {
-                        actionOnSaveAndUpdate(inventoryId, inventory?.inventoryId)
-                    } else {
-                        showProgressBar()
-                        FirebaseUtil.getInstance().getInventoryDao().getNextInventoryItemId(object : GetAlphaNumericAndNumericIdListener {
-                            override fun afterGettingIds(alphaNumericId: String, numericId: String) {
-                                dismissProgressBar()
-                                actionOnSaveAndUpdate(alphaNumericId, numericId)
-                            }
-                        })
-                    }
+            if (FirebaseUtil.getInstance().isInternetConnected(this)) {
+                if ((viewMode == ViewMode.UPDATE.ordinal && inventoryId.isNotEmpty())) {
+                    actionOnSaveAndUpdate(inventoryId, inventory?.inventoryId)
                 } else {
-                    showSnackBarMessage(getString(R.string.no_internet_connection))
+                    showProgressBar()
+                    FirebaseUtil.getInstance().getInventoryDao().getNextInventoryItemId(object : GetAlphaNumericAndNumericIdListener {
+                        override fun afterGettingIds(alphaNumericId: String, numericId: String) {
+                            dismissProgressBar()
+                            actionOnSaveAndUpdate(alphaNumericId, numericId)
+                        }
+                    })
                 }
-            })
+            } else {
+                showSnackBarMessage(getString(R.string.no_internet_connection))
+            }
         }
     }
 
@@ -770,4 +785,77 @@ class AddInventoryActivity : BaseActivity() {
         adViewBannerAddInventory02.loadAd(AdRequest.Builder().build())
     }
 
+    private fun enquiryDialog(activity : Context,inventoryItem: InventoryItem) {
+        val alertDialogBuilderUserInput = AlertDialog.Builder(activity)
+        var view: View = LayoutInflater.from(activity).inflate(R.layout.price_enquiry_dialog, null)
+        alertDialogBuilderUserInput
+                .setView(view)
+                .setCancelable(false)
+                .setPositiveButton(activity.getString(R.string.send)) {dialogBox, _ ->
+                    var enquiryQuantity = view.findViewById<CustomEditText>(R.id.edtEnquiryQuantity).getText()
+                    var enquiryUnit = view.findViewById<CustomEditText>(R.id.edtEnquiryUnit).getText()
+                    var enquiryDescription = view.findViewById<CustomEditText>(R.id.edtEnquiryDescription).getText()
+                    var slEnquiry = view.findViewById<ContaintValidationLinerLayout>(R.id.cvlEnquiryContaint)
+                    if(slEnquiry?.validate()==true){
+                        dialogBox.cancel()
+                        val user = SharedPrefsUtils.getUserPreference(activity, SharedPrefsUtils.CURRENT_USER)
+                        var subject  = ENQUIRY_MAIL_SUBJECT.plus(inventoryItem.inventoryItemName)
+                        var notificationMessage  = ENQUIRY_NOTIFICATION_MASSAGE
+                                .replace("#CompanyName#",user?.customerName?:"")
+                                .replace("#ProductName#",inventoryItem.inventoryItemName?:"")
+                                .replace("#Quantity#",enquiryQuantity)
+                                .replace("#Unit#",enquiryUnit)
+                        showNotificationForEnquiry(subject,notificationMessage,inventoryItem,user?.id?:"")
+                        var body  = ENQUIRY_MAIL_BODY
+                                .replace("#Date#",DateUtils.getDateFormatted(System.currentTimeMillis()))
+                                .replace("#CompanyName#",user?.customerName?:"")
+                                .replace("#Address#",user?.address?:"")
+                                .replace("#ProductName#",inventoryItem.inventoryItemName?:"")
+                                .replace("#Quantity#",enquiryQuantity)
+                                .replace("#Unit#",enquiryUnit)
+                                .replace("#Description#",enquiryDescription)
+                                .replace("#ID#",inventoryItem.id?:"")
+                        Utils.sendMailToAdmin(this,subject,body)
+
+                    }
+                }
+                .setNegativeButton(activity.getString(R.string.cancel))
+                { dialogBox, _ -> dialogBox.cancel() }
+
+        val alertDialog = alertDialogBuilderUserInput.create()
+        alertDialog.show()
+    }
+
+    private fun showNotificationForEnquiry(title : String,message : String,inventoryItem: InventoryItem,custID : String) {
+        var appVersion = SharedPrefsUtils.getAppVersionPreference(this, SharedPrefsUtils.APP_VERSION)
+        appVersion?.let {
+            var customerId = appVersion.adminCustomerId ?: AppConstants.EMPTY_STRING
+            FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(customerId,
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            var model = FirebaseUtil.getInstance().getClassData(dataSnapshot, CustomerModel::class.java)
+                            model?.let {
+                                CrashlaticsUtil.logInfo(CrashlaticsUtil.TAG_INFO, Gson().toJson(model))
+                                model.notificationToken?.let { token ->
+                                    var map = HashMap<String, String>()
+                                    map.put(NotificationUtil.TITLE, title)
+                                    map.put(NotificationUtil.BODY, message)
+                                    map.put(NotificationUtil.INVENTORY_ID, inventoryItem.id ?: EMPTY_STRING)
+                                    map.put(NotificationUtil.CUSTOMER_ID,custID)
+                                    map.put(NotificationUtil.FLOW_ID, NotificationUtil.NOTIFICATION_FLOW)
+                                    map.put(NotificationUtil.NOTIFICATION_TYPE, NotificationUtil.NotificationType.ENQUIRY_FOR_PRODUCT_PRICE.toString())
+                                    NotificationUtil.sendNotification(token, map, CallBackListener {
+
+                                    })
+                                }
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            dismissProgressBar()
+                        }
+                    })
+        }
+
+    }
 }

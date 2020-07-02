@@ -23,6 +23,7 @@ import com.aandssoftware.aandsinventory.ui.adapters.BaseAdapter.BaseViewHolder
 import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.AD_COUNT_LIMIT
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ORDER_RELOAD_LIST_RESULT_CODE
 import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -128,15 +129,16 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
     override fun onBindSearchViewHolder(baseHolder: BaseViewHolder, position: Int, item: Serializable) {
         val holder = baseHolder as OrderViewHolder
         val mItem = item as OrderModel
-        holder.tvCustomerName.text = EMPTY_STRING.plus(DateUtils.getDateFormatted(mItem.orderDateCreated))
+        var date = EMPTY_STRING.plus(DateUtils.getDateFormatted(mItem.orderDateCreated))
+        holder.tvCustomerName.text = Utils.isEmpty(mItem.invoiceNumber,date)
         holder.tvContactNameAndNumber.text = mItem.customerModel?.contactPerson + " " + mItem.customerModel?.contactPersonNumber
         holder.tvFinalAmount.text = Utils.currencyLocale(Utils.getOrderFinalPrice(mItem))     //Utils.round(Utils.getOrderFinalPrice(mItem),2).toString()
         holder.tvItemCount.text = mItem.orderItems.size.toString()
-        holder.tvInvoiceNumber.text = Utils.isEmpty(mItem.invoiceNumber, "-")
+        holder.tvInvoiceNumber.text = date
         holder.tvOrderDate.text = Utils.getItemNames(mItem)
         holder.tvOrderStatus.text = Utils.isEmpty(mItem.orderStatusName)
         holder.tvOrderStatus.setBackgroundDrawable(
-                getStatusBackgroud(baseHolder.itemView.context, Utils.isEmpty(mItem.orderStatus)))
+                Utils.getStatusBackgroud(baseHolder.itemView.context, Utils.isEmpty(mItem.orderStatus)))
         if (Utils.isEmpty(mItem.orderStatus).equals(OrderStatus.CREATED.toString(), ignoreCase = true)
                 || Utils.isEmpty(mItem.orderStatus).equals(OrderStatus.FINISH.toString(), ignoreCase = true)) {
             holder.imgDelete.visibility = View.VISIBLE
@@ -151,29 +153,22 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
         return name
     }
 
-    private fun getStatusBackgroud(context: Context, statusCode: String): Drawable? {
-        var drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_blue)
-        when (OrderStatus.valueOf(statusCode)) {
-            OrderStatus.CREATED -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_blue)
-            OrderStatus.CONFIRM -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_green)
-            OrderStatus.PENDING -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_orange)
-            OrderStatus.DELIVERED -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_purpule)
-            OrderStatus.PAYMENT -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_red)
-            OrderStatus.FINISH -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_white)
-        }
-        return drawable
-    }
-
     override fun getResult() {
         activity.showProgressBar()
         FirebaseUtil.getInstance().getCustomerDao().getCompanyOrders(Utils.getLoginCustomerId(activity), object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val list = FirebaseUtil.getInstance()
                         .getListData(dataSnapshot, OrderModel::class.java)
+                var finalOrderList : List<OrderModel>
                 if (list.isNotEmpty()) {
-                    var list = list.sortedWith(compareBy(OrderModel::orderDateUpdated)).reversed()
-                    activity.loadData(ArrayList(list))
+                    finalOrderList = list.sortedWith(compareBy(OrderModel::orderDateUpdated)).reversed()
+                    activity.loadData(ArrayList(finalOrderList))
+                }else{
+                    finalOrderList  = ArrayList<OrderModel>()
+                    activity.loadData(ArrayList(finalOrderList))
+                    activity.validateRecyclerView()
                 }
+
                 activity.dismissProgressBar()
             }
 
@@ -221,6 +216,7 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
                     FirebaseUtil.getInstance().getCustomerDao()
                             .removeOrder(orderModel, DatabaseReference.CompletionListener { databaseError, databaseReference ->
                                 //getCompanyOrder is addValueEventListener so it reload and remove automatically
+
                             })
                 }
                 .setNegativeButton(
@@ -234,20 +230,25 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             AppConstants.LISTING_REQUEST_CODE // open order List activity ,
-            -> updateOrder(data)
+            -> {
+                updateOrder(data,resultCode)
+
+            }
         }
+
+
     }
 
-    private fun updateOrder(data: Intent?) {
+    private fun updateOrder(data: Intent?,resultCode: Int) {
         data?.let {
             var isOrderUpdated = data.getBooleanExtra(AppConstants.UPDATED, false)
             if (isOrderUpdated) {
                 var position = data.getIntExtra(AppConstants.POSITION_IN_LIST, AppConstants.INVALID_ID)
                 if (position != AppConstants.INVALID_ID) {
-                    var orderId = data.getStringExtra(AppConstants.ORDER_ID)
-                    orderId?.let {
+                    var orderID = data.getStringExtra(AppConstants.ORDER_ID)
+                    orderID?.let {
                         activity.showProgressBar()
-                        FirebaseUtil.getInstance().getCustomerDao().getOrderFromID(orderId, object : ValueEventListener {
+                        FirebaseUtil.getInstance().getCustomerDao().getOrderFromID(orderID, object : ValueEventListener {
                             override fun onCancelled(p0: DatabaseError) {
                                 activity.dismissProgressBar()
                             }
@@ -257,6 +258,13 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
                                 var model = p0.getValue(OrderModel::class.java)
                                 model?.let {
                                     activity.updateElement(model, position)
+                                    if(resultCode ==ORDER_RELOAD_LIST_RESULT_CODE){
+                                        positionClicked =  position?:0
+                                        orderId = orderID
+                                        orderID?.let {
+                                            navigateToOrderDetailsScreeen()
+                                        }
+                                    }
                                 }
                             }
                         })

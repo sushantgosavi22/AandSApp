@@ -200,11 +200,44 @@
             app:mandatory="false"
             app:maxLength="@integer/int_15"
             app:title="@string/selling_price" />
+
+          <RelativeLayout
+              android:id="@+id/rlNoPriceInventory"
+              android:visibility="gone"
+              android:layout_width="match_parent"
+              android:layout_margin="@dimen/size_10"
+              android:layout_height="wrap_content">
+
+            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                android:id="@+id/tvSendEnquiry"
+                android:layout_width="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:textSize="@dimen/size_12_sp"
+                android:layout_toLeftOf="@+id/btnEnquiry"
+                android:gravity="left"
+                android:fontFamily="@font/lato_heavy"
+                android:layout_centerVertical="true"
+                android:textColor="@color/colorAccent"
+                android:text="@string/send_enquiry"
+                android:layout_height="wrap_content"/>
+
+            <com.aandssoftware.aandsinventory.ui.component.button.CustomButton
+                android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="@dimen/size_5"
+                android:id="@+id/btnEnquiry"
+                style="@style/custome_button_style"
+                android:text="@string/enquiry"
+                app:uiButtonType="PRIMARY" />
+
+          </RelativeLayout>
+
         </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
 
         <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
           android:id="@+id/adViewBannerAddInventory01"
           android:layout_width="match_parent"
+          android:layout_margin="@dimen/banner_margin"
           android:layout_height="wrap_content"
           ads:adSize="BANNER"
           ads:adUnitId="@string/banner_add_inventory01"><!--testing_banner_unit_id-->
@@ -362,6 +395,7 @@
         <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
           android:id="@+id/adViewBannerAddInventory02"
           android:layout_width="match_parent"
+          android:layout_margin="@dimen/banner_margin"
           android:layout_height="wrap_content"
           ads:adSize="BANNER"
           ads:adUnitId="@string/banner_add_inventory02"> <!--testing_banner_unit_id-->
@@ -413,7 +447,7 @@
         </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
 
 
-        <com.ict.assetmanagement.uidesign.button.CustomButton
+        <com.aandssoftware.aandsinventory.ui.component.button.CustomButton
           android:id="@+id/btnSave"
           style="@style/custome_button_style"
           android:text="@string/save"

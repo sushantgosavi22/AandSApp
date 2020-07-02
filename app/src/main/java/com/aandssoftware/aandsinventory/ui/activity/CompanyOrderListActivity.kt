@@ -10,6 +10,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
@@ -20,6 +21,7 @@ import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.CREATE_ORDER
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
+import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -43,30 +45,36 @@ class CompanyOrderListActivity : ListingActivity() {
     }
 
     fun showInventoryListingActivity(customerId: String, orderId: String) {
-        showProgressBar()
-        FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(customerId,
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        var model = FirebaseUtil.getInstance().getClassData(dataSnapshot, CustomerModel::class.java)
-                        model?.let {
-                            if (orderId.isNotEmpty()) {
-                                saveOrder(orderId, EMPTY_STRING, model)
-                            } else {
-                                FirebaseUtil.getInstance().getCustomerDao().getNextOrderItemId(object : GetAlphaNumericAndNumericIdListener {
-                                    override fun afterGettingIds(alphaNumericId: String, numericId: String) {
-                                        saveOrder(alphaNumericId, numericId, model)
-                                    }
-                                })
+        if(FirebaseUtil.getInstance().isInternetConnected(this@CompanyOrderListActivity)){
+            showProgressBar()
+            FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(customerId,
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            var model = FirebaseUtil.getInstance().getClassData(dataSnapshot, CustomerModel::class.java)
+                            SharedPrefsUtils.setUserPreference(this@CompanyOrderListActivity, SharedPrefsUtils.CURRENT_USER, model)
+                            model?.let {
+                                if (orderId.isNotEmpty()) {
+                                    saveOrder(orderId, EMPTY_STRING, model)
+                                } else {
+                                    FirebaseUtil.getInstance().getCustomerDao().getNextOrderItemId(object : GetAlphaNumericAndNumericIdListener {
+                                        override fun afterGettingIds(alphaNumericId: String, numericId: String) {
+                                            saveOrder(alphaNumericId, numericId, model)
+                                        }
+                                    })
 
+                                }
                             }
+                            dismissProgressBar()
                         }
-                        dismissProgressBar()
-                    }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        dismissProgressBar()
-                    }
-                })
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            dismissProgressBar()
+                        }
+                    })
+        }else{
+            showSnackBarMessage(getString(R.string.no_internet_connection))
+        }
+
     }
 
     fun saveOrder(alphaNumericOrderId: String, numericOrderId: String, customerModel: CustomerModel) {

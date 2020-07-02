@@ -1,16 +1,18 @@
 package com.aandssoftware.aandsinventory.listing
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
+import androidx.transition.Transition
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
@@ -29,8 +31,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_order.*
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.inventory_item.view.*
+import java.io.File
 import java.io.Serializable
 import java.util.*
 
@@ -163,8 +168,7 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             val menuItemAdd = menu.findItem(R.id.actionAdd).setVisible(true)
             var actionSave = menu.findItem(R.id.actionSave)
-            actionSave.isVisible = Utils.isAdminUser(activity)
-            (activity as OrderDetailsActivity).checkAndDisableOrder(menuItemAdd)
+            (activity as OrderDetailsActivity).checkAndDisableOrder(menuItemAdd,actionSave)
         }
         return true
     }
@@ -180,7 +184,7 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
                 return true
             }
             R.id.actionSave -> {
-                onActionConfirmOrder()
+                saveInvoice()
                 return true
             }
         }
@@ -206,7 +210,7 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         }
     }
 
-    private fun onActionConfirmOrder() {
+    private fun onActionConfirmOrder(isConsumerCopy: Boolean) {
         activity.showProgressBar()
         FirebaseUtil.getInstance().getCustomerDao().getOrderFromID(orderId!!,
                 object : ValueEventListener {
@@ -215,9 +219,38 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
                                 .getClassData(dataSnapshot, OrderModel::class.java)
                         if (orderModel != null && null != orderModel.orderItems && !orderModel
                                         .orderItems.isEmpty()) {
-                            val filePath = PdfGenerator(activity).generatePdf(orderModel)
+                            Observable.just(orderModel)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .flatMap {
+                                       var xlsxFilePath =  PdfGenerator(activity).generateXlsxFile(orderModel,isConsumerCopy)
+                                        Observable.just(xlsxFilePath)
+                                                .subscribeOn(Schedulers.io())
+                                                .map {
+                                                     PdfGenerator(activity).uploadAndGetPdfFile(File(it))
+                                                }
+                                                .observeOn(AndroidSchedulers.mainThread())
+
+                                    }
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnError {
+                                        activity.runOnUiThread(java.lang.Runnable {
+                                            activity.dismissProgressBar()
+                                        })
+
+                                    }.doOnComplete {
+                                        activity.runOnUiThread(java.lang.Runnable {
+                                            activity.dismissProgressBar()
+                                        })
+                                    }.subscribe {
+
+                                    }
+
+
+                        }else{
+                            activity.dismissProgressBar()
                         }
-                        activity.dismissProgressBar()
+
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -266,6 +299,52 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
             AppConstants.GET_CUSTOMER_UPDATE_REQUEST_CODE // when we open add customer screen
             -> when (resultCode) {
                 RELOAD_LIST_RESULT_CODE -> getResult()
+            }
+        }
+    }
+
+
+    private fun saveInvoice() {
+        var consumerCopy = "Consumer Copy"
+        var distributorCopy = "Distributor Copy"
+        val empty = arrayOf("No Selection",
+                consumerCopy,distributorCopy)
+
+        val alertDialogBuilderUserInput = AlertDialog.Builder(activity)
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton(activity.getString(R.string.ok)) { _, _ -> }
+                .setNegativeButton(activity.getString(R.string.cancel)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setSingleChoiceItems(empty, 0) { _, _ -> }
+        val alertDialog = alertDialogBuilderUserInput.create()
+        alertDialog.setCancelable(false)
+        alertDialog.setCanceledOnTouchOutside(false)
+        alertDialog.show()
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (alertDialog.listView.checkedItemPosition != 0) {
+                var selected: String = alertDialog.listView.adapter.getItem(alertDialog.listView.checkedItemPosition) as String
+                if(FirebaseUtil.getInstance().isInternetConnected(activity)){
+                    if(selected.equals(consumerCopy)){
+                        if(orderModel?.signatureName?.isNotEmpty()?:false){
+                            onActionConfirmOrder(true)
+                        }else{
+                            activity.showSnackBarMessage(activity.getString(R.string.signaure_not_added_by_consumer))
+                        }
+                    }else if(selected.equals(distributorCopy)){
+                        if(orderModel?.signatureDistributor?.isNotEmpty()?:false){
+                            onActionConfirmOrder(false)
+                        }else{
+                            activity.showSnackBarMessage(activity.getString(R.string.signaure_not_added_by_distributor))
+                        }
+                    }
+                }else{
+                    activity.showSnackBarMessage(activity.getString(R.string.no_internet_connection))
+                }
+                alertDialog.dismiss()
+            } else {
+                alertDialog.dismiss()
             }
         }
     }

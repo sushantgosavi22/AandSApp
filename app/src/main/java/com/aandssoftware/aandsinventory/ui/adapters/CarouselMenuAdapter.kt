@@ -230,19 +230,6 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
         alertDialog.show()
     }
 
-    private fun sendMail(recipient: Array<String>,subject: String,body: String){
-        val i = Intent(Intent.ACTION_SEND)
-        i.type = "message/rfc822"
-        i.putExtra(Intent.EXTRA_BCC, recipient)//EXTRA_EMAIL
-        i.putExtra(Intent.EXTRA_SUBJECT, subject)
-        i.putExtra(Intent.EXTRA_TEXT, body)
-        try {
-            activity.startActivity(Intent.createChooser(i, "Send mail..."))
-        } catch (ex: ActivityNotFoundException) {
-            Toast.makeText(activity, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     private fun getAdminMailAndSendMail(sendMailToAllCustomer : Boolean,subject: String,body: String){
         if(sendMailToAllCustomer){
             activity.showProgressBar()
@@ -258,7 +245,7 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
                             }
                         }
                         if(result.isNotEmpty()){
-                            sendMail(result.toTypedArray(),subject,body)
+                           Utils.sendMail(activity,result.toTypedArray(),subject,body)
                         }
                     }
 
@@ -270,24 +257,7 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
             })
 
         }else{
-            activity.showProgressBar()
-            var appVersion = SharedPrefsUtils.getAppVersionPreference(activity, SharedPrefsUtils.APP_VERSION)
-            appVersion?.let {
-                var customerId = appVersion.adminCustomerId ?: AppConstants.EMPTY_STRING
-                FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(customerId,
-                        object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                activity.dismissProgressBar()
-                                var model = FirebaseUtil.getInstance().getClassData(dataSnapshot, CustomerModel::class.java)
-                                model?.companyMail?.let {mailId->
-                                    sendMail(arrayOf(mailId),subject,body)
-                                }
-                            }
-                            override fun onCancelled(databaseError: DatabaseError) {
-                                activity.dismissProgressBar()
-                            }
-                        })
-            }
+            Utils.sendMailToAdmin(activity,subject,body)
         }
     }
 

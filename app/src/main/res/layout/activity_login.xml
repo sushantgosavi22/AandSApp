@@ -43,6 +43,7 @@
         android:hint="@string/hint_username"
         android:inputType="text|textEmailAddress|textWebEmailAddress"
         android:selectAllOnFocus="true"
+        android:autofillHints="username"
         app:mandatory="true"
         app:maxLength="@integer/int_256"
         app:maxLengthErrorMsg="@string/error_name_length"
@@ -53,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/password"
+        android:autofillHints="password"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:selectAllOnFocus="true"
@@ -63,7 +65,7 @@
 
     </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
 
-    <com.ict.assetmanagement.uidesign.button.CustomButton
+    <com.aandssoftware.aandsinventory.ui.component.button.CustomButton
       android:id="@+id/btnLogin"
       style="@style/custome_button_style"
       android:paddingBottom="@dimen/size_0"
@@ -81,7 +83,7 @@
       android:textColor="@color/light_blue"
       android:text="@string/forgot_password" />
 
-    <com.ict.assetmanagement.uidesign.button.CustomButton
+    <com.aandssoftware.aandsinventory.ui.component.button.CustomButton
       android:id="@+id/btnRegister"
       android:layout_marginLeft="@dimen/size_15"
       android:layout_marginRight="@dimen/size_15"

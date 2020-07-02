@@ -1,4 +1,4 @@
-package com.ict.assetmanagement.uidesign.button
+package com.aandssoftware.aandsinventory.ui.component.button
 
 /**
  * Type of button depending on their priority.

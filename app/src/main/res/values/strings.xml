@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">A and S Distributors</string>
+  <string name="app_name">A and S Distributor</string>
   <string name="inventory_list_title">Inventory List</string>
   <string name="inventoryMenu">Carousel Menu</string>
   <string name="fetching_records_please_wait">Fetching Records, Please Wait</string>
@@ -47,6 +47,8 @@
 
   <string name="error_length_common">%s should be maximum of %d character.</string>
   <string name="name">Name</string>
+  <string name="date">Date</string>
+  <string name="enter_date">Enter Date</string>
   <string name="hint_name">Ex. Pen</string>
   <string name="error_name_length">Name should be maximum of 256 character.</string>
   <string name="quantity">Quantity</string>
@@ -96,9 +98,14 @@
   <string name="update">UPDATE</string>
   <string name="save">SAVE</string>
   <string name="logout">LOGOUT</string>
-  <string name="confirm">CONFIRM</string>
+  <string name="confirm_order">CONFIRM ORDER</string>
+  <string name="confirm_delivery">CONFIRM DELIVERY</string>
+  <string name="sign">CONFIRM SIGN</string>
   <string name="done">DONE</string>
   <string name="unable_to_save_order">Unable to save order. Please try again latter.</string>
+  <string name="fource_update_massage">Newer version of app is available. It is recommended to download new version.
+   App Will close and redirect to play store now.</string>
+  <string name="recommended_update_massage">Newer version of app is available. It is recommended to download new version.</string>
   <string name="purchase_shop_name">Shop Name</string>
   <string name="purchase_shop_name_hint">Ex. Name of store</string>
   <string name="purchase_shop_contact">Contact Number</string>
@@ -142,6 +149,7 @@
   <string name="customer_discount_percent_hint">Ex. 1 %</string>
   <string name="customer_gst_length_msg">Please enter valid GST number.</string>
   <string name="customer_contact_person">Contact Person Name</string>
+  <string name="enter_name">Please enter Name.</string>
   <string name="customer_contact_person_hint">Ex. Sunder Pechai</string>
   <string name="customer_contact_number">Contact Person Mobile</string>
   <string name="customer_contact_number_hint">Ex. 10 digit contact number</string>
@@ -177,9 +185,14 @@
   <string name="invoice_number">Invoice Number</string>
   <string name="final_bill_amount">Bill Amount</string>
   <string name="inventory_add_order">%d %s added successfully to order.</string>
+  <string name="inventory_details">Inventory Details</string>
   <string name="remove_order_item_title">Remove Order Item</string>
+  <string name="signaure_not_added_by_consumer">Signature not added. Please confirm delivery and add signature then try again.</string>
+  <string name="signaure_not_added_by_distributor">Signature not added by distributor.</string>
   <string name="remove_order_item_message">Do you really want to delete Order ?</string>
   <string name="enter_quantity">Please enter quantity required.</string>
+  <string name="send_enquiry">Product price is not available. It may be change as per Quantity / Quality / Size click enquiry button to send us enquiry</string>
+  <string name="enquiry">Enquiry</string>
 
   <string name="section_title_inventory_details">Inventory Details</string>
   <string name="section_title_price">Price</string>
@@ -193,6 +206,7 @@
   <string name="section_title_login_details">Login Details</string>
   <string name="section_title_forgot_password">Forgot Password Details</string>
   <string name="section_title_feedback">Feedback</string>
+  <string name="section_title_signature">Signature</string>
   <!-- TODO: Remove or change this placeholder text -->
   <string name="developed_by">Developer : Sushant Gosavi\n
                                   Cell : 9503166862</string>
@@ -226,6 +240,7 @@
   <string name="title">Small Title</string>
   <string name="feedback_message">Message...</string>
   <string name="add_button">ADD</string>
+
 
 
 </resources>

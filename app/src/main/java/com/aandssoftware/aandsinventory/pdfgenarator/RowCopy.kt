@@ -4,6 +4,7 @@ import android.content.Context
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.OrderModel
+import org.apache.poi.openxml4j.opc.OPCPackage
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFCell
@@ -19,6 +20,7 @@ object RowCopy {
     @Throws(Exception::class)
     fun createAdditionalRows(context: Context, destination: String, orderModel: OrderModel): String {
 
+        //val stream = context.resources.openRawResource(R.raw.updated)
         val stream = context.resources.openRawResource(R.raw.updated)
         val workbook = XSSFWorkbook(stream)
         val sheet = workbook.getSheetAt(0)
@@ -38,6 +40,7 @@ object RowCopy {
 
     @Throws(Exception::class)
     fun writeFileOnToDisk(context: Context, destination: String): String {
+        //val stream = context.resources.openRawResource(R.raw.updated)
         val stream = context.resources.openRawResource(R.raw.updated)
         val workbook = XSSFWorkbook(stream)
         val sheet = workbook.getSheetAt(0)

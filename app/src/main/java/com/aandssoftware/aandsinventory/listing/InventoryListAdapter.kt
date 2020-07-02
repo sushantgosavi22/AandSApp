@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -41,8 +42,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
+import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.flatMapIterable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.inventory_item.view.*
 import java.io.Serializable
+import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -132,17 +140,29 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 val list = FirebaseUtil.getInstance()
                                         .getListData(dataSnapshot, InventoryItem::class.java)
-                                val searchedList = ArrayList<InventoryItem>()
+                                //val searchedList = ArrayList<InventoryItem>()
                                 if (list.isNotEmpty()) {
-                                    for (item in list) {
-                                        val searchable = EMPTY_STRING.plus(item.inventoryItemName).plus(item.inventoryItemBrandName).plus(item.inventoryItemModelName).plus(item.description)
-                                        if (searchable.toLowerCase().contains(query.toLowerCase())) {
-                                            searchedList.add(item)
-                                        }
-                                    }
-                                    activity.loadData(searchedList)
+                                    Observable.just(list)
+                                            .flatMapIterable()
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .filter {item ->
+                                                val searchable = EMPTY_STRING.plus(item.inventoryItemName).plus(item.inventoryItemBrandName).plus(item.inventoryItemModelName).plus(item.description)
+                                                var searchableQueryList = query.split(" ", ignoreCase = true)
+                                                var add: String? = searchableQueryList.find { content -> searchable.contains(content, ignoreCase = true) }
+                                                add?.isNotEmpty()?:false
+                                            }
+                                            .toList()
+                                            .doOnError {
+                                                activity.dismissProgressBar()
+                                            }
+                                            .subscribe {  list->
+                                                activity.loadData(ArrayList<InventoryItem>(list))
+                                                activity.dismissProgressBar()
+                                            }
+                                }else{
+                                    activity.dismissProgressBar()
                                 }
-                                activity.dismissProgressBar()
                             }
 
                             override fun onCancelled(databaseError: DatabaseError) {

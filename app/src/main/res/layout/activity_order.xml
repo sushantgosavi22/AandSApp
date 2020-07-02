@@ -54,20 +54,43 @@
                         android:gravity="center_vertical"
                         android:orientation="vertical">
 
-                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-                            android:id="@+id/tvCustomerName"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/lato_heavy"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="@dimen/size_15_sp" />
+                            android:layout_height="wrap_content">
+
+                            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                                android:id="@+id/tvCustomerName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBottom="@+id/tvOrderStatus"
+                                android:layout_toLeftOf="@+id/tvOrderStatus"
+                                android:fontFamily="@font/lato_heavy"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="@dimen/size_15_sp" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvOrderStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_gravity="right|center_vertical"
+                                android:layout_margin="@dimen/size_5"
+                                android:textColor="@android:color/white"
+                                android:background="@drawable/chip_background_blue"
+                                android:gravity="center"
+                                android:paddingLeft="@dimen/size_10"
+                                android:paddingRight="@dimen/size_10"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+
+
 
                         <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
                             android:id="@+id/tvInvoiceNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="left"
-                            android:fontFamily="@font/lato_bold_italic"
+                            android:fontFamily="@font/lato_bold"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/size_14_sp" />
 
@@ -272,11 +295,11 @@
         <!--</androidx.cardview.widget.CardView>-->
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <com.ict.assetmanagement.uidesign.button.CustomButton
+    <com.aandssoftware.aandsinventory.ui.component.button.CustomButton
         android:id="@+id/btnConfirm"
         style="@style/custome_button_style"
         android:layout_alignParentBottom="true"
-        android:text="@string/confirm"
+        android:text="@string/confirm_order"
         app:uiButtonType="PRIMARY" />
 
     <include

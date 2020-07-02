@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -27,12 +28,14 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
 import com.aandssoftware.aandsinventory.common.Utils
+import com.aandssoftware.aandsinventory.pdfgenarator.PdfHandler
 import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
 import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
 
 class LoginActivity : BaseActivity() {
 
+    var isRecommendedUpdate : Boolean  = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -155,15 +158,23 @@ class LoginActivity : BaseActivity() {
                         .getClassData(dataSnapshot, AppVersion::class.java)
                 SharedPrefsUtils.setAppVersionPreference(this@LoginActivity, SharedPrefsUtils.APP_VERSION, appVersion)
                 appVersion?.let {
+                    SharedPrefsUtils.setStringPreference(this@LoginActivity,PdfHandler.SECRETE_KAY ,it.secreteKey?:PdfHandler.DEFAULT_SECRETE_KAY)
+                    SharedPrefsUtils.setStringPreference(this@LoginActivity,PdfHandler.API_KAY ,it.apikey?:PdfHandler.DEFAULT_API_KAY)
                     if (appVersion.forceUpdate) {
-                        redirectToPlayStore()
-                        finish()
+                        performForceUpdate()
                     } else if (appVersion.recomondedUpdate) {
-                        redirectToPlayStore()
+                        if(isRecommendedUpdate.not()){
+                            isRecommendedUpdate = true
+                            showSnackBarMessage(getString(R.string.recommended_update_massage))
+                            Handler().postDelayed({
+                                redirectToPlayStore()
+                            }, AppConstants.SPLASH_TIME)
+                        }else{
+                            performLogin()
+                        }
                     } else {
                         if ((BuildConfig.VERSION_CODE < appVersion.updatedVersionCode.toInt())) {
-                            redirectToPlayStore()
-                            finish()
+                            performForceUpdate()
                         } else {
                             performLogin()
                         }
@@ -174,6 +185,13 @@ class LoginActivity : BaseActivity() {
         })
     }
 
+    private fun performForceUpdate(){
+        showSnackBarMessage(getString(R.string.fource_update_massage))
+        Handler().postDelayed({
+            redirectToPlayStore()
+            finish()
+        }, AppConstants.SPLASH_TIME)
+    }
     private fun redirectToPlayStore() {
         val appPackageName = packageName // package name of the app
         try {

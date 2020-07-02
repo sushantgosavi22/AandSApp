@@ -263,10 +263,7 @@ class CustomerDao {
         }
     }
 
-    fun updateOrderStatus(orderId: String, status: String, statusName: String, dataListener: CallBackListener) {
-        var map: HashMap<String, Any> = HashMap()
-        map.put(OrderModel.ORDER_STATUS, status)
-        map.put(OrderModel.ORDER_STATUS_NAME, statusName)
+    fun updateOrderStatus(orderId: String, map :  HashMap<String, Any> , dataListener: CallBackListener) {
         orderTableReference.child(orderId).updateChildren(map) { databaseError, _ ->
             if (null == databaseError) {
                 dataListener.getCallBack(true)

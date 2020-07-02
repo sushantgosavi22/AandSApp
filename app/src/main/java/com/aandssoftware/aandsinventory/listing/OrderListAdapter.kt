@@ -271,7 +271,10 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
                 var selected: String = alertDialog.listView.adapter.getItem(alertDialog.listView.checkedItemPosition) as String
                 var status = selected.toUpperCase()
                 var orderId = order.id ?: EMPTY_STRING
-                FirebaseUtil.getInstance().getCustomerDao().updateOrderStatus(orderId, status, selected, CallBackListener {
+                var map: HashMap<String, Any> = HashMap()
+                map.put(OrderModel.ORDER_STATUS, status)
+                map.put(OrderModel.ORDER_STATUS_NAME, selected)
+                FirebaseUtil.getInstance().getCustomerDao().updateOrderStatus(orderId, map, CallBackListener {
                     if (it) {
                         order.orderStatus = status
                         order.orderStatusName = selected

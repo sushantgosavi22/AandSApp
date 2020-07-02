@@ -15,6 +15,12 @@ class OrderModel : Serializable {
         const val ORDER_BY_VALUE = "orderDateUpdated"
         const val ID_ORDER_BY_VALUE = "customerId"
         const val ORDER_CUSTOMER_MODEL = "customerModel"
+        const val SIGNATURE = "signature"
+        const val SIGNATURE_NAME = "signatureName"
+        const val SIGNATURE_DATE = "signatureDate"
+        const val DISTRIBUTOR_SIGNATURE = "signatureDistributor"
+        const val DISTRIBUTOR_SIGNATURE_NAME = "signatureNameDistributor"
+        const val DISTRIBUTOR_SIGNATURE_DATE = "signatureDateDistributor"
     }
 
     @SerializedName("id")
@@ -95,7 +101,7 @@ class OrderModel : Serializable {
 
     @SerializedName("discount")
     @Expose
-    var discount: Int = 0
+    var discount: Double = 0.0
 
     @SerializedName("extraCharges")
     @Expose
@@ -127,6 +133,10 @@ class OrderModel : Serializable {
     @SerializedName("taxableAmountBeforeDiscount")
     @Expose
     var taxableAmountBeforeDiscount: Double = 0.0
+
+    @SerializedName("taxableAmountBeforeDiscount")
+    @Expose
+    var taxableAmountAfterDiscount: Double = 0.0
 
 
     @SerializedName("cessAmount")
@@ -162,6 +172,54 @@ class OrderModel : Serializable {
     @SerializedName("finalBillAmount")
     @Expose
     var finalBillAmount: Double = 0.0
+
+    @SerializedName("signature")
+    @Expose
+    var signature: String? = null
+
+    @SerializedName("signatureName")
+    @Expose
+    var signatureName: String? = null
+
+    @SerializedName("signatureDate")
+    @Expose
+    var signatureDate: String? = null
+
+
+    @SerializedName("signatureDistributor")
+    @Expose
+    var signatureDistributor: String? = null
+
+    @SerializedName("signatureNameDistributor")
+    @Expose
+    var signatureNameDistributor: String? = null
+
+    @SerializedName("signatureDateDistributor")
+    @Expose
+    var signatureDateDistributor: String? = null
+
+
+    @SerializedName("salesOrderNumber")
+    @Expose
+    var salesOrderNumber: String? = null
+
+    @SerializedName("salesOrderDate")
+    @Expose
+    var salesOrderDate: String? = null
+
+    @SerializedName("poNo")
+    @Expose
+    var poNo: String? = null
+
+    @SerializedName("poDate")
+    @Expose
+    var poDate: String? = null
+
+    @SerializedName("refranceNo")
+    @Expose
+    var refranceNo: String? = null
+
+
 
     constructor() {
 

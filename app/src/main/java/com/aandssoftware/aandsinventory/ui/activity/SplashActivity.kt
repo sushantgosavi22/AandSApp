@@ -55,7 +55,7 @@ class SplashActivity : BaseActivity(), InstallStateUpdatedListener {
             if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                     it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
                 mAppUpdateManager.startUpdateFlowForResult(
-                        it, AppUpdateType.IMMEDIATE, SplashActivity@ this, ANDROID_APP_UPDATE);
+                        it, AppUpdateType.FLEXIBLE, SplashActivity@ this, ANDROID_APP_UPDATE);
             } else if (it.installStatus() == InstallStatus.DOWNLOADED) {
                 popupSnackbarForCompleteUpdate();
             } else {
@@ -86,6 +86,7 @@ class SplashActivity : BaseActivity(), InstallStateUpdatedListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ANDROID_APP_UPDATE) {
             if (resultCode != Activity.RESULT_OK) {
+                showLogin()
                 Log.e(LOG, "onActivityResult: app download failed")
             }
         }

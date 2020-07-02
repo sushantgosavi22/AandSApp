@@ -62,6 +62,30 @@ class AppConstants {
         const val CUSTOMER_DISCOUNT_RESULT_CODE: Int = 108
         /*Start Activity For Result ID */
 
+        const val ENQUIRY_NOTIFICATION_MASSAGE : String ="#CompanyName# Required #Quantity# #Unit# of #ProductName#"
+        const val ENQUIRY_MAIL_SUBJECT : String ="Enquiry for the product "
+        const val ENQUIRY_MAIL_BODY : String = " \"#Date#\" \n" +
+                "Mr. Nishant Gosavi\n" +
+                "A and S Distributors and suppliers\n" +
+                "A/p -Shindewadi , Tel- Bhor \n" +
+                "pune 412205\n" +
+                " \n" +
+                "Dear Mr. Nishant\n" +
+                "     \n" +
+                "    I am from \"#CompanyName#\" at \"#Address#\" We are interested in purchasing \n" +
+                "The product \"#ProductName#\". Below are the information that you required\n" +
+                "Required Quantiy    = \"#Quantity#\"\n" +
+                "Quantiy  Unit       =  \"#Unit#\"\n" +
+                "Product Description =  \"#Description#\"\n" +
+                "Product ID          =  \"#ID#\"\n" +
+                "\n" +
+                "\tPlease provide us details as soon as possible, waiting for your reply\n" +
+                "\t\n" +
+                "Thank you."
+
+
+
+
     }
 
 }

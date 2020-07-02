@@ -205,23 +205,21 @@ class AddCustomerActivity : ListingActivity() {
                 }
             }
 
-            FirebaseUtil.getInstance().isConnected(CallBackListener {
-                if (it) {
-                    if ((viewMode == ViewMode.UPDATE.ordinal || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) && fireBaseCustomerId.isNotEmpty()) {
-                        onSubmit(fireBaseCustomerId, numericCustomerId.toLong())
-                    } else {
-                        showProgressBar()
-                        FirebaseUtil.getInstance().getCustomerDao().getNextCustomerItemId(object : GetAlphaNumericAndNumericIdListener {
-                            override fun afterGettingIds(alphaNumericId: String, numericId: String) {
-                                dismissProgressBar()
-                                onSubmit(alphaNumericId, numericId.toLong())
-                            }
-                        })
-                    }
+            if (FirebaseUtil.getInstance().isInternetConnected(this)) {
+                if ((viewMode == ViewMode.UPDATE.ordinal || viewMode == ViewMode.PASSWORD_UPDATE.ordinal) && fireBaseCustomerId.isNotEmpty()) {
+                    onSubmit(fireBaseCustomerId, numericCustomerId.toLong())
                 } else {
-                    showSnackBarMessage(getString(R.string.no_internet_connection))
+                    showProgressBar()
+                    FirebaseUtil.getInstance().getCustomerDao().getNextCustomerItemId(object : GetAlphaNumericAndNumericIdListener {
+                        override fun afterGettingIds(alphaNumericId: String, numericId: String) {
+                            dismissProgressBar()
+                            onSubmit(alphaNumericId, numericId.toLong())
+                        }
+                    })
                 }
-            })
+            } else {
+                showSnackBarMessage(getString(R.string.no_internet_connection))
+            }
         }
     }
 

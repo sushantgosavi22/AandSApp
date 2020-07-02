@@ -210,6 +210,9 @@ open class InventoryItem : Serializable {
     @Expose
     var tag: String? = null
 
+    @SerializedName("discountOnInventory")
+    @Expose
+    var discountOnInventory: Double = 0.0
 
     constructor() {
 
@@ -247,6 +250,7 @@ open class InventoryItem : Serializable {
         this.quantityBySellingPrice = item.quantityBySellingPrice
         this.finalBillAmount = item.finalBillAmount
         this.discountRateForCompany = item.discountRateForCompany
+        this.discountOnInventory = item.discountOnInventory
         this.tag = item.tag
         this.isAvailable = item.isAvailable
     }

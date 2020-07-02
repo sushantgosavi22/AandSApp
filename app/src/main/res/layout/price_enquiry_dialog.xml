@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:clickable="true"
+        android:elevation="4dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="5dp">
+
+        <com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout
+            android:id="@+id/cvlEnquiryContaint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+                android:id="@+id/slEnquiry"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:sectionHeader="@string/enquiry">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/llQuantityAndUnit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2">
+
+                    <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                        android:id="@+id/edtEnquiryQuantity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/quantity_hint"
+                        android:inputType="numberDecimal"
+                        app:mandatory="true"
+                        app:maxLength="@integer/int_15"
+                        app:maxLengthErrorMsg="@string/error_quantity_length"
+                        app:title="@string/quantity" />
+
+                    <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                        android:id="@+id/edtEnquiryUnit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/unit_hint"
+                        android:inputType="text|textCapSentences"
+                        app:mandatory="true"
+                        app:maxLength="@integer/int_256"
+                        app:title="@string/unit" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                    android:id="@+id/edtEnquiryDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|top"
+                    android:hint="@string/feedback_message"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:lines="@integer/int_15"
+                    android:maxLines="@integer/int_15"
+                    app:mandatory="true"
+                    app:maxLength="@integer/int_500"
+                    app:title="@string/description" />
+            </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+        </com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

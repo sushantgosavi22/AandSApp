@@ -1,29 +1,38 @@
 package com.aandssoftware.aandsinventory.common
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.text.TextUtils
+import android.util.Base64
+import android.util.Patterns
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.aandssoftware.aandsinventory.BuildConfig
 import com.aandssoftware.aandsinventory.R
-import com.aandssoftware.aandsinventory.ui.activity.ui.login.LoginActivity
-import com.aandssoftware.aandsinventory.utilities.AppConstants
-import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
-import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
-import com.google.android.material.snackbar.Snackbar
-import java.lang.Exception
-import java.text.NumberFormat
-import java.util.*
-import android.util.Patterns
+import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
+import com.aandssoftware.aandsinventory.models.CustomerModel
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.OrderModel
+import com.aandssoftware.aandsinventory.models.OrderStatus
+import com.aandssoftware.aandsinventory.ui.activity.BaseActivity
+import com.aandssoftware.aandsinventory.ui.activity.ui.login.LoginActivity
+import com.aandssoftware.aandsinventory.utilities.AppConstants
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.DOUBLE_DEFAULT_ZERO
+import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.EMPTY_STRING
 import com.aandssoftware.aandsinventory.utilities.AppConstants.Companion.ZERO_STRING
+import com.aandssoftware.aandsinventory.utilities.SharedPrefsUtils
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import java.math.BigDecimal
+import java.text.NumberFormat
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.roundToInt
 
@@ -240,6 +249,32 @@ class Utils {
             return sellingPriceDouble
         }
 
+
+        @JvmStatic
+        fun getDiscount(context: Context, inventoryItem: InventoryItem): Double {
+            var sellingPriceDouble = isEmpty(inventoryItem.minimumSellingPrice, DOUBLE_DEFAULT_ZERO)
+            val user = SharedPrefsUtils.getUserPreference(context, SharedPrefsUtils.CURRENT_USER)
+            var discountValue: Double = DOUBLE_DEFAULT_ZERO
+            user?.let {
+                var isDiscountedItem = user.discountedItems?.containsKey(inventoryItem.id) ?: false
+                if (isDiscountedItem) {
+                    val discount = user.discountedItems?.get(inventoryItem.id)
+                    var discountInDouble = isEmpty(discount, DOUBLE_DEFAULT_ZERO)
+                    discountValue = sellingPriceDouble.minus(discountInDouble)
+                } else {
+                    var discount = if (user.discountPercent == DOUBLE_DEFAULT_ZERO) {
+                        user.discountPercent
+                    } else {
+                        var discountPercent = user.discountPercent
+                        sellingPriceDouble * discountPercent / 100
+                    }
+                    discountValue =  sellingPriceDouble.minus(discount)
+                }
+            }
+            return discountValue
+        }
+
+
         public fun round(d: Double, decimalPlace: Int): Double {
             var bd = BigDecimal(d.toString())
             bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP)
@@ -253,6 +288,56 @@ class Utils {
            return  atomicInteger.incrementAndGet()
         }
 
+        fun sendMail(activity : Context,recipient: Array<String>,subject: String,body: String){
+            val i = Intent(Intent.ACTION_SEND)
+            i.type = "message/rfc822"
+            i.putExtra(Intent.EXTRA_BCC, recipient)//EXTRA_EMAIL
+            i.putExtra(Intent.EXTRA_SUBJECT, subject)
+            i.putExtra(Intent.EXTRA_TEXT, body)
+            try {
+                activity.startActivity(Intent.createChooser(i, "Send mail..."))
+            } catch (ex: ActivityNotFoundException) {
+                Toast.makeText(activity, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        fun sendMailToAdmin(activity: BaseActivity,subject: String,body: String){
+            var appVersion = SharedPrefsUtils.getAppVersionPreference(activity, SharedPrefsUtils.APP_VERSION)
+            appVersion?.let {
+                var customerId = appVersion.adminCustomerId ?: AppConstants.EMPTY_STRING
+                activity.showProgressBar()
+                FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(customerId,
+                        object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                activity.dismissProgressBar()
+                                var model = FirebaseUtil.getInstance().getClassData(dataSnapshot, CustomerModel::class.java)
+                                model?.companyMail?.let {mailId->
+                                    sendMail(activity,arrayOf(mailId),subject,body)
+                                }
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                activity.dismissProgressBar()
+                            }
+                        })
+            }
+        }
+
+        fun getBase64String(byteArray: ByteArray): String? {
+            return Base64.encodeToString(byteArray, Base64.DEFAULT)
+        }
+
+        fun getStatusBackgroud(context: Context, statusCode: String): Drawable? {
+            var drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_blue)
+            when (OrderStatus.valueOf(statusCode)) {
+                OrderStatus.CREATED -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_blue)
+                OrderStatus.CONFIRM -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_green)
+                OrderStatus.PENDING -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_orange)
+                OrderStatus.DELIVERED -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_purpule)
+                OrderStatus.PAYMENT -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_red)
+                OrderStatus.FINISH -> drawable = ContextCompat.getDrawable(context, R.drawable.chip_background_white)
+            }
+            return drawable
+        }
     }
 
 }

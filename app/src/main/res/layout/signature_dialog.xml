@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:clickable="true"
+        android:elevation="4dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="5dp">
+
+        <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:sectionHeader="@string/section_title_signature">
+
+
+          <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+              android:id="@+id/tvSignPersonName"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/name"
+              android:inputType="text|textEmailAddress"
+              android:selectAllOnFocus="true"
+              app:mandatory="true"
+              app:maxLength="@integer/int_256"
+              app:title="@string/name" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_above="@+id/tvSignDate"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_toLeftOf="@+id/imgClear"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/size_10"
+                            android:layout_marginTop="@dimen/size_10"
+                            android:layout_marginRight="@dimen/size_10"
+                            android:layout_marginBottom="@dimen/size_3"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvName"
+                                style="@style/custome_label_regular"
+                                android:layout_width="wrap_content"
+                                android:text="@string/section_title_signature" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvMandatory"
+                                style="@style/custome_label_regular"
+                                android:layout_width="wrap_content"
+                                android:text=" *"
+                                android:textColor="@color/red_alret"
+                                android:visibility="visible" />
+
+                        </LinearLayout>
+                        <ImageView
+                            android:id="@+id/imgClear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_margin="@dimen/size_2"
+                            android:elevation="@dimen/size_5"
+                            android:padding="@dimen/size_2"
+                            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+                    </RelativeLayout>
+                      <include
+                          android:id="@+id/iSignatureViewLayouts"
+                          layout="@layout/signature_view_layout"
+                          android:layout_height="match_parent"
+                          android:layout_width="match_parent"/>
+                </LinearLayout>
+
+
+                <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                    android:id="@+id/tvSignDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:hint="@string/enter_date"
+                    android:inputType="text|textEmailAddress"
+                    android:selectAllOnFocus="true"
+                    app:mandatory="false"
+                    app:maxLength="@integer/int_256"
+                    app:title="@string/date" />
+
+            </RelativeLayout>
+
+        </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

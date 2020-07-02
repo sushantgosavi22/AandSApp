@@ -103,7 +103,7 @@
                   android:layout_height="wrap_content"
                   android:layout_gravity="left"
                   android:fontFamily="@font/lato_medium"
-                  android:text="@string/invoice_number"
+                  android:text="@string/date"
                   android:textColor="@android:color/darker_gray"
                   android:textSize="@dimen/size_12_sp" />
                 <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView

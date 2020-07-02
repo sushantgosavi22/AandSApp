@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvNameOnSign"
+        android:gravity="center_horizontal"
+        style="@style/custome_label_regular"
+        android:layout_width="match_parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDateOnSign"
+        android:gravity="center_horizontal"
+        style="@style/custome_label_regular"
+        android:layout_width="match_parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivStamp"
+        android:src="@drawable/aands_stamp"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/size_100"/>
+
+    <com.aandssoftware.aandsinventory.ui.component.signature.CaptureSignatureView
+        android:id="@+id/svSignatureView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/size_10" />
+
+</LinearLayout>

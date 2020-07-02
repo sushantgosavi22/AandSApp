@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/customer_gst_hint"
-            android:inputType="text"
+            android:inputType="textCapCharacters"
             app:mandatory="true"
             app:mandatoryErrorMsg="@string/enter_customer_gst"
             app:maxLength="@integer/int_15"
@@ -285,12 +285,12 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
-          android:layout_margin="@dimen/size_10"
+          android:layout_margin="@dimen/banner_margin"
           ads:adSize="BANNER"
           ads:adUnitId="@string/banner_customer_detail01"> <!--testing_banner_unit_id-->
         </com.google.android.gms.ads.AdView>
 
-        <com.ict.assetmanagement.uidesign.button.CustomButton
+        <com.aandssoftware.aandsinventory.ui.component.button.CustomButton
           android:id="@+id/btnSave"
           style="@style/custome_button_style"
           android:text="@string/save"

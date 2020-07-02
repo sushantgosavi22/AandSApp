@@ -11,6 +11,7 @@ import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.listing.ListType
 import com.aandssoftware.aandsinventory.models.CarouselMenuModel
+import com.aandssoftware.aandsinventory.models.ViewMode
 import com.aandssoftware.aandsinventory.notification.NotificationUtil
 import com.aandssoftware.aandsinventory.ui.adapters.CarouselMenuAdapter
 import com.aandssoftware.aandsinventory.utilities.AppConstants
@@ -156,6 +157,8 @@ class CarouselDashboardActivity : BaseActivity() {
                     sendToOrderDetail(bundle)
                 } else if (bundle.get(NotificationUtil.NOTIFICATION_TYPE).toString().equals(NotificationUtil.NotificationType.ORDER_PAYMENT_INDICATE_TO_COMPANY.toString(), ignoreCase = true)) {
                     sendToOrderDetail(bundle)
+                }else if(bundle.get(NotificationUtil.NOTIFICATION_TYPE).toString().equals(NotificationUtil.NotificationType.ENQUIRY_FOR_PRODUCT_PRICE.toString(), ignoreCase = true)){
+                    sendToInventoryDetailPage(bundle)
                 }
             }
         }
@@ -165,5 +168,11 @@ class CarouselDashboardActivity : BaseActivity() {
         var orderId = bundle?.get(NotificationUtil.ORDER_ID).toString()
         var customerId = bundle?.get(NotificationUtil.CUSTOMER_ID).toString()
         Navigator.openOrderDetailsScreen(this, orderId, intent)
+    }
+
+    private fun sendToInventoryDetailPage(bundle: Bundle?) {
+        var inventoryId = bundle?.get(NotificationUtil.INVENTORY_ID).toString()
+        var customerId = bundle?.get(NotificationUtil.CUSTOMER_ID).toString()
+        Navigator.openInventoryScreen(this,inventoryId, ViewMode.UPDATE.ordinal, ListType.LIST_TYPE_MATERIAL.ordinal, getString(R.string.inventory_details), 0)
     }
 }

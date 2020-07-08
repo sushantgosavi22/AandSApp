@@ -46,6 +46,25 @@
   <!--AdMod-->
 
   <string name="error_length_common">%s should be maximum of %d character.</string>
+  <string name="invoice_number">Invoice Number</string>
+  <string name="invoice_number_empty">Please Enter Invoice Number.</string>
+  <string name="date_of_invoice">Date of Invoice</string>
+  <string name="date_of_invoice_empty">Please Enter Date of Invoice.</string>
+  <string name="due_date">Due Date</string>
+  <string name="due_date_empty">Please Enter Due Date.</string>
+  <string name="payment_term">Payment term</string>
+  <string name="payment_term_hint">Ex. 45 Days</string>
+  <string name="payment_term_empty">Please Enter Payment term.</string>
+  <string name="discount_on_order">Discount</string>
+  <string name="cess">Cess</string>
+  <string name="payment_receive">Payment Receive</string>
+  <string name="total_credit_applied">Total Credit Applied</string>
+  <string name="total_debit_applied">Total Debit Applied</string>
+  <string name="balance_due">Balance Due</string>
+  <string name="bank_name">Bank Name</string>
+  <string name="account_number">Account Number</string>
+  <string name="ifsc_code">IFSC Code</string>
+
   <string name="name">Name</string>
   <string name="date">Date</string>
   <string name="enter_date">Enter Date</string>
@@ -107,6 +126,7 @@
    App Will close and redirect to play store now.</string>
   <string name="recommended_update_massage">Newer version of app is available. It is recommended to download new version.</string>
   <string name="purchase_shop_name">Shop Name</string>
+  <string name="confirm_mail_check_box">Confirm order and send mail as well</string>
   <string name="purchase_shop_name_hint">Ex. Name of store</string>
   <string name="purchase_shop_contact">Contact Number</string>
   <string name="purchase_shop_contact_hint">Ex. Shop contact</string>
@@ -182,7 +202,6 @@
   <string name="customer_not_found">Customer Not Found!</string>
   <string name="number_of_item">Item Count</string>
   <string name="taxableAmount">Taxable Amount</string>
-  <string name="invoice_number">Invoice Number</string>
   <string name="final_bill_amount">Bill Amount</string>
   <string name="inventory_add_order">%d %s added successfully to order.</string>
   <string name="inventory_details">Inventory Details</string>
@@ -193,6 +212,7 @@
   <string name="enter_quantity">Please enter quantity required.</string>
   <string name="send_enquiry">Product price is not available. It may be change as per Quantity / Quality / Size click enquiry button to send us enquiry</string>
   <string name="enquiry">Enquiry</string>
+  <string name="duplicate_inventory_msg">Inventory Duplicate Successfully.</string>
 
   <string name="section_title_inventory_details">Inventory Details</string>
   <string name="section_title_price">Price</string>
@@ -207,6 +227,9 @@
   <string name="section_title_forgot_password">Forgot Password Details</string>
   <string name="section_title_feedback">Feedback</string>
   <string name="section_title_signature">Signature</string>
+  <string name="section_title_order_details">Order Details</string>
+  <string name="section_title_order_amount_details">Amount Details</string>
+  <string name="section_title_order_bank_details">Bank Details</string>
   <!-- TODO: Remove or change this placeholder text -->
   <string name="developed_by">Developer : Sushant Gosavi\n
                                   Cell : 9503166862</string>

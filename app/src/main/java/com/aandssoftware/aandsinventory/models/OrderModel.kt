@@ -107,6 +107,10 @@ class OrderModel : Serializable {
     @Expose
     var extraCharges: Int = 0
 
+    @SerializedName("extraCharges")
+    @Expose
+    var paymentTerm: Int = 45
+
     @SerializedName("extraChargesDescription")
     @Expose
     var extraChargesDescription: String? = null
@@ -220,6 +224,17 @@ class OrderModel : Serializable {
     var refranceNo: String? = null
 
 
+    @SerializedName("bankName")
+    @Expose
+    var bankName: String? = "PUNJAB AND SIND BANK"
+
+    @SerializedName("accountNumber")
+    @Expose
+    var accountNumber: String? = "10321100000181"
+
+    @SerializedName("ifscCode")
+    @Expose
+    var ifscCode: String? = "PSIB0000324"
 
     constructor() {
 

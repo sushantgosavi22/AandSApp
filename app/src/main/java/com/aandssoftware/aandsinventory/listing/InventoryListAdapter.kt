@@ -208,6 +208,9 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                         .placeholder(android.R.drawable.ic_menu_gallery)
                         .crossFade()
                         .into(holder.imgInventoryItemLogo)
+            }else{
+                Glide.clear(holder.imgInventoryItemLogo)
+                holder.imgInventoryItemLogo.setImageResource(android.R.drawable.ic_menu_gallery)
             }
 
         }

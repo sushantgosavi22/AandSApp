@@ -11,7 +11,7 @@
         android:id="@+id/llListData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnConfirm"
+        android:layout_above="@+id/llConfirmLayout"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
@@ -72,9 +72,10 @@
                                 android:id="@+id/tvOrderStatus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/size_5"
+                                android:layout_marginRight="@dimen/size_5"
                                 android:layout_alignParentRight="true"
                                 android:layout_gravity="right|center_vertical"
-                                android:layout_margin="@dimen/size_5"
                                 android:textColor="@android:color/white"
                                 android:background="@drawable/chip_background_blue"
                                 android:gravity="center"
@@ -101,14 +102,48 @@
                             android:fontFamily="@font/lato_regular"
                             android:textSize="@dimen/size_12_sp" />
 
-                        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
-                            android:id="@+id/tvCustomerGstNumber"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/lato_regular"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:textSize="@dimen/size_12_sp" />
+                            android:layout_height="wrap_content">
+
+                            <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+                                android:id="@+id/tvCustomerGstNumber"
+                                android:layout_width="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_height="wrap_content"
+                                android:layout_toLeftOf="@+id/llSendIcons"
+                                android:fontFamily="@font/lato_regular"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:textSize="@dimen/size_12_sp" />
+
+                            <LinearLayout
+                                android:id="@+id/llSendIcons"
+                                android:layout_alignParentRight="true"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/ivWhatsApp"
+                                    android:onClick="onWhatsAppClick"
+                                    android:layout_width="wrap_content"
+                                    android:visibility="gone"
+                                    android:layout_marginLeft="@dimen/size_5"
+                                    android:layout_marginRight="@dimen/size_5"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_whatsapp_icon"/>
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/ivMail"
+                                    android:onClick="onMailClick"
+                                    android:visibility="gone"
+                                    android:layout_marginLeft="@dimen/size_5"
+                                    android:layout_marginRight="@dimen/size_5"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_gmail_icon"/>
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
                     </LinearLayout>
                 </LinearLayout>
 
@@ -295,12 +330,30 @@
         <!--</androidx.cardview.widget.CardView>-->
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <com.aandssoftware.aandsinventory.ui.component.button.CustomButton
-        android:id="@+id/btnConfirm"
-        style="@style/custome_button_style"
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/llConfirmLayout"
         android:layout_alignParentBottom="true"
-        android:text="@string/confirm_order"
-        app:uiButtonType="PRIMARY" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/cbConfirmOrderWithMail"
+            android:text="@string/confirm_mail_check_box"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:checked="true"
+            android:layout_marginLeft="@dimen/size_10"
+            android:layout_height="wrap_content"/>
+
+        <com.aandssoftware.aandsinventory.ui.component.button.CustomButton
+            android:id="@+id/btnConfirm"
+            style="@style/custome_button_style"
+            android:layout_alignParentBottom="true"
+            android:text="@string/confirm_order"
+            app:uiButtonType="PRIMARY" />
+    </LinearLayout>
+
 
     <include
         android:id="@+id/fabLayout"

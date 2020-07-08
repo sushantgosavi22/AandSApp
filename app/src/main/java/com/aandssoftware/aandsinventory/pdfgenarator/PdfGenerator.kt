@@ -47,7 +47,8 @@ Content-Type: application/json
 class PdfGenerator(private val context: Context) {
 
     fun generateXlsxFile(model: OrderModel, isConsumerCopy : Boolean): String {
-        val outFileName = model.id+"invoice.xlsx"
+        var invoiceNum = model.invoiceNumber?.replace("/","_")?:model.id?:""
+        val outFileName = invoiceNum+"_invoice.xlsx"
         val mFolder = File(context.filesDir.absolutePath.plus("/AandS"))
         val outFile = File(mFolder.absolutePath + "/".plus(outFileName))
         if (!mFolder.exists()) {
@@ -443,8 +444,12 @@ class PdfGenerator(private val context: Context) {
         map["PAYMENT_RECEIVED"] = model.paymentReceived.toString()
         map["TOTAL_CREDIT_APPLIED"] = model.totalCreditApplied.toString()
         map["TOTAL_DEBIT_APPLIED"] = model.totalDebitApplied.toString()
+        map["PAYMENT_TERM"] = model.paymentTerm.toString()
         map["BALANCE_DUE"] = model.balanceDue.toString()
-        map["IMAGE"] = "Sushant Gosavi android"
+        map["ACC_NUMBER"] = model.accountNumber.toString()
+        map["BANK_NAME"] = model.bankName.toString()
+        map["IFSC_CODE"] = model.ifscCode.toString()
+        map["IMAGE"] = ""
         return map
     }
 

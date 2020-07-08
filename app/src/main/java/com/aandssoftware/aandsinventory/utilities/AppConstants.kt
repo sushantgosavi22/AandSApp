@@ -64,7 +64,7 @@ class AppConstants {
 
         const val ENQUIRY_NOTIFICATION_MASSAGE : String ="#CompanyName# Required #Quantity# #Unit# of #ProductName#"
         const val ENQUIRY_MAIL_SUBJECT : String ="Enquiry for the product "
-        const val ENQUIRY_MAIL_BODY : String = " \"#Date#\" \n" +
+        const val ENQUIRY_MAIL_BODY : String = " #Date# \n" +
                 "Mr. Nishant Gosavi\n" +
                 "A and S Distributors and suppliers\n" +
                 "A/p -Shindewadi , Tel- Bhor \n" +
@@ -72,16 +72,30 @@ class AppConstants {
                 " \n" +
                 "Dear Mr. Nishant\n" +
                 "     \n" +
-                "    I am from \"#CompanyName#\" at \"#Address#\" We are interested in purchasing \n" +
-                "The product \"#ProductName#\". Below are the information that you required\n" +
-                "Required Quantiy    = \"#Quantity#\"\n" +
-                "Quantiy  Unit       =  \"#Unit#\"\n" +
-                "Product Description =  \"#Description#\"\n" +
-                "Product ID          =  \"#ID#\"\n" +
+                "    I am from #CompanyName# at #Address#  We need below item \n" +
+                "Required Quantiy    =  #Quantity# \n" +
+                "Quantiy  Unit       =  #Unit# \n" +
+                "Product Description =  #Description# \n" +
+                "Product ID          =  #ID# \n" +
                 "\n" +
                 "\tPlease provide us details as soon as possible, waiting for your reply\n" +
                 "\t\n" +
                 "Thank you."
+        const val ORDER_CONFIRM_MAIL_SUBJECT : String ="Order Request from "
+        const val ORDER_CONFIRM_MAIL_BODY_UPPER : String =" #Date# \n" +
+                "Mr. Nishant Gosavi\n" +
+                "A and S Distributors and suppliers\n" +
+                "A/p -Shindewadi , Tel- Bhor \n" +
+                "pune 412205\n" +
+                " \n" +
+                "Dear Mr. Nishant\n" +
+                "     \n" +
+                "    I am #PERSON# from #CompanyName# at #Address#  We need below item \n"
+        const val ORDER_CONFIRM_MAIL_BODY_COLUMN : String = "Product    HSN   QTY   UNIT   Description \n\n"
+        const val ORDER_CONFIRM_MAIL_BODY_MIDDLE : String = "#I#) #NAME#    -#HSN#   -#QTY#   -#UNIT#  \n-#DESCRIPTION#\n\n"
+        const val ORDER_CONFIRM_MAIL_BODY_LOWER : String = "\n" +
+             "\t\n Please deliver this as early as possible\n" +
+             "Thank you."
 
 
 

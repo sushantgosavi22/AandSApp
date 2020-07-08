@@ -173,11 +173,12 @@ class LoginActivity : BaseActivity() {
                             performLogin()
                         }
                     } else {
-                        if ((BuildConfig.VERSION_CODE < appVersion.updatedVersionCode.toInt())) {
+                        performLogin()
+                        /*if ((BuildConfig.VERSION_CODE < appVersion.updatedVersionCode.toInt())) {
                             performForceUpdate()
                         } else {
                             performLogin()
-                        }
+                        }*/
                     }
                 }
                 dismissProgressBar()

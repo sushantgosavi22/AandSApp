@@ -14,6 +14,7 @@ import com.aandssoftware.aandsinventory.ui.activity.BaseActivity
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.multi_image_item.view.*
 import java.io.Serializable
+import java.util.*
 
 
 class MultiImageSelectionAdapter(val activity: BaseActivity, val listner: View.OnClickListener, val deleteListner: View.OnLongClickListener) : RecyclerView.Adapter<MultiImageSelectionAdapter.ViewHolder>() {

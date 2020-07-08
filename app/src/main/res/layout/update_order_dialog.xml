@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/llOrderDetails"
+                android:layout_above="@+id/btnOrderUpdate"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/bottomSheet"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/cardView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:clickable="true"
+                                    android:elevation="4dp"
+                                    android:foreground="?android:attr/selectableItemBackground"
+                                    android:padding="5dp">
+
+                                    <ScrollView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent">
+
+                                            <com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout
+                                                android:id="@+id/llContaintUpdateOrder"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:orientation="vertical">
+
+                                                <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+                                                    style="@style/custome_section_style"
+                                                    app:sectionHeader="@string/section_title_order_details">
+
+
+                                                    <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                        android:id="@+id/edtInvoiceNumber"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="wrap_content"
+                                                        android:hint="@string/invoice_number"
+                                                        android:inputType="text|textCapSentences"
+                                                        android:selectAllOnFocus="true"
+                                                        app:mandatory="false"
+                                                        app:maxLength="@integer/int_256"
+                                                        app:title="@string/invoice_number" />
+
+                                                    <LinearLayout
+                                                        android:orientation="horizontal"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent">
+
+                                                        <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                            android:id="@+id/edtDateOfInvoice"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="@integer/int_1"
+                                                            android:layout_alignParentBottom="true"
+                                                            android:hint="@string/enter_date"
+                                                            android:inputType="text|textEmailAddress"
+                                                            android:selectAllOnFocus="true"
+                                                            app:mandatory="false"
+                                                            app:maxLength="@integer/int_256"
+                                                            app:title="@string/date_of_invoice" />
+
+                                                        <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                            android:id="@+id/edtDueDate"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="@integer/int_1"
+                                                            android:layout_alignParentBottom="true"
+                                                            android:hint="@string/enter_date"
+                                                            android:inputType="text|textEmailAddress"
+                                                            android:selectAllOnFocus="true"
+                                                            app:mandatory="false"
+                                                            app:maxLength="@integer/int_256"
+                                                            app:title="@string/due_date" />
+
+                                                    </LinearLayout>
+
+
+                                                    <LinearLayout
+                                                        android:orientation="horizontal"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent">
+
+                                                        <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                            android:id="@+id/edtDiscount"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="@integer/int_1"
+                                                            android:layout_alignParentBottom="true"
+                                                            android:hint="@string/discount_on_order"
+                                                            android:inputType="numberDecimal"
+                                                            android:selectAllOnFocus="true"
+                                                            app:mandatory="false"
+                                                            app:maxLength="@integer/int_15"
+                                                            app:title="@string/discount_on_order" />
+
+                                                        <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                            android:id="@+id/edtCess"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="@integer/int_1"
+                                                            android:layout_alignParentBottom="true"
+                                                            android:hint="@string/cess"
+                                                            android:inputType="numberDecimal"
+                                                            android:selectAllOnFocus="true"
+                                                            app:mandatory="false"
+                                                            app:maxLength="@integer/int_15"
+                                                            app:title="@string/cess" />
+
+                                                        <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                            android:id="@+id/edtPaymentTerms"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="@integer/int_1"
+                                                            android:layout_alignParentBottom="true"
+                                                            android:hint="@string/payment_term_hint"
+                                                            android:inputType="numberDecimal"
+                                                            android:selectAllOnFocus="true"
+                                                            app:mandatory="false"
+                                                            app:maxLength="@integer/int_15"
+                                                            app:title="@string/payment_term" />
+
+                                                    </LinearLayout>
+
+                                                </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+                                                <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+                                                    style="@style/custome_section_style"
+                                                    app:sectionHeader="@string/section_title_order_amount_details">
+
+                                                    <LinearLayout
+                                                        android:orientation="horizontal"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent">
+
+                                                        <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                            android:id="@+id/edtTotalCreditApplied"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="@integer/int_1"
+                                                            android:hint="@string/total_credit_applied"
+                                                            android:inputType="numberDecimal"
+                                                            android:selectAllOnFocus="true"
+                                                            app:mandatory="false"
+                                                            app:maxLength="@integer/int_15"
+                                                            app:title="@string/total_credit_applied" />
+
+                                                        <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                            android:id="@+id/edtTotalDebitApplied"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="@integer/int_1"
+                                                            android:hint="@string/total_debit_applied"
+                                                            android:inputType="numberDecimal"
+                                                            android:selectAllOnFocus="true"
+                                                            app:mandatory="false"
+                                                            app:maxLength="@integer/int_15"
+                                                            app:title="@string/total_debit_applied" />
+                                                    </LinearLayout>
+
+                                                    <LinearLayout
+                                                        android:orientation="horizontal"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent">
+
+                                                        <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                            android:id="@+id/edtPaymentReceive"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="@integer/int_1"
+                                                            android:hint="@string/payment_receive"
+                                                            android:inputType="numberDecimal"
+                                                            android:selectAllOnFocus="true"
+                                                            app:mandatory="false"
+                                                            app:maxLength="@integer/int_15"
+                                                            app:title="@string/payment_receive" />
+
+                                                        <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                            android:id="@+id/edtBalanceDue"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_weight="@integer/int_1"
+                                                            android:hint="@string/balance_due"
+                                                            android:inputType="numberDecimal"
+                                                            android:selectAllOnFocus="true"
+                                                            app:mandatory="false"
+                                                            app:maxLength="@integer/int_15"
+                                                            app:title="@string/balance_due" />
+                                                    </LinearLayout>
+
+                                                </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+                                                <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+                                                    style="@style/custome_section_style"
+                                                    app:sectionHeader="@string/section_title_order_bank_details">
+
+                                                    <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                        android:id="@+id/edtBankName"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="wrap_content"
+                                                        android:hint="@string/bank_name"
+                                                        android:inputType="text|textEmailAddress"
+                                                        android:selectAllOnFocus="true"
+                                                        app:mandatory="false"
+                                                        app:maxLength="@integer/int_256"
+                                                        app:title="@string/bank_name" />
+
+
+                                                    <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                        android:id="@+id/edtAccountNumber"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="wrap_content"
+                                                        android:hint="@string/account_number"
+                                                        android:inputType="text|textEmailAddress"
+                                                        android:selectAllOnFocus="true"
+                                                        app:mandatory="false"
+                                                        app:maxLength="@integer/int_256"
+                                                        app:title="@string/account_number" />
+
+
+                                                    <com.aandssoftware.aandsinventory.ui.component.CustomEditText
+                                                        android:id="@+id/edtIfscCode"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="wrap_content"
+                                                        android:hint="@string/ifsc_code"
+                                                        android:inputType="text|textEmailAddress"
+                                                        android:selectAllOnFocus="true"
+                                                        app:mandatory="false"
+                                                        app:maxLength="@integer/int_256"
+                                                        app:title="@string/ifsc_code" />
+
+                                                </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+
+
+                                            </com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout>
+
+                                        </LinearLayout>
+                                    </ScrollView>
+
+
+                                </androidx.cardview.widget.CardView>
+                            </RelativeLayout>
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+                    </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
+
+            </LinearLayout>
+
+        <com.aandssoftware.aandsinventory.ui.component.button.CustomButton
+            android:id="@+id/btnOrderUpdate"
+            style="@style/custome_button_style"
+            android:layout_alignParentBottom="true"
+            android:text="@string/update"
+            app:uiButtonType="PRIMARY" />
+        </RelativeLayout>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

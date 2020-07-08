@@ -2,17 +2,13 @@ package com.aandssoftware.aandsinventory.ui.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
 import com.aandssoftware.aandsinventory.R
@@ -37,7 +33,6 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.custom_action_bar_layout.*
 import kotlinx.android.synthetic.main.fab_button_layout.*
-import kotlinx.android.synthetic.main.signature_dialog.view.*
 import kotlinx.android.synthetic.main.signature_view_layout.view.*
 import org.apache.poi.util.IOUtils
 import java.util.*
@@ -45,7 +40,7 @@ import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 
 
-class OrderDetailsActivity : ListingActivity() {
+class OrderDetailsActivity : ListingActivity() , UpdateOrderDialogFragment.OnOrderUpdateListener {
     private var orderModel: OrderModel? = null
     private var isOrderUpdated = false
     private var menuItemAdd: MenuItem? = null
@@ -63,8 +58,6 @@ class OrderDetailsActivity : ListingActivity() {
         }
         btnConfirm.setOnClickListener {
             orderModel?.let {
-                //we want updated order model thats why
-                //newly added or updated inventry should save
                 var model = (operations as OrderDetailsListAdapter).orderModel
                 validateAndConfirmOrder(model)
             }
@@ -147,7 +140,7 @@ class OrderDetailsActivity : ListingActivity() {
 
     private fun showNotificationForOrderConfirm(mItem: OrderModel) {
         var appVersion = SharedPrefsUtils.getAppVersionPreference(this, SharedPrefsUtils.APP_VERSION)
-        appVersion?.let {
+         appVersion?.let {
             showProgressBar()
             var customerId = appVersion.adminCustomerId ?: AppConstants.EMPTY_STRING
             FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(customerId,
@@ -168,6 +161,9 @@ class OrderDetailsActivity : ListingActivity() {
                                     map.put(NotificationUtil.NOTIFICATION_TYPE, NotificationUtil.NotificationType.ORDER_CONFIRM_INDICATE_TO_ADMIN.toString())
                                     showProgressBar()
                                     NotificationUtil.sendNotification(token, map, CallBackListener {
+                                        if(cbConfirmOrderWithMail.isChecked){
+                                            sendOrderMail(mItem)
+                                        }
                                         dismissProgressBar()
                                         reloadActivity()
                                     })
@@ -183,6 +179,42 @@ class OrderDetailsActivity : ListingActivity() {
                     })
         } ?: reloadActivity()
 
+    }
+
+    private fun sendOrderMail(mItem: OrderModel) {
+        var title = AppConstants.ORDER_CONFIRM_MAIL_SUBJECT.plus(mItem.customerModel?.customerName?:"")
+        Utils.sendMailToAdmin(this,title,getConfirmOrderBodyMessage(mItem))
+    }
+
+    private fun getConfirmOrderBodyMessage(mItem: OrderModel) : String{
+        var mailBody = StringBuilder()
+        var body  = AppConstants.ORDER_CONFIRM_MAIL_BODY_UPPER
+                .replace("#Date#",DateUtils.getDateFormatted(System.currentTimeMillis()))
+                .replace("#PERSON#",mItem.customerModel?.contactPerson?:"")
+                .replace("#CompanyName#",mItem.customerModel?.customerName?:"")
+                .replace("#Address#",mItem.customerModel?.address?:"")
+        mailBody.append(body).append("\n\n\n")
+        var mailItemsBody = StringBuilder()
+        mItem?.orderItems?.values?.forEachIndexed { index, inventoryItem ->
+            var row  = StringBuilder()
+            if(index==0){
+                row.append( AppConstants.ORDER_CONFIRM_MAIL_BODY_COLUMN)
+            }
+            var  rowItem =   AppConstants.ORDER_CONFIRM_MAIL_BODY_MIDDLE
+                    .replace("#I#",(index+1).toString())
+                    .replace("#NAME#",inventoryItem.inventoryItemName.toString())
+                    .replace("#HSN#",inventoryItem.hsnCode?:"")
+                    .replace("#QTY#",inventoryItem.itemQuantity?:"")
+                    .replace("#UNIT#",inventoryItem.itemQuantityUnit?:"")
+                    .replace("#DESCRIPTION#",inventoryItem.description.toString()?:"")
+
+            row.append(rowItem)
+            mailItemsBody.append(row.toString())
+        }
+        mailBody.append(mailItemsBody.toString())
+        mailBody.append("\n \n")
+        mailBody.append(AppConstants.ORDER_CONFIRM_MAIL_BODY_LOWER)
+        return mailBody.toString()
     }
 
     private fun reloadActivity() {
@@ -253,6 +285,17 @@ class OrderDetailsActivity : ListingActivity() {
                 tvInvoiceNumber.visibility = View.GONE
             }
 
+
+            orderModel.orderStatus?.let {
+                var status = OrderStatus.valueOf(it)
+                if(status == OrderStatus.CREATED && orderModel.orderItems.isNotEmpty() ){
+                    cbConfirmOrderWithMail.visibility = View.VISIBLE
+                }
+                if( (status== OrderStatus.CREATED ||status== OrderStatus.CONFIRM||status== OrderStatus.PENDING )&& orderModel.orderItems.isNotEmpty() ){
+                    ivWhatsApp.visibility = View.VISIBLE
+                    ivMail.visibility = View.VISIBLE
+                }
+            }
 
         }
         checkAndDisableOrder(menuItemAdd,menuItemSave)
@@ -400,6 +443,53 @@ class OrderDetailsActivity : ListingActivity() {
         val alertDialog = alertDialogBuilderUserInput.create()
         alertDialog.setCancelable(false)
         alertDialog.show()
+    }
+
+    override fun onOrderUpdate(orderModel: OrderModel) {
+        if(FirebaseUtil.getInstance().isInternetConnected(this@OrderDetailsActivity)){
+            FirebaseUtil.getInstance().getCustomerDao().updateOrder(orderModel, CallBackListener {
+                if(it){
+                    init()
+                }
+            })
+        }else{
+          showSnackBarMessage(getString(R.string.no_internet_connection))
+        }
+    }
+
+    fun showUpdateDailog() {
+        orderModel?.let {
+            UpdateOrderDialogFragment(it,this).show(supportFragmentManager,"");
+        }
+    }
+
+    fun onWhatsAppClick(view: View) {
+        orderModel?.let {orderModel ->
+            var appVersion = SharedPrefsUtils.getAppVersionPreference(this@OrderDetailsActivity, SharedPrefsUtils.APP_VERSION)
+            appVersion?.let {
+                var customerId = appVersion.adminCustomerId ?: AppConstants.EMPTY_STRING
+                showProgressBar()
+                FirebaseUtil.getInstance().getCustomerDao().getCustomerFromID(customerId,
+                        object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                dismissProgressBar()
+                                var model = FirebaseUtil.getInstance().getClassData(dataSnapshot, CustomerModel::class.java)
+                                model?.contactPersonNumber?.let {number->
+                                    Utils.sendWhatsAppMessage(this@OrderDetailsActivity, number,getConfirmOrderBodyMessage(orderModel))
+                                }
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                dismissProgressBar()
+                            }
+                        })
+            }
+        }
+    }
+
+    fun onMailClick(view: View) {
+        orderModel?.let {
+            sendOrderMail(it)
+        }
     }
 
 }

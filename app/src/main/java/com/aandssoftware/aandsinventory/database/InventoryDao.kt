@@ -1,6 +1,5 @@
 package com.aandssoftware.aandsinventory.database
 
-import androidx.annotation.NonNull
 import com.aandssoftware.aandsinventory.application.AandSApplication
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
@@ -8,16 +7,12 @@ import com.aandssoftware.aandsinventory.listing.ListType
 import com.aandssoftware.aandsinventory.models.CallBackListener
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.InventoryItemHistory
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import java.util.*
-import java.nio.file.Files.delete
-import com.google.firebase.storage.StorageReference
-
-
-
 
 
 class InventoryDao {

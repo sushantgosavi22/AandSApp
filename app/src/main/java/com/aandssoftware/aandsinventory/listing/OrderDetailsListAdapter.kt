@@ -168,6 +168,10 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             val menuItemAdd = menu.findItem(R.id.actionAdd).setVisible(true)
             var actionSave = menu.findItem(R.id.actionSave)
+            var actionEdit = menu.findItem(R.id.actionEdit)
+            if(Utils.isAdminUser(activity)){
+                actionEdit.isVisible = true
+            }
             (activity as OrderDetailsActivity).checkAndDisableOrder(menuItemAdd,actionSave)
         }
         return true
@@ -185,6 +189,10 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
             }
             R.id.actionSave -> {
                 saveInvoice()
+                return true
+            }
+            R.id.actionEdit -> {
+                (activity as OrderDetailsActivity).showUpdateDailog()
                 return true
             }
         }

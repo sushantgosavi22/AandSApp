@@ -14,4 +14,11 @@
     android:icon="@drawable/add_icon_white"
     android:title="@string/add"
     app:showAsAction="always" />
+
+  <item
+      android:id="@+id/actionEdit"
+      android:icon="@drawable/ic_edit"
+      android:visible="false"
+      android:title="@string/save"
+      app:showAsAction="always" />
 </menu>

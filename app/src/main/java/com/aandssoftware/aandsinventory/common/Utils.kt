@@ -4,14 +4,19 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Patterns
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.aandssoftware.aandsinventory.BuildConfig
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
@@ -31,6 +36,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import java.math.BigDecimal
+import java.net.URLEncoder
 import java.text.NumberFormat
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -338,6 +344,21 @@ class Utils {
             }
             return drawable
         }
+
+        fun sendWhatsAppMessage(context: Context ,number : String,message: String) {
+           try {
+               var url = "https://api.whatsapp.com/send?phone="+"+91 "+ number +"&text=" + URLEncoder.encode(message, "UTF-8");
+               val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+               intent.setPackage("com.whatsapp");
+               intent.data = Uri.parse(url);
+               if(intent.resolveActivity(context.packageManager)!=null){
+                   context.startActivity(intent)
+               }
+           } catch (e: PackageManager.NameNotFoundException) {
+               Toast.makeText(context, "WhatsApp not Installed", Toast.LENGTH_SHORT).show()
+           }
+        }
+
     }
 
 }

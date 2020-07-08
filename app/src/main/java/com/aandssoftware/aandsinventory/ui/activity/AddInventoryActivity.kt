@@ -24,6 +24,7 @@ import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdList
 import com.aandssoftware.aandsinventory.listing.ListType
 import com.aandssoftware.aandsinventory.models.*
 import com.aandssoftware.aandsinventory.notification.NotificationUtil
+import com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
 import com.aandssoftware.aandsinventory.ui.adapters.MultiImageSelectionAdapter
 import com.aandssoftware.aandsinventory.ui.component.ContaintValidationLinerLayout
 import com.aandssoftware.aandsinventory.ui.component.CustomEditText
@@ -177,6 +178,32 @@ class AddInventoryActivity : BaseActivity() {
             edtSgstPercent.setText(DEFAULT_GST_STRING)
             slShopDetails.visibility = View.GONE
             llQuantityAndUnit.visibility = View.VISIBLE
+        }
+
+        if(Utils.isAdminUser(this)){
+            if (inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal && viewMode==ViewMode.VIEW_ONLY.ordinal) {
+                supportActionBar?.customView?.findViewById<CustomFontTextView>(R.id.actionBarTitle)?.setOnLongClickListener {
+                    inventory?.let {
+                        var duplicateCopy = InventoryItem(it)
+                        duplicateCopy.id =""
+                        showProgressBar()
+                        FirebaseUtil.getInstance().getInventoryDao().getNextInventoryItemId(object : GetAlphaNumericAndNumericIdListener {
+                            override fun afterGettingIds(alphaNumericId: String, numericId: String) {
+                                duplicateCopy.id = alphaNumericId
+                                duplicateCopy.inventoryId = numericId
+                                dismissProgressBar()
+                                showProgressBar()
+                                FirebaseUtil.getInstance().getInventoryDao().saveInventoryItem(duplicateCopy, inventoryType, CallBackListener {
+                                    dismissProgressBar()
+                                    showSnackBarMessage(getString(R.string.duplicate_inventory_msg))
+                                    finish()
+                                })
+                            }
+                        })
+                    }
+                    false
+                }
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.aandssoftware.aandsinventory.listing
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.database.Observable
 import android.graphics.drawable.Drawable
 import android.view.*
 import android.widget.ImageView
@@ -33,6 +34,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.order_item.view.*
 import java.io.Serializable
 
@@ -161,8 +165,20 @@ class CompanyOrderListAdapter(private val activity: ListingActivity) : ListingOp
                         .getListData(dataSnapshot, OrderModel::class.java)
                 var finalOrderList : List<OrderModel>
                 if (list.isNotEmpty()) {
-                    finalOrderList = list.sortedWith(compareBy(OrderModel::orderDateUpdated)).reversed()
-                    activity.loadData(ArrayList(finalOrderList))
+                    io.reactivex.Observable.fromArray(list)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .flatMap {
+                                it.sortBy { it.orderDateUpdated }
+                                io.reactivex.Observable.just(it)
+                            }.map {
+                                it.reversed()
+                            }.subscribe {
+                                activity.loadData(ArrayList(it))
+                            }
+
+                    //finalOrderList = list.sortedWith(compareBy(OrderModel::orderDateUpdated)).reversed()
+
                 }else{
                     finalOrderList  = ArrayList<OrderModel>()
                     activity.loadData(ArrayList(finalOrderList))

@@ -130,7 +130,7 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
         id?.let {
             Navigator.openInventoryScreen(activity, it,
                     ViewMode.VIEW_ONLY.ordinal, inventoryType,
-                    title, orderId!!, pos)
+                    title, orderId!!, pos,null)
         }
     }
 

@@ -11,7 +11,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AlertDialog
-import com.aandssoftware.aandsinventory.BuildConfig
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
@@ -28,10 +27,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
 import com.aandssoftware.aandsinventory.common.Utils
+import com.aandssoftware.aandsinventory.common.hideKeyboard
 import com.aandssoftware.aandsinventory.pdfgenarator.PdfHandler
 import com.aandssoftware.aandsinventory.utilities.CrashlaticsUtil
-import com.google.firebase.database.DatabaseReference
-import com.google.gson.Gson
 
 class LoginActivity : BaseActivity() {
 
@@ -44,6 +42,10 @@ class LoginActivity : BaseActivity() {
 
     private fun setUpUI() {
         btnLogin.setOnClickListener {
+            currentFocus?.let {
+                hideKeyboard(it)
+            }
+
              if (validate()) {
                  checkVersionAndLogin()
              }
@@ -221,7 +223,12 @@ class LoginActivity : BaseActivity() {
                 .setCancelable(false)
                 .setPositiveButton(context.getString(R.string.yes)) { _, _ -> }
                 .setNegativeButton(context.getString(R.string.no))
-                { dialogBox, _ -> dialogBox.cancel() }
+                { dialogBox, _ ->
+                    currentFocus?.let {
+                        hideKeyboard(it)
+                    }
+                    dialogBox.cancel()
+                }
 
         val alertDialog = alertDialogBuilderUserInput.create()
         alertDialog.setCancelable(false)
@@ -235,8 +242,15 @@ class LoginActivity : BaseActivity() {
                         var numericcCustomerId = model.customerID ?: AppConstants.EMPTY_STRING
                         if (mail.trim().equals(edtEmail.getText().trim(), false) &&
                                 number.trim().equals(edtMobileNumber.getText().trim(), false)) {
+                            currentFocus?.let {
+                                hideKeyboard(it)
+                            }
+                            alertDialog.dismiss()
                             Navigator.openCustomerScreen(LoginActivity@ this, customerId, numericcCustomerId, ViewMode.PASSWORD_UPDATE.ordinal, getString(R.string.forgot_password),false)
                         } else {
+                            currentFocus?.let {
+                                hideKeyboard(it)
+                            }
                             showSnackBarMessage(getString(R.string.email_and_number_not_match))
                         }
                     }

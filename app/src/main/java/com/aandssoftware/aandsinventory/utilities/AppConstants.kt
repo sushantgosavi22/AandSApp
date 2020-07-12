@@ -36,9 +36,11 @@ class AppConstants {
         const val POSITION_IN_LIST: String = "positionInList"
         const val LISTING_TYPE: String = "listingType"
         const val INVENTORY_ID: String = "inventoryId"
+        const val CUSTOMER_ID: String = "customerId"
         const val INVENTORY_INSTANCE: String = "inventoryInstance"
         const val UPDATED: String = "updated"
         const val ORDER_ID: String = "orderId"
+        const val SHOW_INVENTORY_OF_CUSTOMER_TO_ADMIN: String = "showInvOfCustToAdmin"
         const val ORDER_INSTANCE: String = "orderInstance"
         const val FIRE_BASE_CUSTOMER_ID: String = "fireBaseCustomerId"
         const val NUMERIC_CUSTOMER_ID: String = "NumericCustomerId"
@@ -48,6 +50,7 @@ class AppConstants {
         const val DISCOUNTED_AMOUNT: String = "discountedAmount"
         const val CREATE_ORDER: String = "createOrder"
         const val CUSTOMER_EDIT_PROFILE_IS_ON: String = "customerEditProfile"
+        var CUSTOMER_ID_FOR_INVENTORY_LIST_CHANGES : String = ""
         /*Intent Data Passing */
 
         /*Start Activity For Result ID */

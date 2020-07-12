@@ -1,6 +1,7 @@
 package com.aandssoftware.aandsinventory.database
 
 import com.aandssoftware.aandsinventory.application.AandSApplication
+import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
 import com.aandssoftware.aandsinventory.firebase.GetAlphaNumericAndNumericIdListener
 import com.aandssoftware.aandsinventory.listing.ListType
@@ -42,7 +43,7 @@ class InventoryDao {
             val reference = AandSApplication.getDatabaseInstance()
                     .getReference(InventoryItem.TABLE_INVENTORY_ITEM)
             reference.keepSynced(true)
-            return reference
+            return reference.child(Utils.getCustomerIdForCustomerInventory(AandSApplication.instanceApp))
         }
 
     private val inventoryItemCounterTableReference: DatabaseReference
@@ -104,11 +105,21 @@ class InventoryDao {
         query.addListenerForSingleValueEvent(valueEventListener)
     }
 
-    fun getNextInventoryItemId(listener: GetAlphaNumericAndNumericIdListener) {
-        inventoryItemCounterTableReference.addListenerForSingleValueEvent(object : ValueEventListener {
+    fun getNextInventoryItemId(inventoryType: Int,listener: GetAlphaNumericAndNumericIdListener) {
+        var counterRef = if (inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal)
+            materialInventoryItemCounterTableReference
+        else
+            inventoryItemCounterTableReference
+
+        var tableRef = if (inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal)
+            materialInventoryItemTableReference
+        else
+            inventoryItemTableReference
+
+        counterRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 var numericId = FirebaseUtil.getInstance().incrementCounter(dataSnapshot)
-                var alphaNumericId = inventoryItemTableReference.push().key
+                var alphaNumericId = tableRef.push().key
                 alphaNumericId = alphaNumericId?.let { alphaNumericId } ?: numericId
                 listener.afterGettingIds(alphaNumericId, numericId)
             }

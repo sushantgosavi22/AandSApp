@@ -13,6 +13,7 @@ import android.util.Base64
 import android.util.Patterns
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -166,6 +167,17 @@ class Utils {
             val user = SharedPrefsUtils.getUserPreference(context, SharedPrefsUtils.CURRENT_USER)
             user?.id?.let {
                 customerId = it
+            }
+            return customerId
+        }
+
+        @JvmStatic
+        fun getCustomerIdForCustomerInventory(context: Context): String {
+            var customerId: String = AppConstants.CUSTOMER_ID_FOR_INVENTORY_LIST_CHANGES
+            if(customerId.isEmpty()){
+                customerId = getLoginCustomerId(context)
+            }else{
+                AppConstants.CUSTOMER_ID_FOR_INVENTORY_LIST_CHANGES  = ""
             }
             return customerId
         }
@@ -361,7 +373,12 @@ class Utils {
 
     }
 
+
 }
 
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
 
 

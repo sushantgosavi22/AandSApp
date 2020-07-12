@@ -3,12 +3,10 @@ package com.aandssoftware.aandsinventory.listing
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -21,7 +19,6 @@ import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
-import com.aandssoftware.aandsinventory.models.InventoryCreatedBy
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.ViewMode
 import com.aandssoftware.aandsinventory.ui.activity.CompanyOrderListActivity
@@ -43,15 +40,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.flatMapIterable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.inventory_item.view.*
 import java.io.Serializable
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class InventoryListAdapter(private val activity: ListingActivity) : ListingOperations {
@@ -76,6 +69,11 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
         }
 
     internal var lastNodeKey: Double = 0.0
+
+   /* private val showInvOfCustToAdmin: Boolean
+        get() {
+            return activity.intent.getBooleanExtra(AppConstants.SHOW_INVENTORY_OF_CUSTOMER_TO_ADMIN, false)
+        }*/
 
     private val isAdminUser: Boolean
         get() {
@@ -121,9 +119,15 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                 false
             }
 
-            if (Utils.isAdminUser(activity)) {
+            if(inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal){
+                if (Utils.isAdminUser(activity)) {
+                    llButtons.visibility = View.VISIBLE
+                }
+            }else{
                 llButtons.visibility = View.VISIBLE
+                imgInventoryItemHistory.visibility = View.GONE
             }
+
         }
     }
 
@@ -362,10 +366,14 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                 return true
             }
             R.id.actionAdd -> {
-                if (Utils.isAdminUser(activity)) {
+                if(inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal){
+                    if (Utils.isAdminUser(activity)) {
+                        showAddInventoryItemScreen(EMPTY_STRING, ViewMode.ADD.ordinal, AppConstants.INVALID_ID)
+                    } else {
+                        showAddInventoryItemScreen(EMPTY_STRING, ViewMode.ADD_INVENTORY_BY_CUSTOMER.ordinal, AppConstants.INVALID_ID)
+                    }
+                }else{
                     showAddInventoryItemScreen(EMPTY_STRING, ViewMode.ADD.ordinal, AppConstants.INVALID_ID)
-                } else {
-                    showAddInventoryItemScreen(EMPTY_STRING, ViewMode.ADD_INVENTORY_BY_CUSTOMER.ordinal, AppConstants.INVALID_ID)
                 }
                 return true
             }
@@ -378,13 +386,13 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
     }
 
     private fun showAddInventoryItemScreen(id: String?, viewMode: Int, pos: Int) {
-        Navigator.openInventoryScreen(activity, id!!, viewMode, inventoryType, title, pos)
+        Navigator.openInventoryScreen(activity, id!!, viewMode, inventoryType, title, pos,activity.intent.extras)
     }
 
     private fun addOrderQuantity(inventoryItem: InventoryItem, pos: Int) {
         Navigator.openInventoryScreen(activity, inventoryItem.id!!,
                 ViewMode.GET_INVENTORY_QUANTITY.ordinal, inventoryType,
-                activity.getString(R.string.add_order_inventory_title), orderId!!, pos)
+                activity.getString(R.string.add_order_inventory_title), orderId!!, pos,null)
     }
 
 

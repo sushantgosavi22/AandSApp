@@ -16,7 +16,7 @@ open class InventoryItem : Serializable {
         const val TABLE_INVENTORY_ITEM = "inventoryItem"
         const val TABLE_MATERIAL_INVENTORY_ITEM = "materialInventoryItem"
         const val INVENTORY_ITEM_COUNTER = "inventoryItemCounter"
-        const val MATERIAL_INVENTORY_ITEM_COUNTER = "MaterialInventoryItemCounter"
+        const val MATERIAL_INVENTORY_ITEM_COUNTER = "materialInventoryItemCounter"
         const val ORDER_BY_VALUE = "inventoryItemLastUpdatedDate"
         const val ORDER_BY_VALUE_NAME = "inventoryItemName"
 

@@ -70,8 +70,14 @@ class AddInventoryActivity : BaseActivity() {
     lateinit var title: String
     private var inventoryType: Int = 0
     private lateinit var inventoryId: String
+    private var customerId : String = ""
     private lateinit var orderId: String
     private var viewMode: Int = 0
+
+    private val showInvOfCustToAdmin: Boolean
+        get() {
+            return intent.getBooleanExtra(AppConstants.SHOW_INVENTORY_OF_CUSTOMER_TO_ADMIN, false)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +91,7 @@ class AddInventoryActivity : BaseActivity() {
         inventoryType = intent.getIntExtra(LISTING_TYPE, ListType.LIST_TYPE_MATERIAL.ordinal)
         inventoryId = intent.getStringExtra(INVENTORY_ID)
         orderId = intent.getStringExtra(ORDER_ID)
+        customerId = intent?.getStringExtra(AppConstants.CUSTOMER_ID)?:""
         viewMode = intent.getIntExtra(VIEW_MODE, ViewMode.ADD.ordinal)
         checkUserAndHideData()
         if (inventoryId != null && inventoryId.isNotEmpty()) {
@@ -108,19 +115,29 @@ class AddInventoryActivity : BaseActivity() {
             } else if (inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal) {
                 FirebaseUtil.getInstance().getInventoryDao().getMaterialInventoryItemFromId(inventoryId, listener)
             } else if (inventoryType == ListType.LIST_TYPE_INVENTORY.ordinal) {
-                FirebaseUtil.getInstance().getInventoryDao().getInventoryItemFromId(inventoryId, listener)
+                if(showInvOfCustToAdmin){
+                    AppConstants.CUSTOMER_ID_FOR_INVENTORY_LIST_CHANGES = customerId
+                    FirebaseUtil.getInstance().getInventoryDao().getInventoryItemFromId(inventoryId, listener)
+                }else{
+                    FirebaseUtil.getInstance().getInventoryDao().getInventoryItemFromId(inventoryId, listener)
+                }
             }
         }
     }
 
     private fun checkUserAndHideData() {
-        if (!Utils.isAdminUser(this)) {
-            llQuantityAndUnit.visibility = View.GONE
+        if(inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal){
+            if (!Utils.isAdminUser(this)) {
+                llQuantityAndUnit.visibility = View.GONE
+                edtSellingPrice.visibility = View.GONE
+                edtPurchasePrice.visibility = View.GONE
+                slShopDetails.visibility = View.GONE
+                edtCgstAmount.visibility = View.GONE
+                edtSgstAmount.visibility = View.GONE
+            }
+        }else{
+            edtSellingPrice.setText("0.000")
             edtSellingPrice.visibility = View.GONE
-            edtPurchasePrice.visibility = View.GONE
-            slShopDetails.visibility = View.GONE
-            edtCgstAmount.visibility = View.GONE
-            edtSgstAmount.visibility = View.GONE
         }
     }
 
@@ -128,8 +145,9 @@ class AddInventoryActivity : BaseActivity() {
     private fun setUpUI() {
         setupActionBar(title)
         val watcher = CustomTextWatcher(edtQuantity, edtPurchasePrice, edtUnitPrice)
-        val cGstWatcher = CustomGstWatcher(edtCgstPercent, edtSellingPrice, edtCgstAmount, edtUnitPrice)
-        val sGstWatcher = CustomGstWatcher(edtSgstPercent, edtSellingPrice, edtSgstAmount, edtUnitPrice)
+        var edtTextToCalculate = if(inventoryType==ListType.LIST_TYPE_MATERIAL.ordinal){edtSellingPrice}else{edtPurchasePrice}
+        val cGstWatcher = CustomGstWatcher(edtCgstPercent, edtTextToCalculate, edtCgstAmount, edtUnitPrice)
+        val sGstWatcher = CustomGstWatcher(edtSgstPercent, edtTextToCalculate, edtSgstAmount, edtUnitPrice)
         edtCgstPercent.addTextChangedListener(cGstWatcher)
         edtSgstPercent.addTextChangedListener(sGstWatcher)
         edtPurchasePrice.addTextChangedListener(watcher)
@@ -168,6 +186,12 @@ class AddInventoryActivity : BaseActivity() {
             }
         }
 
+        if(inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal){
+            edtSellingPrice.addTextChangedListener(ClearGstWatcher(edtCgstPercent,edtCgstAmount,edtSgstPercent,edtSgstAmount))
+        }else{
+            edtPurchasePrice.addTextChangedListener(ClearGstWatcher(edtCgstPercent,edtCgstAmount,edtSgstPercent,edtSgstAmount))
+        }
+
         if (viewMode == ViewMode.ADD_INVENTORY_BY_CUSTOMER.ordinal) {
             slPrice.visibility = View.GONE
             edtPurchasePrice.setText(AppConstants.ZERO_STRING)
@@ -181,13 +205,13 @@ class AddInventoryActivity : BaseActivity() {
         }
 
         if(Utils.isAdminUser(this)){
-            if (inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal && viewMode==ViewMode.VIEW_ONLY.ordinal) {
+            if (viewMode==ViewMode.VIEW_ONLY.ordinal) {
                 supportActionBar?.customView?.findViewById<CustomFontTextView>(R.id.actionBarTitle)?.setOnLongClickListener {
                     inventory?.let {
                         var duplicateCopy = InventoryItem(it)
                         duplicateCopy.id =""
                         showProgressBar()
-                        FirebaseUtil.getInstance().getInventoryDao().getNextInventoryItemId(object : GetAlphaNumericAndNumericIdListener {
+                        FirebaseUtil.getInstance().getInventoryDao().getNextInventoryItemId(inventoryType,object : GetAlphaNumericAndNumericIdListener {
                             override fun afterGettingIds(alphaNumericId: String, numericId: String) {
                                 duplicateCopy.id = alphaNumericId
                                 duplicateCopy.inventoryId = numericId
@@ -320,24 +344,33 @@ class AddInventoryActivity : BaseActivity() {
                     }
                 }
 
-                if (!Utils.isAdminUser(this)) {
-                    val unit = it.itemQuantityUnit
-                    var sellingPriceAfterDiscount = Utils.getSellingPriceAfterDiscount(this, it)
-                    var custSellingPrice = Utils.currencyLocale(sellingPriceAfterDiscount)
-                    custSellingPrice = custSellingPrice.plus(" /  ").plus(unit)
-                    edtUnitPrice.setText(custSellingPrice)
+                if(inventoryType == ListType.LIST_TYPE_MATERIAL.ordinal){
+                    if (!Utils.isAdminUser(this)) {
+                        val unit = it.itemQuantityUnit
+                        var sellingPriceAfterDiscount = Utils.getSellingPriceAfterDiscount(this, it)
+                        var custSellingPrice = Utils.currencyLocale(sellingPriceAfterDiscount)
+                        custSellingPrice = custSellingPrice.plus(" /  ").plus(unit)
+                        edtUnitPrice.setText(custSellingPrice)
 
-                    rlNoPriceInventory.visibility  =  if(sellingPriceAfterDiscount==AppConstants.DOUBLE_DEFAULT_ZERO){
-                        View.VISIBLE
-                    }else{
-                        View.GONE
-                    }
-                    btnEnquiry.setOnClickListener {
-                        inventory?.let {
-                            enquiryDialog(AddInventoryActivity@this,it)
+                        rlNoPriceInventory.visibility  =  if(sellingPriceAfterDiscount==AppConstants.DOUBLE_DEFAULT_ZERO){
+                            View.VISIBLE
+                        }else{
+                            View.GONE
                         }
-
+                        btnEnquiry.setOnClickListener {
+                            inventory?.let {
+                                enquiryDialog(AddInventoryActivity@this,it)
+                            }
+                        }
                     }
+                }else{
+                    val unit = it.itemQuantityUnit
+                    var purchasePrice = Utils.isEmpty(it.itemPurchasePrice, DOUBLE_DEFAULT_ZERO)
+                    var itemQuantity = Utils.isEmpty(it.itemQuantity, DOUBLE_DEFAULT_ZERO)
+                    var unitPrice=  purchasePrice / itemQuantity
+                    var custPurchasePriceWihUnit = Utils.currencyLocale(unitPrice) .plus(" /  ").plus(unit)
+                    edtUnitPrice.setText(custPurchasePriceWihUnit)
+                    rlNoPriceInventory.visibility  = View.GONE
                 }
                 setViewByModeAfterSetValue()
             }
@@ -443,7 +476,7 @@ class AddInventoryActivity : BaseActivity() {
                     actionOnSaveAndUpdate(inventoryId, inventory?.inventoryId)
                 } else {
                     showProgressBar()
-                    FirebaseUtil.getInstance().getInventoryDao().getNextInventoryItemId(object : GetAlphaNumericAndNumericIdListener {
+                    FirebaseUtil.getInstance().getInventoryDao().getNextInventoryItemId(inventoryType,object : GetAlphaNumericAndNumericIdListener {
                         override fun afterGettingIds(alphaNumericId: String, numericId: String) {
                             dismissProgressBar()
                             actionOnSaveAndUpdate(alphaNumericId, numericId)
@@ -511,13 +544,13 @@ class AddInventoryActivity : BaseActivity() {
         if (viewMode == ViewMode.UPDATE.ordinal) {
             if (inventoryType != ListType.LIST_TYPE_MATERIAL.ordinal) {
                 inventory?.let {
-                    val map = item.getChangedParamList(it)
+                   /* val map = item.getChangedParamList(it)
                     if (map.isNotEmpty()) {
                         showProgressBar()
                         FirebaseUtil.getInstance().getInventoryDao().saveInventoryItemHistory(alphaNumericItemId, map, DatabaseReference.CompletionListener { databaseError, databaseReference ->
                             dismissProgressBar()
                         })
-                    }
+                    }*/
                 }
             }
         }
@@ -665,6 +698,24 @@ class AddInventoryActivity : BaseActivity() {
                 } else {
                     edtUnitPrice.setText("")
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private class ClearGstWatcher(private var edtCgstPercent: CustomEditText,
+                                 private var edtCgstAmount: CustomEditText,
+                                 private var edtSgstPercent: CustomEditText,
+                                 private var edtSgstAmount: CustomEditText) : TextWatcher {
+        override fun afterTextChanged(p0: Editable?) {}
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            try {
+                edtCgstPercent.setText("")
+                edtCgstAmount.setText("")
+                edtSgstPercent.setText("")
+                edtSgstAmount.setText("")
             } catch (e: Exception) {
                 e.printStackTrace()
             }

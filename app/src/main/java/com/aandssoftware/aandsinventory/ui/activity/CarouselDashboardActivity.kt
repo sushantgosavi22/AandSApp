@@ -173,6 +173,6 @@ class CarouselDashboardActivity : BaseActivity() {
     private fun sendToInventoryDetailPage(bundle: Bundle?) {
         var inventoryId = bundle?.get(NotificationUtil.INVENTORY_ID).toString()
         var customerId = bundle?.get(NotificationUtil.CUSTOMER_ID).toString()
-        Navigator.openInventoryScreen(this,inventoryId, ViewMode.UPDATE.ordinal, ListType.LIST_TYPE_MATERIAL.ordinal, getString(R.string.inventory_details), 0)
+        Navigator.openInventoryScreen(this,inventoryId, ViewMode.UPDATE.ordinal, ListType.LIST_TYPE_MATERIAL.ordinal, getString(R.string.inventory_details), 0,null)
     }
 }

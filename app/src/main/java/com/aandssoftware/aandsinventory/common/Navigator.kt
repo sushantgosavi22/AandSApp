@@ -2,6 +2,7 @@ package com.aandssoftware.aandsinventory.common
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.aandssoftware.aandsinventory.listing.ListType
 import com.aandssoftware.aandsinventory.ui.activity.*
@@ -15,12 +16,12 @@ class Navigator {
     companion object {
 
         @JvmStatic
-        fun openInventoryScreen(activity: AppCompatActivity, id: String, viewMode: Int, listingType: Int, title: String, posInList: Int) {
-            openInventoryScreen(activity, id, viewMode, listingType, title, EMPTY_STRING, posInList)
+        fun openInventoryScreen(activity: AppCompatActivity, id: String, viewMode: Int, listingType: Int, title: String, posInList: Int,bundle: Bundle?) {
+            openInventoryScreen(activity, id, viewMode, listingType, title, EMPTY_STRING, posInList,bundle)
         }
 
         @JvmStatic
-        fun openInventoryScreen(activity: AppCompatActivity, id: String, viewMode: Int, listingType: Int, title: String, orderId: String, posInList: Int) {
+        fun openInventoryScreen(activity: AppCompatActivity, id: String, viewMode: Int, listingType: Int, title: String, orderId: String, posInList: Int,bundle: Bundle?) {
             val intent = Intent(activity, AddInventoryActivity::class.java)
             intent.putExtra(AppConstants.LISTING_TYPE, listingType)
             intent.putExtra(AppConstants.INVENTORY_ID, id)
@@ -28,6 +29,9 @@ class Navigator {
             intent.putExtra(AppConstants.VIEW_MODE, viewMode)
             intent.putExtra(AppConstants.TITLE, title)
             intent.putExtra(AppConstants.POSITION_IN_LIST, posInList)
+            bundle?.let {
+                intent.putExtras(it)
+            }
             activity.startActivityForResult(intent, AppConstants.GET_INVENTORY_UPDATE_REQUEST_CODE)
         }
 

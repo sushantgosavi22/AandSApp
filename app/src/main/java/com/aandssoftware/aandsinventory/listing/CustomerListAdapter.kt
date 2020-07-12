@@ -1,5 +1,6 @@
 package com.aandssoftware.aandsinventory.listing
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -45,6 +46,7 @@ class CustomerListAdapter(private val activity: ListingActivity) : ListingOperat
 
     inner class CustomerViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
+        var imgCustomerInventory: ImageView = itemView.imgCustomerInventory
         var imgCustomerItemEdit: ImageView = itemView.imgCustomerItemEdit
         var imgCustomerItemDelete: ImageView = itemView.imgCustomerItemDelete
         var imgCustomerItemLogo: ImageView = itemView.imgCustomerItemLogo
@@ -54,6 +56,11 @@ class CustomerListAdapter(private val activity: ListingActivity) : ListingOperat
         var cardView: CardView = itemView.cardView
 
         init {
+            imgCustomerInventory.setOnClickListener {
+                var model = (itemView.tag as CustomerModel)
+                AppConstants.CUSTOMER_ID_FOR_INVENTORY_LIST_CHANGES = model.id?:""
+                showListing(activity,ListType.LIST_TYPE_INVENTORY, model.id?:"")
+            }
             imgCustomerItemDelete.setOnClickListener {
                 var pos: Int = itemView.getTag(R.string.tag) as Int
                 deleteCustomer(itemView.tag as CustomerModel, itemView.context, pos)
@@ -216,4 +223,11 @@ class CustomerListAdapter(private val activity: ListingActivity) : ListingOperat
         }
     }
 
+    private fun showListing(activity: Activity, type: ListType, customerId: String) {
+        val intent = Intent(activity, ListingActivity::class.java)
+        intent.putExtra(AppConstants.LISTING_TYPE, type.ordinal)
+        intent.putExtra(AppConstants.CUSTOMER_ID, customerId)
+        intent.putExtra(AppConstants.SHOW_INVENTORY_OF_CUSTOMER_TO_ADMIN, true)
+        activity.startActivityForResult(intent, AppConstants.LISTING_REQUEST_CODE)
+    }
 }

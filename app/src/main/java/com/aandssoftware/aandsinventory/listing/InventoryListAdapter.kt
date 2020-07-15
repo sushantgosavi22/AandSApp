@@ -267,6 +267,8 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                                 }
                                 activity.reloadNewData(list)
                                 activity.isLoading = shouldLoadMore.not()
+                            }else{
+                                activity.reloadNewData(ArrayList<InventoryItem>())
                             }
                             activity.dismissProgressBar()
                         }
@@ -295,6 +297,8 @@ class InventoryListAdapter(private val activity: ListingActivity) : ListingOpera
                                 }
                                 activity.reloadNewData(list)
                                 activity.isLoading = shouldLoadMore.not()
+                            }else{
+                                activity.reloadNewData(ArrayList<InventoryItem>())
                             }
                             activity.dismissProgressBar()
                         }

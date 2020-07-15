@@ -18,7 +18,18 @@ import com.google.firebase.database.ValueEventListener;
  * Methods require the context such as an {@code Activity}, so you
  * must call {@code SimpleFirebase.with(yourActivity)} first.
  */
-public final class FirebaseHelper {
+public final class
+
+
+
+
+
+
+
+
+
+
+FirebaseHelper {
     /**
      * An event listener that can respond to database errors.
      */

@@ -309,7 +309,7 @@ class Utils {
         fun sendMail(activity : Context,recipient: Array<String>,subject: String,body: String){
             val i = Intent(Intent.ACTION_SEND)
             i.type = "message/rfc822"
-            i.putExtra(Intent.EXTRA_BCC, recipient)//EXTRA_EMAIL
+            i.putExtra(Intent.EXTRA_BCC, recipient)
             i.putExtra(Intent.EXTRA_SUBJECT, subject)
             i.putExtra(Intent.EXTRA_TEXT, body)
             try {

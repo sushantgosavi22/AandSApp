@@ -7,11 +7,20 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.aandssoftware.aandsinventory.R
 import com.aandssoftware.aandsinventory.common.Utils
+import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
+import com.aandssoftware.aandsinventory.models.CustomerModel
+import com.aandssoftware.aandsinventory.ui.component.CustomEditText
+import com.comix.overwatch.HiveProgressView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_listing.*
+import java.util.ArrayList
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -71,5 +80,62 @@ open class BaseActivity : AppCompatActivity() {
         progress_bar?.let {
             progress_bar.dismissProgressBar()
         }
+    }
+
+
+}
+
+fun BaseActivity.feedbackDialog(activity : BaseActivity, sendMailToAllCustomer : Boolean) {
+    val alertDialogBuilderUserInput = AlertDialog.Builder(activity)
+    var view: View = LayoutInflater.from(activity).inflate(R.layout.feedback_dialog, null)
+    alertDialogBuilderUserInput
+            .setView(view)
+            .setCancelable(false)
+            .setPositiveButton(activity.getString(R.string.send)) {dialogBox, _ ->
+                var feedbackTitle = view.findViewById<CustomEditText>(R.id.tvFeedbackTitle).getText()
+                var feedbackDescription = view.findViewById<CustomEditText>(R.id.edtFeedbackDescription).getText()
+                if (feedbackTitle.isNotEmpty() && feedbackDescription.isNotEmpty()) {
+                    getAdminMailAndSendMail(sendMailToAllCustomer,feedbackTitle,feedbackDescription)
+                    dialogBox.cancel()
+                } else {
+                    activity.showSnackBarMessage(activity.getString(R.string.common_mandatory_error_message))
+                }
+            }
+            .setNegativeButton(activity.getString(R.string.cancel))
+            { dialogBox, _ -> dialogBox.cancel() }
+
+    val alertDialog = alertDialogBuilderUserInput.create()
+    alertDialog.show()
+}
+
+fun BaseActivity. getAdminMailAndSendMail(sendMailToAllCustomer : Boolean,subject: String,body: String){
+    var activity = this;
+    if(sendMailToAllCustomer){
+        activity.showProgressBar()
+        FirebaseUtil.getInstance().getCustomerDao().getAllCustomers(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                activity.dismissProgressBar()
+                val result = ArrayList<String>()
+                if (null != dataSnapshot.value) {
+                    for (children in dataSnapshot.children) {
+                        val model = children.getValue(CustomerModel::class.java)
+                        model?.companyMail?.let {
+                            result.add(it)
+                        }
+                    }
+                    if(result.isNotEmpty()){
+                        Utils.sendMail(activity,result.toTypedArray(),subject,body)
+                    }
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                activity.dismissProgressBar()
+            }
+        })
+
+    }else{
+        Utils.sendMailToAdmin(activity,subject,body)
     }
 }

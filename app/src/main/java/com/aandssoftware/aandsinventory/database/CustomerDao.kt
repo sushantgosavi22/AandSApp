@@ -170,6 +170,9 @@ class CustomerDao {
     }
 
 
+    fun getAllOrders(valueEventListener: ValueEventListener) {
+        orderTableReference.addListenerForSingleValueEvent(valueEventListener)
+    }
     fun getOrders(lastNodeKey: Double, itemToLoad: Int, valueEventListener: ValueEventListener) {
         var query = orderTableReference.limitToLast(itemToLoad)
         var defaultLong: Double = 0.0

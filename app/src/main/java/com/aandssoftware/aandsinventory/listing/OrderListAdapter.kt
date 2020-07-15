@@ -1,14 +1,19 @@
 package com.aandssoftware.aandsinventory.listing
 
 import android.app.Activity
+import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
@@ -18,10 +23,7 @@ import com.aandssoftware.aandsinventory.common.DateUtils
 import com.aandssoftware.aandsinventory.common.Navigator
 import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.firebase.FirebaseUtil
-import com.aandssoftware.aandsinventory.models.OrderModel
-import com.aandssoftware.aandsinventory.models.OrderStatus
-import com.aandssoftware.aandsinventory.models.CallBackListener
-import com.aandssoftware.aandsinventory.models.CustomerModel
+import com.aandssoftware.aandsinventory.models.*
 import com.aandssoftware.aandsinventory.notification.NotificationUtil
 import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
 import com.aandssoftware.aandsinventory.ui.activity.OrderListActivity
@@ -34,16 +36,71 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.flatMapIterable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.order_item.view.*
 import java.io.Serializable
 
 class OrderListAdapter(private val activity: ListingActivity) : ListingOperations {
+
+    private var search: SearchView? = null
+    var query: String = EMPTY_STRING
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private val workRunnable: Runnable
 
     internal var lastNodeKey: Double = 0.0
     internal var isAdmin: Boolean = Utils.isAdminUser(activity)
 
     companion object {
         const val ORDER_RECORD_FETCH_AT_TIME = 51
+        const val RECORD_FETCH_AT_TIME = 51
+        const val SEARCH_DELAY = 500
+    }
+
+    init {
+        workRunnable = Runnable { this.performSearch() }
+    }
+
+    private fun performSearch() {
+        search?.let {
+            if (query.isNotEmpty() && it.query.toString().equals(query, ignoreCase = true)) {
+                activity.showProgressBar()
+                FirebaseUtil.getInstance().getCustomerDao().getAllOrders(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val list = FirebaseUtil.getInstance()
+                                        .getListData(dataSnapshot, OrderModel::class.java)
+                                if (list.isNotEmpty()) {
+                                    Observable.just(list)
+                                            .flatMapIterable()
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .filter {item ->
+                                                val searchable = EMPTY_STRING.plus(item.customerModel?.customerName).plus(item.customerModel?.contactPerson).plus(item.invoiceNumber).plus(item.orderStatusName)
+                                                var searchableQueryList = query.split(" ", ignoreCase = true)
+                                                var add: String? = searchableQueryList.find { content -> searchable.contains(content, ignoreCase = true) }
+                                                add?.isNotEmpty()?:false
+                                            }
+                                            .toList()
+                                            .doOnError {
+                                                activity.dismissProgressBar()
+                                            }
+                                            .subscribe {  list->
+                                                activity.loadData(ArrayList<OrderModel>(list))
+                                                activity.dismissProgressBar()
+                                            }
+                                }else{
+                                    activity.dismissProgressBar()
+                                }
+                            }
+
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                activity.dismissProgressBar()
+                            }
+                        })
+            }
+        }
     }
 
     inner class OrderViewHolder(itemView: View) : BaseViewHolder(itemView) {
@@ -157,9 +214,56 @@ class OrderListAdapter(private val activity: ListingActivity) : ListingOperation
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         activity.menuInflater.inflate(R.menu.inventory_menu, menu)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            val manager = activity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+            var menuItem: MenuItem = menu.findItem(R.id.search)
+            menuItem.isVisible = true
+            search = menu.findItem(R.id.search).actionView as SearchView
+            search?.apply {
+                this.visibility = View.VISIBLE
+                this.setSearchableInfo(manager.getSearchableInfo(activity.componentName))
+                this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(s: String): Boolean {
+                        return true
+                    }
+
+                    override fun onQueryTextChange(query: String): Boolean {
+                        reloadAdapter(query)
+                        return true
+                    }
+                })
+                this.setOnSearchClickListener(object : View.OnClickListener {
+                    override fun onClick(p0: View?) {
+                        activity.setActionBarTitleVisibility(View.GONE)
+                    }
+
+                })
+
+                this.setOnCloseListener {
+                    activity.setActionBarTitleVisibility(View.VISIBLE)
+                    false
+                }
+            }
+
+        }
         return true
     }
 
+    fun reloadAdapter(currentQuery: String) {
+        query = currentQuery
+        handler.removeCallbacks(workRunnable)
+        if (currentQuery.isNotEmpty()) {
+            handler.postDelayed(workRunnable, InventoryListAdapter.SEARCH_DELAY.toLong())
+        } else {
+            handleEmptyQuery()
+        }
+    }
+
+    private fun handleEmptyQuery() {
+        lastNodeKey = 0.0
+        activity.loadData(ArrayList())
+        getResult()
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

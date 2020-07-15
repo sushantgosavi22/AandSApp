@@ -144,8 +144,9 @@
     <item name="android:indeterminate">false</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:indeterminateDrawable">@drawable/progress_indeterminate_drawable</item>
-    <item name="android:layout_height">@dimen/size_80</item>
-    <item name="android:layout_width">@dimen/size_80</item>
+    <item name="android:layout_height">@dimen/size_90</item> <!--size_80-->
+    <item name="android:layout_width">@dimen/size_90</item>
+    <item name="android:layout_gravity">center</item>
   </style>
 
 

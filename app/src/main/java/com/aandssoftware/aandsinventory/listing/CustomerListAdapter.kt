@@ -97,6 +97,9 @@ class CustomerListAdapter(private val activity: ListingActivity) : ListingOperat
                 val bitmap = BitmapFactory.decodeFile(mItem.imagePath)
                 if (null != holder.imgCustomerItemLogo && null != bitmap) {
                     holder.imgCustomerItemLogo.setImageBitmap(bitmap)
+                }else{
+                    Glide.clear(holder.imgCustomerItemLogo)
+                    holder.imgCustomerItemLogo.setImageResource(android.R.drawable.ic_menu_gallery)
                 }
             }
             mItem.imagePath?.let {

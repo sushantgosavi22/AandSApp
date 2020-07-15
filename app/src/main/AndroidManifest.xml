@@ -1,79 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.aandssoftware.aandsinventory">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.aandssoftware.aandsinventory">
 
-  <uses-permission android:name="android.permission.INTERNET" />
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.CAMERA" />
+    <application
+        android:name=".application.AandSApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/aands_logo"
+        android:label="@string/app_name"
+        tools:replace="allowBackup"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".ui.activity.AdminPanelActivity"></activity>
 
-  <uses-feature android:name="android.hardware.camera" />
-  <uses-feature android:name="android.hardware.camera.autofocus" />
+        <activity
+            android:name=".ui.activity.AddInventoryActivity"
+            android:configChanges="orientation|keyboardHidden" />
 
-  <uses-permission android:name="android.permission.CALL_PHONE" />
+        <activity android:name=".ui.activity.AddCustomerActivity" />
+        <activity android:name=".ui.activity.OrderDetailsActivity" />
+        <activity android:name=".ui.activity.OrderListActivity" />
+        <activity android:name=".ui.activity.CompanyOrderListActivity" />
+        <activity android:name=".ui.activity.CarouselDashboardActivity" />
+        <activity
+            android:name=".ui.activity.BaseActivity"
+            android:label="@string/title_activity_base" />
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-  <application
-    android:name=".application.AandSApplication"
-    android:allowBackup="false"
-    android:icon="@mipmap/aands_logo"
-    android:label="@string/app_name"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activity.ListingActivity" />
+        <activity
+            android:name=".ui.activity.ui.login.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName=".ui.activity.BaseActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.aandssoftware.aandsinventory.ui.activity.BaseActivity" />
+        </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/app_id_for_adds" />
 
-    <meta-data
-      android:name="com.google.android.gms.ads.APPLICATION_ID"
-      android:value="@string/app_id_for_adds" />
+        <provider
+            android:name=".pdfgenarator.CommonFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
-    <activity
-      android:name=".ui.activity.AddInventoryActivity"
-      android:configChanges="orientation|keyboardHidden" />
-    <activity android:name=".ui.activity.AddCustomerActivity" />
-    <activity android:name=".ui.activity.OrderDetailsActivity" />
-    <activity android:name=".ui.activity.OrderListActivity" />
-    <activity android:name=".ui.activity.CompanyOrderListActivity" />
-    <activity android:name=".ui.activity.CarouselDashboardActivity" />
+        <service android:name=".notification.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+    </application>
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <activity
-      android:name=".ui.activity.BaseActivity"
-      android:label="@string/title_activity_base" />
-    <activity
-      android:name=".ui.activity.SplashActivity"
-      android:theme="@style/AppThemeNoActionBar">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-    <activity android:name=".ui.activity.ListingActivity" />
-    <activity
-      android:name=".ui.activity.ui.login.LoginActivity"
-      android:label="@string/title_activity_login"
-      android:parentActivityName=".ui.activity.BaseActivity"
-      android:theme="@style/AppThemeNoActionBar">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value="com.aandssoftware.aandsinventory.ui.activity.BaseActivity" />
-    </activity>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <service android:name=".notification.MyFirebaseMessagingService">
-      <intent-filter>
-        <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-      </intent-filter>
-      <intent-filter>
-        <action android:name="com.google.firebase.MESSAGING_EVENT" />
-      </intent-filter>
-    </service>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <provider
-      android:name=".pdfgenarator.CommonFileProvider"
-      android:authorities="${applicationId}.provider"
-      android:exported="false"
-      android:grantUriPermissions="true">
-      <meta-data
-        android:name="android.support.FILE_PROVIDER_PATHS"
-        android:resource="@xml/provider_paths" />
-    </provider>
-  </application>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

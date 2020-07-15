@@ -195,12 +195,12 @@ class OrderDetailsActivity : ListingActivity() , UpdateOrderDialogFragment.OnOrd
                 .replace("#Address#",mItem.customerModel?.address?:"")
         mailBody.append(body).append("\n\n\n")
         var mailItemsBody = StringBuilder()
+        var row  = StringBuilder()
         mItem?.orderItems?.values?.forEachIndexed { index, inventoryItem ->
-            var row  = StringBuilder()
             if(index==0){
                 row.append( AppConstants.ORDER_CONFIRM_MAIL_BODY_COLUMN)
             }
-            var  rowItem =   AppConstants.ORDER_CONFIRM_MAIL_BODY_MIDDLE
+            var  rowItem =  AppConstants.ORDER_CONFIRM_MAIL_BODY_MIDDLE
                     .replace("#I#",(index+1).toString())
                     .replace("#NAME#",inventoryItem.inventoryItemName.toString())
                     .replace("#HSN#",inventoryItem.hsnCode?:"")
@@ -209,8 +209,8 @@ class OrderDetailsActivity : ListingActivity() , UpdateOrderDialogFragment.OnOrd
                     .replace("#DESCRIPTION#",inventoryItem.description.toString()?:"")
 
             row.append(rowItem)
-            mailItemsBody.append(row.toString())
         }
+        mailItemsBody.append(row.toString())
         mailBody.append(mailItemsBody.toString())
         mailBody.append("\n \n")
         mailBody.append(AppConstants.ORDER_CONFIRM_MAIL_BODY_LOWER)
@@ -371,7 +371,7 @@ class OrderDetailsActivity : ListingActivity() , UpdateOrderDialogFragment.OnOrd
         super.onDestroy()
     }
 
-    private fun signatureDialog( activity : Context, orderModel: OrderModel?,isAdminSign : Boolean) {
+    public fun signatureDialog( activity : Context, orderModel: OrderModel?,isAdminSign : Boolean) {
         val alertDialogBuilderUserInput = AlertDialog.Builder(activity)
         var view: View = LayoutInflater.from(activity).inflate(R.layout.signature_dialog, null)
         var imgClear = view.findViewById<ImageView>(R.id.imgClear)

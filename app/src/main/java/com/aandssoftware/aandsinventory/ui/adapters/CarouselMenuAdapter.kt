@@ -24,10 +24,7 @@ import com.aandssoftware.aandsinventory.models.CarouselMenuType
 import com.aandssoftware.aandsinventory.models.CustomerModel
 import com.aandssoftware.aandsinventory.models.ViewMode
 import com.aandssoftware.aandsinventory.notification.NotificationUtil
-import com.aandssoftware.aandsinventory.ui.activity.BaseActivity
-import com.aandssoftware.aandsinventory.ui.activity.CompanyOrderListActivity
-import com.aandssoftware.aandsinventory.ui.activity.ListingActivity
-import com.aandssoftware.aandsinventory.ui.activity.OrderListActivity
+import com.aandssoftware.aandsinventory.ui.activity.*
 import com.aandssoftware.aandsinventory.ui.adapters.CarouselMenuAdapter.ViewHolder
 import com.aandssoftware.aandsinventory.ui.component.CustomEditText
 import com.aandssoftware.aandsinventory.utilities.AppConstants
@@ -97,11 +94,15 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
                 CarouselMenuType.COMPANY_MATERIALS -> showCompanyMaterialListing(activity, ListType.LIST_TYPE_MATERIAL)
                 CarouselMenuType.COMPANY_PROFILE -> showCompanyProfile(activity)
                 CarouselMenuType.ABOUT_US -> showCompanyProfile(activity, mCarouselMenuModel)
-                CarouselMenuType.FEEDBACK ->feedbackDialog(false)
-                CarouselMenuType.ADMIN_PANNEL ->feedbackDialog(true)
+                CarouselMenuType.FEEDBACK -> activity.feedbackDialog(activity,false)
+                CarouselMenuType.ADMIN_PANNEL ->openAdminPanel()
                 else -> showListing(activity, ListType.LIST_TYPE_MATERIAL)
             }
         }
+    }
+
+    private fun openAdminPanel() {
+        activity.startActivity(Intent(activity,AdminPanelActivity::class.java))
     }
 
 
@@ -205,60 +206,4 @@ class CarouselMenuAdapter(val activity: BaseActivity, orderedRealmCollection: Li
             }
         }
     }
-
-
-    private fun feedbackDialog( sendMailToAllCustomer : Boolean) {
-        val alertDialogBuilderUserInput = AlertDialog.Builder(activity)
-        var view: View = LayoutInflater.from(activity).inflate(R.layout.feedback_dialog, null)
-        alertDialogBuilderUserInput
-                .setView(view)
-                .setCancelable(false)
-                .setPositiveButton(activity.getString(R.string.send)) {dialogBox, _ ->
-                    var feedbackTitle = view.findViewById<CustomEditText>(R.id.tvFeedbackTitle).getText()
-                    var feedbackDescription = view.findViewById<CustomEditText>(R.id.edtFeedbackDescription).getText()
-                    if (feedbackTitle.isNotEmpty() && feedbackDescription.isNotEmpty()) {
-                        getAdminMailAndSendMail(sendMailToAllCustomer,feedbackTitle,feedbackDescription)
-                        dialogBox.cancel()
-                    } else {
-                        activity.showSnackBarMessage(activity.getString(R.string.common_mandatory_error_message))
-                    }
-                }
-                .setNegativeButton(activity.getString(R.string.cancel))
-                { dialogBox, _ -> dialogBox.cancel() }
-
-        val alertDialog = alertDialogBuilderUserInput.create()
-        alertDialog.show()
-    }
-
-    private fun getAdminMailAndSendMail(sendMailToAllCustomer : Boolean,subject: String,body: String){
-        if(sendMailToAllCustomer){
-            activity.showProgressBar()
-            FirebaseUtil.getInstance().getCustomerDao().getAllCustomers(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    activity.dismissProgressBar()
-                    val result = ArrayList<String>()
-                    if (null != dataSnapshot.value) {
-                        for (children in dataSnapshot.children) {
-                            val model = children.getValue(CustomerModel::class.java)
-                            model?.companyMail?.let {
-                                result.add(it)
-                            }
-                        }
-                        if(result.isNotEmpty()){
-                           Utils.sendMail(activity,result.toTypedArray(),subject,body)
-                        }
-                    }
-
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    activity.dismissProgressBar()
-                }
-            })
-
-        }else{
-            Utils.sendMailToAdmin(activity,subject,body)
-        }
-    }
-
 }

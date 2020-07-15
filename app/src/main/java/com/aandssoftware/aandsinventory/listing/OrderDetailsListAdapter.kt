@@ -338,7 +338,11 @@ class OrderDetailsListAdapter(private val activity: ListingActivity) : ListingOp
                         if(orderModel?.signatureName?.isNotEmpty()?:false){
                             onActionConfirmOrder(true)
                         }else{
-                            activity.showSnackBarMessage(activity.getString(R.string.signaure_not_added_by_consumer))
+                            if(Utils.isAdminUser(activity)){
+                                (activity as OrderDetailsActivity).signatureDialog(activity,orderModel,false)
+                            }else{
+                                activity.showSnackBarMessage(activity.getString(R.string.signaure_not_added_by_consumer))
+                            }
                         }
                     }else if(selected.equals(distributorCopy)){
                         if(orderModel?.signatureDistributor?.isNotEmpty()?:false){

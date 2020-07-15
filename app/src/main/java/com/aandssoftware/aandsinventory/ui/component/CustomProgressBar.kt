@@ -5,9 +5,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.WindowManager
-import android.widget.ProgressBar
+import com.aandssoftware.aandsinventory.R
+import com.comix.overwatch.HiveProgressView
 
-class CustomProgressBar : ProgressBar {
+class CustomProgressBar : HiveProgressView {
 
     constructor(context: Context) : super(context) {
         init()
@@ -23,6 +24,13 @@ class CustomProgressBar : ProgressBar {
 
     private fun init() {
         // not in use now
+        animationTime = 5000
+        color = context.getColor(R.color.colorPrimary)
+        maxAlpha = 255
+        isRainbow = false
+        cornerRadius = 20
+        isShrink = true
+
     }
 
     fun showProgressBar() {
@@ -42,5 +50,6 @@ class CustomProgressBar : ProgressBar {
             (this.context as Activity).window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
         visibility = View.GONE
+        invalidate()
     }
 }

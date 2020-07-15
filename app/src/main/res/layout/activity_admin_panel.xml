@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.AdminPanelActivity">
+
+    <com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout
+        android:id="@+id/slMailToAllCustomer"
+        style="@style/custome_section_style"
+        app:sectionHeader="@string/section_title_send_mail_to_all_customer">
+
+        <com.aandssoftware.aandsinventory.ui.adapters.CustomFontTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/size_10"
+            android:layout_marginRight="@dimen/size_5"
+            android:layout_marginBottom="@dimen/size_5"
+            android:fontFamily="@font/lato_bold"
+            android:text="@string/section_title_send_mail_to_all_customer"
+            android:textStyle="bold" />
+
+    </com.aandssoftware.aandsinventory.ui.component.SectionLinerLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

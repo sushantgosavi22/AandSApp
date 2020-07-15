@@ -149,43 +149,48 @@ class LoginActivity : BaseActivity() {
 
 
     private fun checkVersionAndLogin() {
-        showProgressBar()
-        FirebaseUtil.getInstance().getCustomerDao().getAppVersion(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                dismissProgressBar()
-            }
+        if(FirebaseUtil.getInstance().isInternetConnected(this)){
+            showProgressBar()
+            FirebaseUtil.getInstance().getCustomerDao().getAppVersion(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    dismissProgressBar()
+                }
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val appVersion = FirebaseUtil.getInstance()
-                        .getClassData(dataSnapshot, AppVersion::class.java)
-                SharedPrefsUtils.setAppVersionPreference(this@LoginActivity, SharedPrefsUtils.APP_VERSION, appVersion)
-                appVersion?.let {
-                    SharedPrefsUtils.setStringPreference(this@LoginActivity,PdfHandler.SECRETE_KAY ,it.secreteKey?:PdfHandler.DEFAULT_SECRETE_KAY)
-                    SharedPrefsUtils.setStringPreference(this@LoginActivity,PdfHandler.API_KAY ,it.apikey?:PdfHandler.DEFAULT_API_KAY)
-                    if (appVersion.forceUpdate) {
-                        performForceUpdate()
-                    } else if (appVersion.recomondedUpdate) {
-                        if(isRecommendedUpdate.not()){
-                            isRecommendedUpdate = true
-                            showSnackBarMessage(getString(R.string.recommended_update_massage))
-                            Handler().postDelayed({
-                                redirectToPlayStore()
-                            }, AppConstants.SPLASH_TIME)
-                        }else{
-                            performLogin()
-                        }
-                    } else {
-                        performLogin()
-                        /*if ((BuildConfig.VERSION_CODE < appVersion.updatedVersionCode.toInt())) {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val appVersion = FirebaseUtil.getInstance()
+                            .getClassData(dataSnapshot, AppVersion::class.java)
+                    SharedPrefsUtils.setAppVersionPreference(this@LoginActivity, SharedPrefsUtils.APP_VERSION, appVersion)
+                    appVersion?.let {
+                        SharedPrefsUtils.setStringPreference(this@LoginActivity,PdfHandler.SECRETE_KAY ,it.secreteKey?:PdfHandler.DEFAULT_SECRETE_KAY)
+                        SharedPrefsUtils.setStringPreference(this@LoginActivity,PdfHandler.API_KAY ,it.apikey?:PdfHandler.DEFAULT_API_KAY)
+                        if (appVersion.forceUpdate) {
                             performForceUpdate()
+                        } else if (appVersion.recomondedUpdate) {
+                            if(isRecommendedUpdate.not()){
+                                isRecommendedUpdate = true
+                                showSnackBarMessage(getString(R.string.recommended_update_massage))
+                                Handler().postDelayed({
+                                    redirectToPlayStore()
+                                }, AppConstants.SPLASH_TIME)
+                            }else{
+                                performLogin()
+                            }
                         } else {
                             performLogin()
-                        }*/
+                            /*if ((BuildConfig.VERSION_CODE < appVersion.updatedVersionCode.toInt())) {
+                                performForceUpdate()
+                            } else {
+                                performLogin()
+                            }*/
+                        }
                     }
+                    dismissProgressBar()
                 }
-                dismissProgressBar()
-            }
-        })
+            })
+        }else{
+            showSnackBarMessage(getString(R.string.no_internet_connection))
+        }
+
     }
 
     private fun performForceUpdate(){

@@ -31,20 +31,22 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/recyclerView"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:background="@android:color/white"
-          android:nestedScrollingEnabled="false" />
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:nestedScrollingEnabled="false"
+            android:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
-          android:id="@+id/noResultFoundLayout"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerInParent="true"
-          android:layout_margin="@dimen/size_5"
-          android:drawablePadding="@dimen/size_5"
-          android:visibility="gone" />
+            android:id="@+id/noResultFoundLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawableTop="@drawable/ic_box"
+            android:drawablePadding="@dimen/size_5"
+            android:gravity="center"
+            android:visibility="gone" />
 
       </RelativeLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>

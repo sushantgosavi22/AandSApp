@@ -372,7 +372,7 @@ class AddInventoryActivity : BaseActivity() {
                     edtUnitPrice.setText(custPurchasePriceWihUnit)
                     rlNoPriceInventory.visibility  = View.GONE
                 }
-                setViewByModeAfterSetValue()
+                setViewByModeAfterSetValue(it)
             }
         }
         if (viewMode == ViewMode.GET_INVENTORY_QUANTITY.ordinal) {
@@ -383,8 +383,18 @@ class AddInventoryActivity : BaseActivity() {
         setButtonText(if (viewMode == ViewMode.UPDATE.ordinal) resources.getString(R.string.update) else resources.getString(R.string.save))
     }
 
-    private fun setViewByModeAfterSetValue() {
+    private fun setViewByModeAfterSetValue(it : InventoryItem) {
         if (inventoryType == ListType.LIST_TYPE_ORDER_INVENTORY.ordinal) {
+
+            val unit = it.itemQuantityUnit
+            var sellingPriceAfterDiscount = Utils.getSellingPriceAfterDiscount(this, it)
+            var custSellingPrice = Utils.currencyLocale(sellingPriceAfterDiscount)
+            custSellingPrice = custSellingPrice.plus(" /  ").plus(unit)
+            edtUnitPrice.setText(custSellingPrice)
+            rlNoPriceInventory.visibility  = View.GONE
+            edtPurchasePrice.visibility = View.GONE
+
+
             llQuantityAndUnit.visibility = View.VISIBLE
             edtSellingPrice.visibility = View.VISIBLE
 

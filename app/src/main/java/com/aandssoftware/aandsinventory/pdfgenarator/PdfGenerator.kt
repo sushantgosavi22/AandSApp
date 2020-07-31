@@ -13,6 +13,7 @@ import com.aandssoftware.aandsinventory.common.Utils
 import com.aandssoftware.aandsinventory.models.InventoryItem
 import com.aandssoftware.aandsinventory.models.OrderModel
 import com.aandssoftware.aandsinventory.utilities.AppConstants
+import com.google.gson.Gson
 import org.apache.poi.hssf.usermodel.HSSFDateUtil
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.util.IOUtils
@@ -144,7 +145,9 @@ class PdfGenerator(private val context: Context) {
         parameters.add(inputeFile)
         var input = PdfHandler.UploadInput(parameters)
         try {
+            Log.d("pdfgenarator","input- "+Gson().toJson(input))
             var result = PdfHandler().requestToDownload(input,context)
+            Log.d("pdfgenarator","result- "+Gson().toJson(result))
             if(null!=result && result.Files?.isNotEmpty() == true){
                 result?.Files?.first()?.FileData?.let {
                     val file = File(outXlsxFile.absolutePath)

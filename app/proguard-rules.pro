@@ -22,4 +22,16 @@
 -dontpreverify
 -verbose
 
--keep class com.aandssoftware.aandsinventory.models.** { *; }
+
+-keep class com.aandssoftware.aandsinventory.models** { *; }
+-keep public class com.fasterxml**{*;}
+-keep class org.apache**{*;}
+-keep class org.codehaus**{*;}
+-keep class com.bea**{*;}
+-keep class org.etsi**{*;}
+-keep class com.fasterxml**{*;}
+-keep class com.microsoft**{*;}
+-keep class aavax.xml**{*;}
+-keep class org.openxmlformats**{*;}
+-keep class schemaorg_apache_xmlbeans**{*;}
+-keep class com.aandssoftware.aandsinventory.pdfgenarator**{*;}

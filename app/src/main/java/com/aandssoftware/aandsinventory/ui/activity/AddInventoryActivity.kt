@@ -393,7 +393,7 @@ class AddInventoryActivity : BaseActivity() {
             edtUnitPrice.setText(custSellingPrice)
             rlNoPriceInventory.visibility  = View.GONE
             edtPurchasePrice.visibility = View.GONE
-
+            slShopDetails.visibility = View.GONE
 
             llQuantityAndUnit.visibility = View.VISIBLE
             edtSellingPrice.visibility = View.VISIBLE

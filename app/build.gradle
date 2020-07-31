@@ -14,8 +14,8 @@ android {
         applicationId "com.aandssoftware.aandsinventory"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 9
-        versionName "9.1"
+        versionCode 10
+        versionName "10.1"
         multiDexEnabled true
         buildConfigField "String", "FIREBASE_SERVER_KEY", "\""+getFirebaseKey()+"\""
         archivesBaseName = "AandS-${versionCode}-${versionName}-${new Date().format('yyMMdd')}"
